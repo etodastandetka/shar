@@ -131,6 +131,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(orders);
   });
   
+  // Get current user's orders
+  app.get("/api/user/orders", ensureAuthenticated, async (req, res) => {
+    try {
+      const orders = await storage.getOrdersByUser(req.user.id);
+      res.json(orders);
+    } catch (error) {
+      console.error("Error fetching user orders:", error);
+      res.status(500).json({ message: "Не удалось получить заказы" });
+    }
+  });
+  
   app.get("/api/orders/:id", ensureAuthenticated, async (req, res) => {
     const id = parseInt(req.params.id);
     const order = await storage.getOrder(id);
@@ -295,10 +306,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get current user's reviews
+  app.get("/api/user/reviews", ensureAuthenticated, async (req, res) => {
+    try {
+      const reviews = await storage.getReviewsByUser(req.user.id);
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching user reviews:", error);
+      res.status(500).json({ message: "Не удалось получить отзывы" });
+    }
+  });
+  
   // Notification routes
   app.get("/api/notifications", ensureAuthenticated, async (req, res) => {
     const notifications = await storage.getNotificationsByUser(req.user.id);
     res.json(notifications);
+  });
+  
+  // Get current user's notifications
+  app.get("/api/user/notifications", ensureAuthenticated, async (req, res) => {
+    try {
+      const notifications = await storage.getNotificationsByUser(req.user.id);
+      res.json(notifications);
+    } catch (error) {
+      console.error("Error fetching user notifications:", error);
+      res.status(500).json({ message: "Не удалось получить уведомления" });
+    }
   });
   
   app.post("/api/notifications", ensureAuthenticated, async (req, res) => {
