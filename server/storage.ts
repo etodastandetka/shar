@@ -4,8 +4,8 @@ import {
   Review, InsertReview, Notification, InsertNotification,
   PaymentDetails, InsertPaymentDetails
 } from "@shared/schema";
-import memorystore from "memorystore";
 import session from "express-session";
+import { DatabaseStorage } from "./storage-db";
 
 // Define the storage interface
 export interface IStorage {
@@ -472,4 +472,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sprout, User, Mail, Key, Phone, Home, AtSign } from "lucide-react";
+import { Sprout, User, Mail, Key, Phone, Home, AtSign, Instagram, Facebook, Twitter } from "lucide-react";
 
 // Login schema
 const loginSchema = z.object({
@@ -63,6 +63,7 @@ export default function AuthPage() {
       phone: "",
       address: "",
       socialType: "Instagram",
+      socialNetwork: "",
     },
   });
 
@@ -309,7 +310,7 @@ export default function AuthPage() {
                                 <FormLabel>Соцсеть</FormLabel>
                                 <Select 
                                   onValueChange={field.onChange} 
-                                  defaultValue={field.value}
+                                  defaultValue={field.value || "Instagram"}
                                 >
                                   <FormControl>
                                     <SelectTrigger className="form-input">
@@ -318,8 +319,49 @@ export default function AuthPage() {
                                   </FormControl>
                                   <SelectContent>
                                     <SelectItem value="Instagram">Instagram</SelectItem>
+                                    <SelectItem value="Telegram">Telegram</SelectItem>
+                                    <SelectItem value="WhatsApp">WhatsApp</SelectItem>
+                                    <SelectItem value="VK">ВКонтакте</SelectItem>
+                                    <SelectItem value="Facebook">Facebook</SelectItem>
+                                    <SelectItem value="None">Нет соцсетей</SelectItem>
                                   </SelectContent>
                                 </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={registerForm.control}
+                            name="socialNetwork"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Аккаунт в соцсети</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    {registerForm.watch("socialType") === "Instagram" && (
+                                      <Instagram className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                    )}
+                                    {registerForm.watch("socialType") === "Facebook" && (
+                                      <Facebook className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                    )}
+                                    {(registerForm.watch("socialType") === "Telegram" || 
+                                      registerForm.watch("socialType") === "WhatsApp" || 
+                                      registerForm.watch("socialType") === "VK" || 
+                                      registerForm.watch("socialType") === "None") && (
+                                      <AtSign className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                    )}
+                                    <Input
+                                      {...field}
+                                      className="pl-10 form-input"
+                                      placeholder={
+                                        registerForm.watch("socialType") === "None" 
+                                          ? "Не указывать" 
+                                          : `Ваш аккаунт в ${registerForm.watch("socialType")}`
+                                      }
+                                      disabled={registerForm.watch("socialType") === "None"}
+                                    />
+                                  </div>
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
