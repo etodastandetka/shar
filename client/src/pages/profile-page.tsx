@@ -104,9 +104,9 @@ export default function ProfilePage() {
   
   // Fetch user orders
   const { data: orders = [], isLoading: ordersLoading } = useQuery<Order[]>({
-    queryKey: ["/api/orders"],
+    queryKey: ["/api/user/orders"],
     queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
+      const res = await apiRequest("GET", queryKey[0] as string);
       if (!res.ok) throw new Error("Не удалось загрузить заказы");
       return res.json();
     },
@@ -115,9 +115,9 @@ export default function ProfilePage() {
   
   // Fetch user reviews
   const { data: reviews = [], isLoading: reviewsLoading } = useQuery<Review[]>({
-    queryKey: ["/api/reviews"],
+    queryKey: ["/api/user/reviews"],
     queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
+      const res = await apiRequest("GET", queryKey[0] as string);
       if (!res.ok) throw new Error("Не удалось загрузить отзывы");
       return res.json();
     },
@@ -126,9 +126,9 @@ export default function ProfilePage() {
   
   // Fetch user notifications
   const { data: notifications = [], isLoading: notificationsLoading } = useQuery<any[]>({
-    queryKey: ["/api/notifications"],
+    queryKey: ["/api/user/notifications"],
     queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
+      const res = await apiRequest("GET", queryKey[0] as string);
       if (!res.ok) throw new Error("Не удалось загрузить уведомления");
       return res.json();
     },
