@@ -1,518 +1,454 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { insertProductSchema, Product } from "@shared/schema";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Product, InsertProduct } from "@shared/schema";
-
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Upload, X, Plus } from "lucide-react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  Card, 
-  CardContent, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Loader2, X, Upload, Plus, Image } from "lucide-react";
 
-// Product schema for form validation
-const productSchema = z.object({
-  name: z.string().min(3, "Название должно содержать не менее 3 символов"),
+// Расширяем схему с дополнительной валидацией
+const productFormSchema = insertProductSchema.extend({
+  name: z.string().min(2, "Название должно содержать не менее 2 символов"),
   description: z.string().min(10, "Описание должно содержать не менее 10 символов"),
-  price: z.string().min(1, "Введите цену"),
-  originalPrice: z.string().optional(),
-  quantity: z.string().min(0, "Количество не может быть отрицательным"),
   category: z.string().min(1, "Выберите категорию"),
-  isAvailable: z.boolean().default(true),
-  isPreorder: z.boolean().default(false),
-  deliveryCost: z.string().min(1, "Введите стоимость доставки"),
-  labels: z.array(z.string()).default([]),
-  images: z.array(z.string()).min(1, "Добавьте хотя бы одно изображение"),
+  price: z.string().refine(val => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
+    message: "Цена должна быть положительным числом",
+  }),
+  quantity: z.string().refine(val => !isNaN(parseInt(val)) && parseInt(val) >= 0, {
+    message: "Количество должно быть неотрицательным числом",
+  }),
 });
 
-type ProductFormValues = z.infer<typeof productSchema>;
+type ProductFormValues = z.infer<typeof productFormSchema>;
 
 interface ProductFormProps {
   product?: Product;
-  onSuccess?: (product: Product) => void;
-  onCancel?: () => void;
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
 export default function ProductForm({ product, onSuccess, onCancel }: ProductFormProps) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [availableLabels] = useState([
-    "Скидка",
-    "Без выбора",
-    "Растение с фото",
-    "Нет в наличии",
-    "Редкие",
-    "Простой уход"
-  ]);
+  const [imageUrls, setImageUrls] = useState<string[]>(product?.images || []);
+  const [newImageUrl, setNewImageUrl] = useState("");
   
-  // Initialize the form with product data if editing
+  // Настройка формы с начальными данными из переданного товара или значениями по умолчанию
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(productSchema),
-    defaultValues: product
-      ? {
-          ...product,
-          price: product.price.toString(),
-          originalPrice: product.originalPrice?.toString() || "",
-          quantity: product.quantity.toString(),
-          deliveryCost: product.deliveryCost.toString(),
-          labels: product.labels || [],
-        }
-      : {
-          name: "",
-          description: "",
-          price: "",
-          originalPrice: "",
-          quantity: "0",
-          category: "",
-          isAvailable: true,
-          isPreorder: false,
-          deliveryCost: "300",
-          labels: [],
-          images: [],
-        },
-  });
-
-  // Set image URLs if editing
-  useEffect(() => {
-    if (product && product.images) {
-      setImageUrls(product.images);
-    }
-  }, [product]);
-
-  // Create or update product mutation
-  const productMutation = useMutation({
-    mutationFn: async (data: InsertProduct) => {
-      if (product) {
-        // Update existing product
-        const res = await apiRequest("PUT", `/api/products/${product.id}`, data);
-        return res.json();
-      } else {
-        // Create new product
-        const res = await apiRequest("POST", "/api/products", data);
-        return res.json();
-      }
+    resolver: zodResolver(productFormSchema),
+    defaultValues: {
+      name: product?.name || "",
+      description: product?.description || "",
+      category: product?.category || "",
+      price: product?.price.toString() || "",
+      originalPrice: product?.originalPrice?.toString() || "",
+      quantity: product?.quantity.toString() || "0",
+      isAvailable: product?.isAvailable ?? true,
+      isPreorder: product?.isPreorder ?? false,
+      isRare: product?.isRare ?? false,
+      isEasyToCare: product?.isEasyToCare ?? false,
+      labels: product?.labels || [],
+      images: product?.images || [],
     },
-    onSuccess: (data) => {
+  });
+  
+  // Мутация для создания нового товара
+  const createProductMutation = useMutation({
+    mutationFn: async (data: ProductFormValues) => {
+      // Добавляем изображения в данные
+      const productData = {
+        ...data,
+        images: imageUrls,
+      };
+      
+      await apiRequest("POST", "/api/products", productData);
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: product ? "Товар обновлен" : "Товар создан",
-        description: `Товар "${data.name}" успешно ${product ? "обновлен" : "создан"}`,
+        title: "Товар создан",
+        description: "Новый товар успешно добавлен в каталог"
       });
-      if (onSuccess) onSuccess(data);
+      onSuccess();
     },
     onError: (error: Error) => {
       toast({
-        title: "Ошибка",
+        title: "Ошибка создания",
         description: error.message,
-        variant: "destructive",
+        variant: "destructive"
       });
-    },
+    }
   });
-
-  // Available categories
-  const categories = [
-    "Крупнолистные",
-    "Фикусы",
-    "Декоративно-лиственные",
-    "Филодендроны",
-    "Суккуленты",
-    "Вьющиеся",
-    "Редкие коллекционные",
-    "Кактусы",
-    "Пальмы",
-    "Папоротники",
-  ];
-
-  // Handle form submission
-  const onSubmit = (data: ProductFormValues) => {
-    // Convert string values to appropriate types
-    const formattedData: InsertProduct = {
-      ...data,
-      price: data.price,
-      originalPrice: data.originalPrice || undefined,
-      quantity: parseInt(data.quantity),
-      deliveryCost: data.deliveryCost,
-      images: imageUrls,
-    };
-
-    productMutation.mutate(formattedData);
-  };
-
-  // Handle image URL addition
-  const addImageUrl = (url: string) => {
-    if (url && !imageUrls.includes(url)) {
-      const updatedUrls = [...imageUrls, url];
-      setImageUrls(updatedUrls);
-      form.setValue("images", updatedUrls);
+  
+  // Мутация для обновления существующего товара
+  const updateProductMutation = useMutation({
+    mutationFn: async (data: { id: number, productData: ProductFormValues }) => {
+      // Добавляем изображения в данные
+      const productData = {
+        ...data.productData,
+        images: imageUrls,
+      };
+      
+      await apiRequest("PUT", `/api/products/${data.id}`, productData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+      toast({
+        title: "Товар обновлен",
+        description: "Товар успешно обновлен"
+      });
+      onSuccess();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка обновления",
+        description: error.message,
+        variant: "destructive"
+      });
     }
-  };
-
-  // Handle image URL removal
-  const removeImageUrl = (index: number) => {
-    const updatedUrls = imageUrls.filter((_, i) => i !== index);
-    setImageUrls(updatedUrls);
-    form.setValue("images", updatedUrls);
-  };
-
-  // Handle label toggle
-  const toggleLabel = (label: string) => {
-    const currentLabels = form.getValues("labels") || [];
-    if (currentLabels.includes(label)) {
-      form.setValue(
-        "labels",
-        currentLabels.filter((l) => l !== label)
-      );
+  });
+  
+  // Обработчик отправки формы
+  function onSubmit(values: ProductFormValues) {
+    if (product) {
+      // Обновление существующего товара
+      updateProductMutation.mutate({
+        id: product.id,
+        productData: values
+      });
     } else {
-      form.setValue("labels", [...currentLabels, label]);
+      // Создание нового товара
+      createProductMutation.mutate(values);
+    }
+  }
+  
+  // Добавление нового URL изображения
+  const handleAddImage = () => {
+    if (newImageUrl && !imageUrls.includes(newImageUrl)) {
+      setImageUrls([...imageUrls, newImageUrl]);
+      setNewImageUrl("");
     }
   };
-
+  
+  // Удаление URL изображения
+  const handleRemoveImage = (index: number) => {
+    setImageUrls(imageUrls.filter((_, i) => i !== index));
+  };
+  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{product ? "Редактирование товара" : "Новый товар"}</CardTitle>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Основная информация</h3>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Название</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Категория</FormLabel>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Выберите категорию" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Название товара</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Введите название товара" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Описание</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Введите описание товара" 
+                      rows={5}
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Категория</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Выберите категорию" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Комнатные растения">Комнатные растения</SelectItem>
+                      <SelectItem value="Суккуленты">Суккуленты</SelectItem>
+                      <SelectItem value="Кактусы">Кактусы</SelectItem>
+                      <SelectItem value="Папоротники">Папоротники</SelectItem>
+                      <SelectItem value="Орхидеи">Орхидеи</SelectItem>
+                      <SelectItem value="Семена и рассада">Семена и рассада</SelectItem>
+                      <SelectItem value="Аксессуары">Аксессуары</SelectItem>
+                      <SelectItem value="Грунты и удобрения">Грунты и удобрения</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="description"
+                name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Описание</FormLabel>
+                    <FormLabel>Цена (₽)</FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        className="min-h-32"
-                        placeholder="Подробное описание товара"
+                      <Input 
+                        type="number" 
+                        min="0" 
+                        step="50" 
+                        placeholder="0"
+                        {...field} 
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-
-            <Separator />
-
-            {/* Pricing & Inventory */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Цена и наличие</h3>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Цена (₽)</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" min="0" step="0.01" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="originalPrice"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Старая цена (₽)</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="Если есть скидка"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="deliveryCost"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Стоимость доставки (₽)</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" min="0" step="0.01" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <FormField
-                  control={form.control}
-                  name="quantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Количество</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="number" min="0" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="isAvailable"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0 mt-8">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Доступен для заказа
-                      </FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="isPreorder"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0 mt-8">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Предзаказ
-                      </FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Labels */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Метки</h3>
-              <div className="flex flex-wrap gap-2">
-                {availableLabels.map((label) => {
-                  const isSelected =
-                    form.getValues("labels")?.includes(label) || false;
-                  return (
-                    <Button
-                      key={label}
-                      type="button"
-                      variant={isSelected ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleLabel(label)}
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
-              </div>
+              
               <FormField
                 control={form.control}
-                name="labels"
-                render={() => (
+                name="originalPrice"
+                render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Старая цена (₽)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0" 
+                        step="50" 
+                        placeholder="Если есть скидка"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Оставьте пустым, если нет скидки
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            <Separator />
-
-            {/* Images */}
+            
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Количество на складе</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      min="0" 
+                      placeholder="0"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          
+          <div className="space-y-6">
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Изображения</h3>
-              <div className="grid grid-cols-1 gap-4">
-                {/* Image URL Input */}
-                <div className="flex space-x-2">
-                  <Input
-                    placeholder="URL изображения"
-                    value=""
-                    onChange={(e) => addImageUrl(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addImageUrl((e.target as HTMLInputElement).value);
-                        (e.target as HTMLInputElement).value = "";
-                      }
-                    }}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      const input = document.querySelector("input[placeholder='URL изображения']") as HTMLInputElement;
-                      if (input.value) {
-                        addImageUrl(input.value);
-                        input.value = "";
-                      }
-                    }}
+              <h3 className="text-lg font-medium">Изображения товара</h3>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                {imageUrls.map((url, index) => (
+                  <div 
+                    key={index} 
+                    className="relative w-20 h-20 border rounded overflow-hidden group"
                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Добавить
-                  </Button>
-                </div>
-
-                {/* Image Previews */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {imageUrls.map((url, index) => (
-                    <div
-                      key={index}
-                      className="relative group border rounded-md overflow-hidden"
+                    <img 
+                      src={url} 
+                      alt={`Изображение ${index + 1}`} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "https://placehold.co/200x200?text=Ошибка";
+                      }}
+                    />
+                    <button 
+                      type="button"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleRemoveImage(index)}
                     >
-                      <img
-                        src={url}
-                        alt={`Product ${index + 1}`}
-                        className="w-full h-32 object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "https://placehold.co/400x300?text=Error+Loading+Image";
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => removeImageUrl(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-
-                  {imageUrls.length === 0 && (
-                    <div className="border border-dashed rounded-md p-4 flex flex-col items-center justify-center text-muted-foreground h-32">
-                      <Image className="h-8 w-8 mb-2" />
-                      <p className="text-sm">Нет изображений</p>
-                    </div>
-                  )}
-                </div>
-                <FormField
-                  control={form.control}
-                  name="images"
-                  render={() => (
-                    <FormItem>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="URL изображения"
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  className="flex-1"
                 />
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  size="icon"
+                  onClick={handleAddImage}
+                  disabled={!newImageUrl}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="text-xs text-gray-500">
+                Добавьте URL-адреса изображений товара. Первое изображение будет использоваться как основное.
               </div>
             </div>
-          </CardContent>
-
-          <CardFooter className="flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-            >
-              Отмена
-            </Button>
-            <Button
-              type="submit"
-              disabled={productMutation.isPending}
-            >
-              {productMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Сохранение...
-                </>
-              ) : (
-                "Сохранить"
-              )}
-            </Button>
-          </CardFooter>
-        </form>
-      </Form>
-    </Card>
+            
+            <div className="space-y-4 pt-4 border-t">
+              <h3 className="text-lg font-medium">Характеристики товара</h3>
+              
+              <FormField
+                control={form.control}
+                name="isAvailable"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Доступен для заказа</FormLabel>
+                      <FormDescription>
+                        Товар будет отображаться в каталоге как доступный
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="isPreorder"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Предзаказ</FormLabel>
+                      <FormDescription>
+                        Товар доступен только по предзаказу
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="isRare"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Редкое растение</FormLabel>
+                      <FormDescription>
+                        Пометить товар как редкий экземпляр
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="isEasyToCare"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Неприхотливое растение</FormLabel>
+                      <FormDescription>
+                        Отметить, что растение легко в уходе
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex justify-end space-x-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onCancel}
+          >
+            Отмена
+          </Button>
+          <Button 
+            type="submit"
+            disabled={createProductMutation.isPending || updateProductMutation.isPending}
+          >
+            {product ? "Сохранить изменения" : "Создать товар"}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

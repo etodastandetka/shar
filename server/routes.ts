@@ -389,6 +389,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(403).json({ message: "Доступ запрещен" });
     }
     
+    // Only admins can update balance
+    if (!req.user.isAdmin && req.body.balance !== undefined) {
+      return res.status(403).json({ message: "Доступ запрещен" });
+    }
+    
     // Password updates require old password verification
     if (req.body.password && !req.user.isAdmin) {
       if (!req.body.oldPassword) {
@@ -422,6 +427,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { password, ...userWithoutPassword } = updatedUser;
     
     res.json(userWithoutPassword);
+  });
+  
+  // Специальный маршрут для начисления баланса пользователям (только для админов)
+  app.post("/api/users/:id/add-balance", ensureAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { amount } = req.body;
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Некорректный ID пользователя" });
+      }
+      
+      if (typeof amount !== "string" || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+        return res.status(400).json({ message: "Некорректная сумма для начисления" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "Пользователь не найден" });
+      }
+      
+      // Вычисляем новый баланс
+      const currentBalance = user.balance ? parseFloat(user.balance) : 0;
+      const newBalance = (currentBalance + parseFloat(amount)).toString();
+      
+      // Обновляем баланс пользователя
+      const updatedUser = await storage.updateUser(userId, { balance: newBalance });
+      
+      // Убираем пароль из ответа
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.json(userWithoutPassword);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
   
   const httpServer = createServer(app);
