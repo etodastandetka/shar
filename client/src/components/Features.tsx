@@ -1,5 +1,3 @@
-import { Sprout, Truck, HeadphonesIcon, Leaf } from "lucide-react";
-
 function Features() {
   return (
     <section className="py-8 md:py-16 bg-neutral-medium">
@@ -12,7 +10,7 @@ function Features() {
           {/* Feature 1 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary bg-opacity-10 rounded-full mb-4">
-              <Sprout className="h-8 w-8 text-primary" />
+              <span className="text-2xl">🌱</span>
             </div>
             <h3 className="heading font-montserrat font-semibold text-lg mb-2">Здоровые растения</h3>
             <p className="text-gray-600">Тщательный отбор и проверка каждого растения перед отправкой</p>
@@ -21,7 +19,7 @@ function Features() {
           {/* Feature 2 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary bg-opacity-10 rounded-full mb-4">
-              <Truck className="h-8 w-8 text-primary" />
+              <span className="text-2xl">🚚</span>
             </div>
             <h3 className="heading font-montserrat font-semibold text-lg mb-2">Безопасная доставка</h3>
             <p className="text-gray-600">Специальная упаковка с утеплением для сохранности растений</p>
@@ -30,7 +28,7 @@ function Features() {
           {/* Feature 3 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary bg-opacity-10 rounded-full mb-4">
-              <HeadphonesIcon className="h-8 w-8 text-primary" />
+              <span className="text-2xl">📞</span>
             </div>
             <h3 className="heading font-montserrat font-semibold text-lg mb-2">Поддержка</h3>
             <p className="text-gray-600">Консультации по уходу за растениями после покупки</p>
@@ -39,7 +37,7 @@ function Features() {
           {/* Feature 4 */}
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary bg-opacity-10 rounded-full mb-4">
-              <Leaf className="h-8 w-8 text-primary" />
+              <span className="text-2xl">🌿</span>
             </div>
             <h3 className="heading font-montserrat font-semibold text-lg mb-2">Редкие экземпляры</h3>
             <p className="text-gray-600">Уникальные и экзотические растения в нашей коллекции</p>

@@ -20,10 +20,11 @@ import FaqPage from "@/pages/faq-page";
 // Components
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MobileNavbar from "@/components/MobileNavbar";
 
 function Router() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pb-16 md:pb-0">
       <Header />
       <main className="flex-grow">
         <Switch>
@@ -40,6 +41,7 @@ function Router() {
         </Switch>
       </main>
       <Footer />
+      <MobileNavbar />
     </div>
   );
 }
