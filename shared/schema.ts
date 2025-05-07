@@ -36,6 +36,8 @@ export const products = pgTable("products", {
   category: text("category").notNull(),
   isAvailable: boolean("is_available").default(true),
   isPreorder: boolean("is_preorder").default(false),
+  isRare: boolean("is_rare").default(false),
+  isEasyToCare: boolean("is_easy_to_care").default(false),
   labels: text("labels").array(),
   deliveryCost: decimal("delivery_cost", { precision: 10, scale: 2 }).default("0"),
   createdAt: timestamp("created_at").defaultNow(),
