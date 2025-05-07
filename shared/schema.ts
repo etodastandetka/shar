@@ -58,6 +58,8 @@ export const orders = pgTable("orders", {
   fullName: text("full_name").notNull(),
   address: text("address").notNull(),
   phone: text("phone").notNull(),
+  socialNetwork: text("social_network"),
+  socialUsername: text("social_username"),
   deliveryType: text("delivery_type").notNull(),
   deliverySpeed: text("delivery_speed").notNull(),
   paymentMethod: text("payment_method").notNull(),

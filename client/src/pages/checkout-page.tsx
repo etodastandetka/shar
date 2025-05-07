@@ -53,6 +53,10 @@ const checkoutSchema = z.object({
   paymentMethod: z.enum(["yoomoney", "directTransfer", "balance"], {
     required_error: "Выберите способ оплаты"
   }),
+  socialNetwork: z.enum(["telegram", "instagram", "vk"], {
+    required_error: "Выберите социальную сеть"
+  }).optional(),
+  socialUsername: z.string().optional(),
   needStorage: z.boolean().default(false),
   needInsulation: z.boolean().default(false),
   comment: z.string().optional(),
@@ -111,6 +115,8 @@ export default function CheckoutPage() {
       deliveryType: "cdek",
       deliverySpeed: "standard",
       paymentMethod: "yoomoney",
+      socialNetwork: "telegram",
+      socialUsername: "",
       needStorage: false,
       needInsulation: false,
       comment: "",
@@ -275,6 +281,8 @@ export default function CheckoutPage() {
         fullName: data.fullName,
         address: data.address,
         phone: data.phone,
+        socialNetwork: data.socialNetwork,
+        socialUsername: data.socialUsername,
         deliveryType: data.deliveryType,
         deliverySpeed: data.deliverySpeed,
         paymentMethod: data.paymentMethod,
@@ -442,6 +450,48 @@ export default function CheckoutPage() {
                           </FormItem>
                         )}
                       />
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="socialNetwork"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Соцсеть для уведомлений</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="form-input">
+                                    <SelectValue placeholder="Выберите соцсеть" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="telegram">Telegram</SelectItem>
+                                  <SelectItem value="instagram">Instagram</SelectItem>
+                                  <SelectItem value="vk">VK</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="socialUsername"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Имя пользователя</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="@username" 
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
