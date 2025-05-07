@@ -67,10 +67,9 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
       quantity: product?.quantity.toString() || "0",
       isAvailable: product?.isAvailable ?? true,
       isPreorder: product?.isPreorder ?? false,
-      isRare: product?.isRare ?? false,
-      isEasyToCare: product?.isEasyToCare ?? false,
       labels: product?.labels || [],
       images: product?.images || [],
+      deliveryCost: product?.deliveryCost?.toString() || "",
     },
   });
   
