@@ -259,11 +259,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.json(reviews);
     }
     
-    // Only admins can see unapproved reviews
-    if (approved !== undefined && !req.isAuthenticated() && !req.user?.isAdmin) {
-      return res.status(403).json({ message: "Доступ запрещен" });
+    // Если параметр approved задан и пользователь не админ, вернуть только одобренные отзывы
+    if (approved !== undefined && (!req.isAuthenticated() || !req.user?.isAdmin)) {
+      const reviews = await storage.getAllReviews(true); // Всегда возвращать только одобренные
+      return res.json(reviews);
     }
     
+    // Если пользователь админ или параметр approved не задан, вернуть все отзывы
     const reviews = await storage.getAllReviews(approved === "true");
     res.json(reviews);
   });
