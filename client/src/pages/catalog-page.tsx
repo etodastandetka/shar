@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Product } from "@shared/schema";
 import ProductCard from "@/components/ProductCard";
-import CategoryFilter from "@/components/CategoryFilter";
+
 import { Loader2, Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import {
   Sheet,
   SheetContent,
@@ -15,8 +15,6 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 
 export default function CatalogPage() {
   const [location, setLocation] = useLocation();
@@ -27,17 +25,19 @@ export default function CatalogPage() {
   const [maxPriceInput, setMaxPriceInput] = useState("10000");
   const itemsPerPage = 12;
   
-  // Parse URL parameters
-  const searchParams = new URLSearchParams(location.includes("?") ? location.split("?")[1] : "");
-  const category = searchParams.get("category") || "";
-  const available = searchParams.get("available") === "true";
-  const preorder = searchParams.get("preorder") === "true";
-  const rare = searchParams.get("rare") === "true";
-  const easy = searchParams.get("easy") === "true";
-  const discount = searchParams.get("discount") === "true";
-  const initialSearch = searchParams.get("search") || "";
-  const minPrice = searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")!) : undefined;
-  const maxPrice = searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : undefined;
+  // Parse URL parameters - using useMemo to ensure they update when location changes
+  const { searchParams, initialSearch, minPrice, maxPrice } = useMemo(() => {
+    const searchParams = new URLSearchParams(location.includes("?") ? location.split("?")[1] : "");
+    return {
+      searchParams,
+      initialSearch: searchParams.get("search") || "",
+      minPrice: searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")!) : undefined,
+      maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : undefined,
+    };
+  }, [location]);
+  
+  // Debug logging
+  console.log("Current location:", location);
   
   // Set initial search term
   useEffect(() => {
@@ -58,29 +58,33 @@ export default function CatalogPage() {
   const buildQueryString = () => {
     const params = new URLSearchParams();
     
-    if (category) params.append("category", category);
-    if (available) params.append("available", "true");
-    if (preorder) params.append("preorder", "true");
-    
-    // Translate UI filters to API parameters
-    if (rare) params.append("labels", "Редкие");
-    if (easy) params.append("labels", "Простой уход");
-    if (discount) params.append("labels", "Скидка");
-    
     if (searchTerm) params.append("search", searchTerm);
-    if (minPrice !== undefined) params.append("minPrice", minPrice.toString());
-    if (maxPrice !== undefined) params.append("maxPrice", maxPrice.toString());
     
-    return params.toString();
+    // Добавляем фильтрацию по цене
+    if (priceRange[0] > 0) params.append("minPrice", priceRange[0].toString());
+    if (priceRange[1] < 10000) params.append("maxPrice", priceRange[1].toString());
+    
+    const queryString = params.toString();
+    console.log("Built query string:", queryString);
+    
+    return queryString;
   };
   
   // Fetch products with filters
+  const queryString = buildQueryString();
+  console.log("Final query string for API:", queryString);
+  
   const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: [`/api/products?${buildQueryString()}`],
+    queryKey: [`/api/products`, queryString],
     queryFn: async ({ queryKey }) => {
-      const res = await fetch(queryKey[0] as string);
+      const [endpoint, params] = queryKey;
+      const url = params ? `${endpoint}?${params}` : endpoint;
+      console.log("Fetching from URL:", url);
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch products");
-      return res.json();
+      const data = await res.json();
+      console.log("Received products:", data.length);
+      return data;
     }
   });
   
@@ -115,18 +119,25 @@ export default function CatalogPage() {
   };
   
   const applyPriceFilter = () => {
-    updateUrlParams({ minPrice: priceRange[0].toString(), maxPrice: priceRange[1].toString() });
+    // Обновляем URL и запускаем запрос с новыми параметрами цены
+    updateUrlParams({ 
+      minPrice: priceRange[0] > 0 ? priceRange[0].toString() : undefined, 
+      maxPrice: priceRange[1] < 10000 ? priceRange[1].toString() : undefined 
+    });
   };
   
   const updateUrlParams = (newParams: Record<string, string | undefined>) => {
+    console.log("Updating URL params:", newParams);
     const params = new URLSearchParams(location.includes("?") ? location.split("?")[1] : "");
     
     // Update or remove parameters
     Object.entries(newParams).forEach(([key, value]) => {
       if (value === undefined) {
         params.delete(key);
+        console.log(`Removed param: ${key}`);
       } else {
         params.set(key, value);
+        console.log(`Set param: ${key} = ${value}`);
       }
     });
     
@@ -135,12 +146,19 @@ export default function CatalogPage() {
     
     // Construct new URL
     const newUrl = `/catalog${params.toString() ? `?${params.toString()}` : ""}`;
+    console.log("New URL:", newUrl);
+    console.log("Setting location to:", newUrl);
     setLocation(newUrl);
   };
   
-  const handleFilterToggle = (filter: string) => {
-    const currentValue = searchParams.get(filter) === "true";
-    updateUrlParams({ [filter]: currentValue ? undefined : "true" });
+
+
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setPriceRange([0, 10000]);
+    setMinPriceInput("0");
+    setMaxPriceInput("10000");
+    setLocation("/catalog");
   };
   
   return (
@@ -188,51 +206,6 @@ export default function CatalogPage() {
                   <h3 className="font-montserrat font-semibold text-lg mb-4">Фильтры</h3>
                   
                   <div className="space-y-6">
-                    <div>
-                      <h4 className="font-medium mb-2">Категории</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id="mobile-available" 
-                            checked={available}
-                            onCheckedChange={() => handleFilterToggle("available")}
-                          />
-                          <Label htmlFor="mobile-available" className="ml-2">В наличии</Label>
-                        </div>
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id="mobile-preorder" 
-                            checked={preorder}
-                            onCheckedChange={() => handleFilterToggle("preorder")}
-                          />
-                          <Label htmlFor="mobile-preorder" className="ml-2">Предзаказ</Label>
-                        </div>
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id="mobile-rare" 
-                            checked={rare}
-                            onCheckedChange={() => handleFilterToggle("rare")}
-                          />
-                          <Label htmlFor="mobile-rare" className="ml-2">Редкие виды</Label>
-                        </div>
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id="mobile-easy" 
-                            checked={easy}
-                            onCheckedChange={() => handleFilterToggle("easy")}
-                          />
-                          <Label htmlFor="mobile-easy" className="ml-2">Простой уход</Label>
-                        </div>
-                        <div className="flex items-center">
-                          <Checkbox 
-                            id="mobile-discount" 
-                            checked={discount}
-                            onCheckedChange={() => handleFilterToggle("discount")}
-                          />
-                          <Label htmlFor="mobile-discount" className="ml-2">Со скидкой</Label>
-                        </div>
-                      </div>
-                    </div>
                     
                     <div>
                       <h4 className="font-medium mb-2">Цена</h4>
@@ -268,55 +241,42 @@ export default function CatalogPage() {
                         </Button>
                       </SheetClose>
                     </div>
+
+
+                    
+                    {/* Clear filters button for mobile */}
+                    {(searchTerm || priceRange[0] > 0 || priceRange[1] < 10000) && (
+                      <div className="pt-4 border-t">
+                        <SheetClose asChild>
+                          <Button 
+                            variant="outline" 
+                            onClick={clearAllFilters} 
+                            className="w-full"
+                          >
+                            Сбросить все фильтры
+                          </Button>
+                        </SheetClose>
+                      </div>
+                    )}
                   </div>
                 </div>
               </SheetContent>
             </Sheet>
           </div>
           
-          {/* Desktop filters */}
-          <div className="hidden md:flex items-center space-x-2">
-            <Button
-              variant={available ? "default" : "outline"}
-              size="sm"
-              className={available ? "bg-primary text-white" : ""}
-              onClick={() => handleFilterToggle("available")}
-            >
-              В наличии
-            </Button>
-            <Button
-              variant={preorder ? "default" : "outline"}
-              size="sm"
-              className={preorder ? "bg-primary text-white" : ""}
-              onClick={() => handleFilterToggle("preorder")}
-            >
-              Предзаказ
-            </Button>
-            <Button
-              variant={rare ? "default" : "outline"}
-              size="sm"
-              className={rare ? "bg-primary text-white" : ""}
-              onClick={() => handleFilterToggle("rare")}
-            >
-              Редкие виды
-            </Button>
-            <Button
-              variant={easy ? "default" : "outline"}
-              size="sm"
-              className={easy ? "bg-primary text-white" : ""}
-              onClick={() => handleFilterToggle("easy")}
-            >
-              Простой уход
-            </Button>
-            <Button
-              variant={discount ? "default" : "outline"}
-              size="sm"
-              className={discount ? "bg-primary text-white" : ""}
-              onClick={() => handleFilterToggle("discount")}
-            >
-              Со скидкой
-            </Button>
-          </div>
+          {/* Clear search and price filters */}
+          {(searchTerm || priceRange[0] > 0 || priceRange[1] < 10000) && (
+            <div className="hidden md:block mb-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAllFilters}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                Сбросить фильтры
+              </Button>
+            </div>
+          )}
         </div>
         
         {/* Desktop price filter */}
@@ -355,10 +315,24 @@ export default function CatalogPage() {
         </div>
         
         {/* Result count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            {isLoading ? "Загрузка..." : `Найдено ${products.length} растений`}
-          </p>
+        <div className="mb-8">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <p className="text-gray-600 font-medium">
+              {isLoading ? (
+                <span className="flex items-center">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Загрузка...
+                </span>
+              ) : (
+                `Найдено ${products.length} растений`
+              )}
+            </p>
+            {products.length > 0 && totalPages > 1 && (
+              <p className="text-sm text-gray-500">
+                Страница {page} из {totalPages}
+              </p>
+            )}
+          </div>
         </div>
         
         {/* Products */}
@@ -368,74 +342,111 @@ export default function CatalogPage() {
           </div>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {paginatedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-[1400px] mx-auto items-stretch place-items-center">
+              {paginatedProducts.map((product, index) => (
+                <div 
+                  key={product.id} 
+                  className="transform transition-all duration-300 hover:scale-105 hover:shadow-lg w-full max-w-[280px]"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
             
+            {/* Показать информацию о товарах */}
+            {products.length > 0 && (
+              <div className="mt-8 text-center">
+                <p className="text-gray-600">
+                  Показано {paginatedProducts.length} из {products.length} растений
+                  {totalPages > 1 && ` • Страница ${page} из ${totalPages}`}
+                </p>
+              </div>
+            )}
+
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-10 flex justify-center">
+              <div className="mt-8 flex justify-center">
                 <Pagination>
-                  <PaginationContent>
+                  <PaginationContent className="gap-1">
                     <PaginationItem>
                       <PaginationPrevious 
                         onClick={() => setPage(p => Math.max(1, p - 1))}
-                        className={page === 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                        className={`${page === 1 ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer hover:bg-primary/10"} transition-colors`}
                         aria-disabled={page === 1}
                       />
                     </PaginationItem>
                     
-                    {/* Display limited page numbers */}
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      // Logic to show current page plus 2 before and after
-                      let pageNum;
-                      if (totalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (page <= 3) {
-                        pageNum = i + 1;
-                      } else if (page >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i;
-                      } else {
-                        pageNum = page - 2 + i;
+                    {/* Display page numbers with improved logic */}
+                    {(() => {
+                      const pages = [];
+                      const maxVisible = 3; // Уменьшаем количество видимых страниц
+                      
+                      // Простая логика пагинации
+                      let startPage = Math.max(1, page - 1);
+                      let endPage = Math.min(totalPages, page + 1);
+
+                      // Корректируем для показа 3 страниц
+                      if (endPage - startPage + 1 < maxVisible && totalPages >= maxVisible) {
+                        if (startPage === 1) {
+                          endPage = Math.min(totalPages, maxVisible);
+                        } else if (endPage === totalPages) {
+                          startPage = Math.max(1, totalPages - maxVisible + 1);
+                        }
+                      }
+
+                      // Показываем первую страницу если мы далеко от неё
+                      if (startPage > 1) {
+                        pages.push(1);
+                        if (startPage > 2) {
+                          pages.push('...');
+                        }
+                      }
+
+                      // Добавляем видимые страницы
+                      for (let i = startPage; i <= endPage; i++) {
+                        pages.push(i);
+                      }
+
+                      // Показываем последнюю страницу если мы далеко от неё
+                      if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) {
+                          pages.push('...');
+                        }
+                        pages.push(totalPages);
                       }
                       
-                      return (
-                        <PaginationItem key={i}>
-                          <PaginationLink
-                            onClick={() => setPage(pageNum)}
-                            isActive={page === pageNum}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      );
-                    })}
-                    
-                    {/* Show ellipsis if needed */}
-                    {totalPages > 5 && page < totalPages - 2 && (
-                      <PaginationItem>
-                        <span className="px-4">...</span>
-                      </PaginationItem>
-                    )}
-                    
-                    {/* Show last page if not visible */}
-                    {totalPages > 5 && page < totalPages - 2 && (
-                      <PaginationItem>
-                        <PaginationLink
-                          onClick={() => setPage(totalPages)}
-                          isActive={page === totalPages}
-                        >
-                          {totalPages}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )}
+                      return pages.map((pageItem, index) => {
+                        if (pageItem === '...') {
+                          return (
+                            <PaginationItem key={`ellipsis-${index}`}>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          );
+                        }
+                        
+                        return (
+                          <PaginationItem key={pageItem}>
+                            <PaginationLink
+                              onClick={() => setPage(pageItem as number)}
+                              isActive={page === pageItem}
+                              className={`cursor-pointer transition-colors ${
+                                page === pageItem 
+                                  ? "bg-primary text-white hover:bg-primary/90" 
+                                  : "hover:bg-primary/10"
+                              }`}
+                            >
+                              {pageItem}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      });
+                    })()}
                     
                     <PaginationItem>
                       <PaginationNext 
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                        className={page === totalPages ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                        className={`${page === totalPages ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer hover:bg-primary/10"} transition-colors`}
                         aria-disabled={page === totalPages}
                       />
                     </PaginationItem>

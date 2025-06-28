@@ -40,7 +40,21 @@ export const products = pgTable("products", {
   isEasyToCare: boolean("is_easy_to_care").default(false),
   labels: text("labels").array(),
   deliveryCost: decimal("delivery_cost", { precision: 10, scale: 2 }).default("0"),
+  plantSize: text("plant_size").default("medium"),
+  lightLevel: text("light_level").default("moderate"),
+  humidityLevel: text("humidity_level").default("medium"),
+  plantType: text("plant_type").default("decorative"),
+  origin: text("origin").default("tropical"),
+  isPetSafe: boolean("is_pet_safe").default(false),
+  isAirPurifying: boolean("is_air_purifying").default(false),
+  isFlowering: boolean("is_flowering").default(false),
+  // Флажки для товаров
+  isHotDeal: boolean("is_hot_deal").default(false),
+  isBestseller: boolean("is_bestseller").default(false),
+  isNewArrival: boolean("is_new_arrival").default(false),
+  isLimitedEdition: boolean("is_limited_edition").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({
@@ -51,7 +65,7 @@ export const insertProductSchema = createInsertSchema(products).omit({
 // Order schema
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: text("user_id").notNull(),
   items: jsonb("items").notNull(),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   deliveryAmount: decimal("delivery_amount", { precision: 10, scale: 2 }).notNull(),
@@ -69,18 +83,44 @@ export const orders = pgTable("orders", {
   needInsulation: boolean("need_insulation").default(false),
   paymentProofUrl: text("payment_proof_url"),
   adminComment: text("admin_comment"),
+  trackingNumber: text("tracking_number"),
+  estimatedDeliveryDate: timestamp("estimated_delivery_date"),
+  actualDeliveryDate: timestamp("actual_delivery_date"),
+  receiptNumber: text("receipt_number"),
+  receiptUrl: text("receipt_url"),
+  receiptGeneratedAt: timestamp("receipt_generated_at"),
+  lastStatusChangeAt: timestamp("last_status_change_at"),
+  statusHistory: jsonb("status_history").default([]),
+  productQuantitiesReduced: boolean("product_quantities_reduced").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertOrderSchema = createInsertSchema(orders).omit({
-  id: true,
-  paymentStatus: true,
-  orderStatus: true,
-  adminComment: true,
-  createdAt: true,
-  updatedAt: true,
+export const insertOrderSchema = z.object({
+  userId: z.string(),
+  items: z.array(z.object({
+    id: z.number(),
+    quantity: z.number(),
+    price: z.number()
+  })),
+  totalAmount: z.string(),
+  deliveryAmount: z.number(),
+  fullName: z.string(),
+  address: z.string(),
+  phone: z.string(),
+  socialNetwork: z.enum(["telegram", "whatsapp"]).optional(),
+  socialUsername: z.string().optional(),
+  deliveryType: z.enum(["cdek", "russianPost", "pickup"]),
+  deliverySpeed: z.enum(["standard", "express"]),
+  paymentMethod: z.enum(["ozonpay", "directTransfer", "balance"]),
+  needStorage: z.boolean().default(false),
+  needInsulation: z.boolean().default(false),
+  comment: z.string().optional(),
+  promoCode: z.string().nullable().optional(),
 });
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
 // Review schema
 export const reviews = pgTable("reviews", {
@@ -99,6 +139,8 @@ export const insertReviewSchema = createInsertSchema(reviews).omit({
   isApproved: true,
   createdAt: true,
 });
+
+export type Review = typeof reviews.$inferSelect;
 
 // Notification schema
 export const notifications = pgTable("notifications", {
@@ -134,12 +176,6 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = z.infer<typeof insertProductSchema>;
-
-export type Order = typeof orders.$inferSelect;
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
-
-export type Review = typeof reviews.$inferSelect;
-export type InsertReview = z.infer<typeof insertReviewSchema>;
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
 import { User, Order, Review } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -38,7 +38,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   User as UserIcon,
   Package,
-  CreditCard,
   Star,
   Bell,
   Edit,
@@ -47,17 +46,28 @@ import {
   MessageSquare,
   Wallet,
   Calendar,
-  Eye
+  Eye,
+  Trash2
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Profile update schema
 const profileSchema = z.object({
-  fullName: z.string().min(3, "ФИО должно содержать не менее 3 символов"),
+  username: z.string().min(3, "Имя пользователя должно содержать не менее 3 символов"),
   email: z.string().email("Введите корректный email"),
+  fullName: z.string().min(3, "ФИО должно содержать не менее 3 символов"),
   phone: z.string().min(10, "Введите корректный номер телефона"),
   address: z.string().min(5, "Введите полный адрес"),
-  username: z.string().min(3, "Имя пользователя должно содержать не менее 3 символов"),
 });
 
 // Password change schema
@@ -70,22 +80,93 @@ const passwordSchema = z.object({
   path: ["confirmPassword"],
 });
 
+// Delete account schema
+const deleteAccountSchema = z.object({
+  password: z.string().min(1, "Введите пароль для подтверждения"),
+  confirmText: z.string().refine((val) => val === "УДАЛИТЬ", {
+    message: "Введите 'УДАЛИТЬ' для подтверждения",
+  }),
+});
+
+// Используем типы из схем валидации
 type ProfileFormValues = z.infer<typeof profileSchema>;
 type PasswordFormValues = z.infer<typeof passwordSchema>;
+type DeleteAccountFormValues = z.infer<typeof deleteAccountSchema>;
+
+// Тип для данных обновления профиля
+type UpdateProfile = {
+  username?: string;
+  email?: string;
+  fullName?: string;
+  phone?: string;
+  address?: string;
+};
+
+// Обновляем тип для пользователя
+type UpdatedUser = User;
 
 export default function ProfilePage() {
   const [, setLocation] = useLocation();
   const [location] = useLocation();
   const { toast } = useToast();
-  const { user, logoutMutation } = useAuth();
+  const { user, logoutMutation, refreshUserData, setUser } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Profile form
+  const profileForm = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      phone: "",
+      address: "",
+      fullName: "",
+    },
+  });
+
+  // Password form
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      oldPassword: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  // Delete account form  
+  const deleteAccountForm = useForm<DeleteAccountFormValues>({
+    resolver: zodResolver(deleteAccountSchema),
+    defaultValues: {
+      password: "",
+    },
+  });
+
+  // State for delete account dialog
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // Reset form when user data changes
+  useEffect(() => {
+    if (user) {
+      profileForm.reset({
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName,
+        phone: user.phone,
+        address: user.address
+      });
+    }
+  }, [user, profileForm]);
   
   // Get tab from URL if present
   useEffect(() => {
     const searchParams = new URLSearchParams(location.split("?")[1] || "");
     const tab = searchParams.get("tab");
-    if (tab && ["profile", "orders", "reviews", "notifications", "balance", "password"].includes(tab)) {
+    if (tab && ["profile", "orders", "reviews", "balance", "password"].includes(tab)) {
       setActiveTab(tab);
     }
   }, [location]);
@@ -99,8 +180,17 @@ export default function ProfilePage() {
         description: "Пожалуйста, войдите в аккаунт для доступа к профилю",
         variant: "destructive"
       });
+    } else {
+      // При монтировании компонента обновляем значения формы
+      profileForm.reset({
+        username: user?.username || "",
+        email: user?.email || "",
+        phone: user?.phone || "",
+        address: user?.address || "",
+        fullName: user?.fullName || "",
+      });
     }
-  }, [user, setLocation, toast]);
+  }, [user, setLocation, toast, profileForm]);
   
   // Fetch user orders
   const { data: orders = [], isLoading: ordersLoading } = useQuery<Order[]>({
@@ -124,78 +214,140 @@ export default function ProfilePage() {
     enabled: !!user && activeTab === "reviews",
   });
   
-  // Fetch user notifications
-  const { data: notifications = [], isLoading: notificationsLoading } = useQuery<any[]>({
-    queryKey: ["/api/user/notifications"],
-    queryFn: async ({ queryKey }) => {
-      const res = await apiRequest("GET", queryKey[0] as string);
-      if (!res.ok) throw new Error("Не удалось загрузить уведомления");
-      return res.json();
-    },
-    enabled: !!user && activeTab === "notifications",
-  });
-  
-  // Profile form
-  const profileForm = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      fullName: user?.fullName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      address: user?.address || "",
-      username: user?.username || "",
-    },
-  });
-  
-  // Password form
-  const passwordForm = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
-    defaultValues: {
-      oldPassword: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-  
   // Update profile mutation
   const updateProfileMutation = useMutation({
-    mutationFn: async (data: Partial<User>) => {
-      if (!user) throw new Error("Пользователь не авторизован");
-      const res = await apiRequest("PUT", `/api/users/${user.id}`, data);
-      return res.json();
-    },
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["/api/user"], updatedUser);
-      setIsEditing(false);
-      toast({
-        title: "Профиль обновлен",
-        description: "Ваши данные успешно обновлены",
+  mutationFn: async (data: UpdateProfile) => {
+    if (!user || !user.id) {
+      throw new Error("Пользователь не авторизован или ID не определен");
+    }
+
+    console.log("Отправка запроса на обновление профиля:", data);
+    
+    try {
+      const url = `/api/users/${user.id}`;
+      console.log("URL запроса:", url);
+      
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        credentials: 'include'
       });
-    },
-    onError: (error) => {
-      toast({
-        title: "Ошибка",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Ошибка при обновлении профиля");
+      }
+      
+      const result = await response.json();
+      console.log("Ответ сервера на обновление профиля:", result);
+      return result;
+    } catch (error) {
+      console.error("Ошибка при обновлении профиля:", error);
+      throw error;
+    }
+  },
+  onSuccess: (updatedUser) => {
+    console.log("Профиль успешно обновлен:", updatedUser);
+    
+    // 1. Обновляем данные в React Query кеше
+    queryClient.setQueryData(['/api/auth/user'], { user: updatedUser });
+    
+    // 2. Обновляем глобальное состояние пользователя
+    setUser(updatedUser);
+    
+    // 3. Принудительно обновляем данные с сервера
+    refreshUserData();
+    
+    // 4. Закрываем режим редактирования
+    setIsEditing(false);
+    
+    // 5. Показываем уведомление об успехе
+    toast({
+      title: "Профиль обновлен",
+      description: "Ваши данные успешно сохранены",
+      variant: "success",
+    });
+    
+    // 6. Инвалидируем связанные запросы
+    queryClient.invalidateQueries({
+      queryKey: ['user', user?.id],
+      exact: true
+    });
+  },
+  onError: (error: Error) => {
+    console.error("Ошибка при обновлении профиля:", error);
+    toast({
+      title: "Ошибка обновления профиля",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
+});
   
-  // Update password mutation
-  const updatePasswordMutation = useMutation({
-    mutationFn: async (data: { oldPassword: string; password: string }) => {
-      if (!user) throw new Error("Пользователь не авторизован");
-      const res = await apiRequest("PUT", `/api/users/${user.id}`, data);
+  // Change password mutation
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: PasswordFormValues) => {
+      if (!user) throw new Error("User not authenticated");
+      
+      const res = await apiRequest("PUT", `/api/users/${user.id}/password`, {
+        oldPassword: data.oldPassword,
+        newPassword: data.password,
+      });
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to change password");
+      }
+      
       return res.json();
     },
     onSuccess: () => {
-      passwordForm.reset();
       toast({
-        title: "Пароль изменен",
-        description: "Ваш пароль успешно изменен",
+        title: "Успешно",
+        description: "Пароль успешно изменен",
+      });
+      passwordForm.reset();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
       });
     },
-    onError: (error) => {
+  });
+
+  // Delete account mutation
+  const deleteAccountMutation = useMutation({
+    mutationFn: async (data: DeleteAccountFormValues) => {
+      if (!user) throw new Error("User not authenticated");
+      
+      const res = await apiRequest("DELETE", `/api/users/${user.id}/account`, {
+        password: data.password,
+      });
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to delete account");
+      }
+      
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Аккаунт удален",
+        description: "Ваш аккаунт был успешно удален",
+      });
+      setShowDeleteDialog(false);
+      // Redirect to home page after successful deletion
+      setTimeout(() => {
+        setLocation("/");
+      }, 2000);
+    },
+    onError: (error: Error) => {
       toast({
         title: "Ошибка",
         description: error.message,
@@ -204,15 +356,89 @@ export default function ProfilePage() {
     },
   });
   
-  const onProfileSubmit = (data: ProfileFormValues) => {
-    updateProfileMutation.mutate(data);
+  const onProfileSubmit = async (data: ProfileFormValues) => {
+    try {
+      if (!user) {
+        toast({
+          title: "Ошибка",
+          description: "Необходимо авторизоваться",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Подготавливаем данные для отправки
+      const updateData = {
+        username: data.username,
+        email: data.email,
+        fullName: data.fullName,
+        phone: data.phone,
+        address: data.address
+      };
+
+      // Отправляем запрос на обновление
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Ошибка при обновлении профиля');
+      }
+
+      const updatedUser = await response.json();
+      
+      // Обновляем данные пользователя в контексте
+      setUser(updatedUser);
+
+      // Обновляем данные в React Query
+      queryClient.setQueryData(['user'], { user: updatedUser });
+
+      // Обновляем форму
+      profileForm.reset({
+        username: updatedUser.username,
+        email: updatedUser.email,
+        fullName: updatedUser.fullName,
+        phone: updatedUser.phone,
+        address: updatedUser.address
+      });
+
+      setIsEditing(false);
+      toast({
+        title: "Успех",
+        description: "Профиль успешно обновлен",
+        variant: "success"
+      });
+    } catch (error) {
+      console.error("Ошибка при обновлении профиля:", error);
+      toast({
+        title: "Ошибка",
+        description: error instanceof Error ? error.message : "Ошибка при обновлении профиля",
+        variant: "destructive"
+      });
+    }
   };
   
-  const onPasswordSubmit = (data: PasswordFormValues) => {
-    updatePasswordMutation.mutate({
-      oldPassword: data.oldPassword,
-      password: data.password,
-    });
+  const onPasswordSubmit = async (data: PasswordFormValues) => {
+    console.log("Password form submit:", data);
+    try {
+      await changePasswordMutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Password change error:", error);
+    }
+  };
+
+  const onDeleteAccountSubmit = async (data: DeleteAccountFormValues) => {
+    try {
+      await deleteAccountMutation.mutateAsync(data);
+    } catch (error) {
+      console.error("Delete account error:", error);
+    }
   };
   
   // Cancel edit mode
@@ -221,7 +447,7 @@ export default function ProfilePage() {
   };
   
   // Format date
-  const formatDate = (dateStr: Date) => {
+  const formatDate = (dateStr: Date | string | null) => {
     if (!dateStr) return "Дата неизвестна";
     const date = new Date(dateStr);
     return new Intl.DateTimeFormat('ru-RU', {
@@ -240,7 +466,7 @@ export default function ProfilePage() {
   };
   
   // Get order status badge
-  const getOrderStatusBadge = (status: string) => {
+  const getOrderStatusBadge = (status: string | null) => {
     if (!status) return <Badge variant="outline">Статус неизвестен</Badge>;
     
     switch (status) {
@@ -263,97 +489,92 @@ export default function ProfilePage() {
     }
   };
   
+  const handleViewOrder = (order: any) => {
+    setSelectedOrder(order);
+    setShowOrderDetails(true);
+  };
+
+  // Retry payment mutation
+  const retryPaymentMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const response = await apiRequest("POST", `/api/orders/${orderId}/retry-payment`, {});
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Ошибка при создании ссылки на оплату");
+      }
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Ссылка на оплату создана",
+        description: "Переходим к оплате...",
+        variant: "success"
+      });
+      
+      // Redirect to payment
+      setTimeout(() => {
+        window.location.href = data.paymentUrl;
+      }, 1500);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleRetryPayment = (orderId: string) => {
+    retryPaymentMutation.mutate(orderId);
+  };
+
+
+  
+  // Add this function to get formatted status badge
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<string, { label: string, className: string }> = {
+      "pending": { label: "В ожидании", className: "bg-amber-100 text-amber-800" },
+      "pending_payment": { label: "Ожидает оплаты", className: "bg-blue-100 text-blue-800" },
+      "paid": { label: "Оплачен", className: "bg-green-100 text-green-800" },
+      "shipped": { label: "Отправлен", className: "bg-purple-100 text-purple-800" },
+      "delivered": { label: "Доставлен", className: "bg-gray-100 text-gray-800" },
+      "processing": { label: "В обработке", className: "bg-indigo-100 text-indigo-800" },
+      "canceled": { label: "Отменен", className: "bg-red-100 text-red-800" },
+    };
+    
+    const statusInfo = statusMap[status] || { label: status, className: "bg-gray-100 text-gray-800" };
+    
+    return (
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.className}`}>
+        {statusInfo.label}
+      </span>
+    );
+  };
+
+  
   if (!user) {
     return null; // Will redirect in useEffect
   }
-  
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="flex flex-col md:flex-row gap-6">
-        <aside className="w-full md:w-64 space-y-3">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>Мой профиль</CardTitle>
-              <CardDescription>Управление аккаунтом</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="space-y-1">
-                <Button
-                  variant={activeTab === "profile" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("profile")}
-                >
-                  <UserIcon className="mr-2 h-4 w-4" />
-                  Личные данные
-                </Button>
-                <Button
-                  variant={activeTab === "orders" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("orders")}
-                >
-                  <ShoppingBag className="mr-2 h-4 w-4" />
-                  Мои заказы
-                </Button>
-                <Button
-                  variant={activeTab === "reviews" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("reviews")}
-                >
-                  <Star className="mr-2 h-4 w-4" />
-                  Мои отзывы
-                </Button>
-                <Button
-                  variant={activeTab === "notifications" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("notifications")}
-                >
-                  <Bell className="mr-2 h-4 w-4" />
-                  Уведомления
-                </Button>
-                <Button
-                  variant={activeTab === "balance" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("balance")}
-                >
-                  <Wallet className="mr-2 h-4 w-4" />
-                  Баланс
-                </Button>
-                <Button
-                  variant={activeTab === "password" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  onClick={() => setActiveTab("password")}
-                >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Сменить пароль
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* User Info Summary */}
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Avatar className="mx-auto">
-                  <AvatarFallback>{user?.username?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
-                </Avatar>
-                <h3 className="mt-4 font-medium text-lg">{user?.username || "Пользователь"}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {user?.email || "Email не указан"}
-                </p>
-                {user?.balance && (
-                  <div className="mt-2 text-sm inline-flex items-center bg-green-50 text-green-700 rounded-full px-3 py-1">
-                    <Wallet className="h-3 w-3 mr-1" />
-                    Баланс: {formatPrice(user.balance)} ₽
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </aside>
 
-        <div className="flex-1">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+  return (
+    <div className="container mx-auto px-4 py-8 lg:py-12">
+      <h1 className="text-3xl font-bold text-center mb-8">Ваш профиль</h1>
+
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle>Просмотр и редактирование данных вашего профиля</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="flex space-x-4 border-b overflow-x-auto whitespace-nowrap">
+              <TabsTrigger value="profile">Профиль</TabsTrigger>
+              <TabsTrigger value="orders">Заказы</TabsTrigger>
+              <TabsTrigger value="reviews">Отзывы</TabsTrigger>
+              <TabsTrigger value="balance">Баланс</TabsTrigger>
+              <TabsTrigger value="password">Смена пароля</TabsTrigger>
+            </TabsList>
+
             <TabsContent value="profile">
               <Card>
                 <CardHeader>
@@ -481,6 +702,17 @@ export default function ProfilePage() {
                         <Edit className="mr-2 h-4 w-4" />
                         Редактировать
                       </Button>
+                      
+                      {/* Delete Account Button */}
+                      <Button 
+                        type="button" 
+                        variant="destructive" 
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="mt-4"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Удалить аккаунт
+                      </Button>
                     </div>
                   )}
                 </CardContent>
@@ -501,7 +733,7 @@ export default function ProfilePage() {
                       <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
                       <p className="mt-2 text-sm text-muted-foreground">Загрузка заказов...</p>
                     </div>
-                  ) : orders.length > 0 ? (
+                  ) : orders && orders.length > 0 ? (
                     <div className="space-y-6">
                       {orders.map((order) => (
                         <div key={order.id} className="border rounded-lg p-4">
@@ -524,11 +756,32 @@ export default function ProfilePage() {
                               </div>
                             </div>
                           </div>
-                          <div className="flex items-center">
-                            <Button variant="ghost" size="sm">
+                          <div className="flex items-center gap-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleViewOrder(order)}
+                            >
                               <Eye className="h-4 w-4 mr-2" />
                               Детали
                             </Button>
+                            {order.paymentMethod === 'ozonpay' && 
+                             order.paymentStatus === 'pending' && 
+                             order.orderStatus !== 'cancelled' && (
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleRetryPayment(order.id)}
+                                disabled={retryPaymentMutation.isPending}
+                              >
+                                {retryPaymentMutation.isPending ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <CreditCard className="h-4 w-4 mr-2" />
+                                )}
+                                Оплатить
+                              </Button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -623,55 +876,34 @@ export default function ProfilePage() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="notifications">
+            <TabsContent value="balance">
               <Card>
                 <CardHeader>
-                  <CardTitle>Уведомления</CardTitle>
+                  <CardTitle>Баланс</CardTitle>
                   <CardDescription>
-                    Управление уведомлениями о наличии товаров
+                    Информация о состоянии баланса
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {notificationsLoading ? (
-                    <div className="text-center py-4">
-                      <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
-                      <p className="mt-2 text-sm text-muted-foreground">Загрузка уведомлений...</p>
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between p-6 border rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50">
+                      <div>
+                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Текущий баланс</h3>
+                        <p className="text-3xl font-bold text-gray-900">{formatPrice(user?.balance || "0")} ₽</p>
+                      </div>
+                      <div className="flex items-center">
+                        <Wallet className="h-12 w-12 text-blue-600" />
+                      </div>
                     </div>
-                  ) : notifications.length > 0 ? (
-                    <div className="space-y-4">
-                      {notifications.map((notification: any) => (
-                        <div key={notification.id} className="flex items-center justify-between border rounded-lg p-4">
-                          <div>
-                            <h4 className="font-medium">{notification.product?.name || "Товар"}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Уведомление о {notification.type === "availability" ? "поступлении в наличие" : "снижении цены"}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Уведомления будут приходить в Telegram
-                            </p>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                          >
-                            Удалить
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
+                    
                     <div className="text-center py-12">
-                      <Bell className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">Нет активных уведомлений</h3>
-                      <p className="text-muted-foreground mb-4">
-                        Вы можете подписаться на уведомления о поступлении товаров на странице товара. 
-                        Уведомления будут приходить в Telegram.
+                      <Wallet className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                      <h3 className="text-lg font-medium mb-2">История операций пуста</h3>
+                      <p className="text-muted-foreground">
+                        Здесь будут отображаться операции с вашим балансом
                       </p>
-                      <Button asChild>
-                        <Link href="/catalog">Перейти в каталог</Link>
-                      </Button>
                     </div>
-                  )}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -694,7 +926,7 @@ export default function ProfilePage() {
                           <FormItem>
                             <FormLabel>Текущий пароль</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="Введите текущий пароль" {...field} />
+                              <Input type="password" {...field} className="w-full" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -708,7 +940,7 @@ export default function ProfilePage() {
                           <FormItem>
                             <FormLabel>Новый пароль</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="Введите новый пароль" {...field} />
+                              <Input type="password" {...field} className="w-full" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -720,61 +952,281 @@ export default function ProfilePage() {
                         name="confirmPassword"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Подтвердите пароль</FormLabel>
+                            <FormLabel>Подтверждение нового пароля</FormLabel>
                             <FormControl>
-                              <Input type="password" placeholder="Подтвердите новый пароль" {...field} />
+                              <Input type="password" {...field} className="w-full" />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                       
-                      <Button type="submit" disabled={updatePasswordMutation.isPending}>
-                        {updatePasswordMutation.isPending && (
+                      <Button 
+                        type="submit" 
+                        disabled={passwordForm.formState.isSubmitting}
+                        className="w-full sm:w-auto"
+                      >
+                        {passwordForm.formState.isSubmitting && (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
-                        Изменить пароль
+                        Сменить пароль
                       </Button>
                     </form>
                   </Form>
                 </CardContent>
               </Card>
             </TabsContent>
-            
-            <TabsContent value="balance">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Баланс</CardTitle>
-                  <CardDescription>
-                    Информация о состоянии баланса
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <h3 className="text-sm font-medium text-muted-foreground">Текущий баланс</h3>
-                        <p className="text-2xl font-semibold">{formatPrice(user?.balance || "0")} ₽</p>
-                      </div>
-                      <div>
-                        <Wallet className="h-10 w-10 text-primary" />
-                      </div>
-                    </div>
-                    
-                    <div className="text-center py-12">
-                      <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">История операций пуста</h3>
-                      <p className="text-muted-foreground mb-4">
-                        Здесь будут отображаться операции с вашим балансом
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
           </Tabs>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
+      
+      <Dialog open={showOrderDetails} onOpenChange={setShowOrderDetails}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Детали заказа</DialogTitle>
+            <DialogDescription>
+              {selectedOrder ? `Заказ #${selectedOrder.id} от ${formatDate(selectedOrder.createdAt)}` : ""}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedOrder && (
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList className="grid grid-cols-2 mb-4">
+                <TabsTrigger value="details">Основная информация</TabsTrigger>
+                <TabsTrigger value="items">Товары</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="details" className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h3 className="font-medium">Информация о заказе</h3>
+                    <p><span className="text-gray-500">Статус:</span> {getStatusBadge(selectedOrder.orderStatus)}</p>
+                    <div className="mt-4 pt-4 border-t">
+                      <p><span className="text-gray-500">Товары:</span> {formatPrice(selectedOrder.itemsTotal || 0)} ₽</p>
+                      <p><span className="text-gray-500">Доставка:</span> {formatPrice(selectedOrder.deliveryAmount || 0)} ₽</p>
+                      {selectedOrder.promoCodeDiscount && (
+                        <p><span className="text-gray-500">Скидка по промокоду:</span> -{formatPrice(selectedOrder.promoCodeDiscount)} ₽</p>
+                      )}
+                      <p className="font-semibold text-lg mt-2"><span className="text-gray-500">Итого:</span> {formatPrice(selectedOrder.totalAmount || 0)} ₽</p>
+                    </div>
+
+                    {selectedOrder.trackingNumber && (
+                      <p><span className="text-gray-500">Трек-номер:</span> {selectedOrder.trackingNumber}</p>
+                    )}
+                    {selectedOrder.estimatedDeliveryDate && (
+                      <p><span className="text-gray-500">Предполагаемая дата доставки:</span> {formatDate(selectedOrder.estimatedDeliveryDate)}</p>
+                    )}
+                    {selectedOrder.actualDeliveryDate && (
+                      <p><span className="text-gray-500">Фактическая дата доставки:</span> {formatDate(selectedOrder.actualDeliveryDate)}</p>
+                    )}
+                    {selectedOrder.adminComment && (
+                      <div>
+                        <p className="text-gray-500">Комментарий администратора:</p>
+                        <p className="mt-1 p-2 bg-gray-100 rounded-md text-sm">{selectedOrder.adminComment}</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="font-medium">Информация о получателе</h3>
+                    <p><span className="text-gray-500">Имя:</span> {selectedOrder.fullName}</p>
+                    <p><span className="text-gray-500">Телефон:</span> {selectedOrder.phone}</p>
+                    <p><span className="text-gray-500">Адрес:</span> {selectedOrder.address}</p>
+                    {selectedOrder.socialNetwork && selectedOrder.socialUsername && (
+                      <p><span className="text-gray-500">Соц. сеть:</span> {selectedOrder.socialNetwork} ({selectedOrder.socialUsername})</p>
+                    )}
+                    {selectedOrder.comment && (
+                       <div>
+                        <p className="text-gray-500">Комментарий к заказу:</p>
+                        <p className="mt-1 p-2 bg-gray-100 rounded-md text-sm">{selectedOrder.comment}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="items" className="space-y-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Товар</TableHead>
+                      <TableHead>Цена</TableHead>
+                      <TableHead>Количество</TableHead>
+                      <TableHead>Сумма</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(() => {
+                      // Безопасная функция извлечения товаров из заказа
+                      const extractOrderItems = () => {
+                        try {
+                          // Если у нас уже есть массив товаров, используем его
+                          if (Array.isArray(selectedOrder.items) && selectedOrder.items.length > 0) {
+                            return selectedOrder.items;
+                          }
+                          
+                          // Если данные в виде строки JSON, пытаемся распарсить
+                          if (typeof selectedOrder.items === 'string' && selectedOrder.items.trim()) {
+                            try {
+                              const parsedItems = JSON.parse(selectedOrder.items);
+                              
+                              // Проверяем, что результат - массив
+                              if (Array.isArray(parsedItems) && parsedItems.length > 0) {
+                                return parsedItems;
+                              }
+                            } catch (parseError) {
+                              console.error("Ошибка при парсинге товаров заказа:", parseError);
+                              
+                              // Проверяем случай двойного экранирования JSON
+                              if (selectedOrder.items.startsWith('"[') && selectedOrder.items.endsWith(']"')) {
+                                try {
+                                  const unescaped = JSON.parse(selectedOrder.items);
+                                  const nestedItems = JSON.parse(unescaped);
+                                  
+                                  if (Array.isArray(nestedItems) && nestedItems.length > 0) {
+                                    return nestedItems;
+                                  }
+                                } catch (nestedError) {
+                                  console.error("Ошибка при парсинге вложенного JSON:", nestedError);
+                                }
+                              }
+                            }
+                          }
+                          
+                          // Если не удалось получить данные, но у нас есть информация о сумме заказа,
+                          // создаем фиктивный элемент
+                          if (selectedOrder.totalAmount && parseFloat(selectedOrder.totalAmount) > 0) {
+                            return [{
+                              id: 0,
+                              productName: "Не удалось загрузить информацию о товаре",
+                              name: "Не удалось загрузить информацию о товаре",
+                              price: selectedOrder.totalAmount,
+                              quantity: 1
+                            }];
+                          }
+                          
+                          // Если не удалось получить данные, возвращаем пустой массив
+                          return [];
+                        } catch (error) {
+                          console.error("Непредвиденная ошибка при извлечении товаров:", error);
+                          return [];
+                        }
+                      };
+                      
+                      // Получаем товары из заказа
+                      const orderItems = extractOrderItems();
+                      
+                      // Если есть товары, отображаем их
+                      if (orderItems.length > 0) {
+                        return orderItems.map((item: any, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              {item.productName || item.name || 'Не удалось загрузить информацию о товаре'}
+                            </TableCell>
+                            <TableCell>{formatPrice(item.price || 0)} ₽</TableCell>
+                            <TableCell>{item.quantity || 1}</TableCell>
+                            <TableCell>{formatPrice(parseFloat(String(item.price || 0)) * (item.quantity || 1))} ₽</TableCell>
+                          </TableRow>
+                        ));
+                      }
+                      
+                      // Если товаров нет, показываем сообщение об ошибке
+                      return (
+                        <TableRow>
+                          <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                            Нет данных о товарах
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })()}
+                  </TableBody>
+                </Table>
+              </TabsContent>
+            </Tabs>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Закрыть</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Account Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-red-600">
+              <Trash2 className="inline mr-2 h-5 w-5" />
+              Удалить аккаунт
+            </DialogTitle>
+            <DialogDescription>
+              Это действие нельзя отменить. Будут удалены все ваши данные, включая заказы, отзывы и личную информацию.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Form {...deleteAccountForm}>
+            <form onSubmit={deleteAccountForm.handleSubmit(onDeleteAccountSubmit)} className="space-y-4">
+              <FormField
+                control={deleteAccountForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Пароль для подтверждения</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="password" 
+                        placeholder="Введите ваш пароль" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={deleteAccountForm.control}
+                name="confirmText"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Подтверждение</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="Введите 'УДАЛИТЬ' для подтверждения" 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowDeleteDialog(false)}
+                >
+                  Отмена
+                </Button>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  disabled={deleteAccountMutation.isPending}
+                >
+                  {deleteAccountMutation.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Удалить аккаунт навсегда
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

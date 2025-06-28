@@ -4,13 +4,12 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminDashboard from "@/components/admin/AdminDashboard";
-
-// Временно используем заглушки для недостающих компонентов
-const ProductsList = () => <div className="p-6">Управление товарами</div>;
-const OrdersList = () => <div className="p-6">Управление заказами</div>;
-const UsersList = () => <div className="p-6">Управление пользователями</div>;
-const ReviewsList = () => <div className="p-6">Управление отзывами</div>;
-const SettingsPage = () => <div className="p-6">Настройки</div>;
+import ProductsList from "@/components/admin/ProductsList";
+import OrdersList from "@/components/admin/OrdersList";
+import UsersList from "@/components/admin/UsersList";
+import ReviewsList from "@/components/admin/ReviewsList";
+import SettingsPage from "@/components/admin/SettingsPage";
+import { PromoCodeManager } from "@/components/admin/PromoCodeManager";
 
 export default function AdminPage() {
   const [, setLocation] = useLocation();
@@ -23,7 +22,7 @@ export default function AdminPage() {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.split("?")[1] || "");
     const tab = searchParams.get("tab");
-    if (tab && ["dashboard", "products", "orders", "users", "reviews", "settings"].includes(tab)) {
+    if (tab && ["dashboard", "products", "orders", "promocodes", "users", "reviews", "settings"].includes(tab)) {
       setActiveTab(tab);
     }
   }, [location]);
@@ -62,6 +61,7 @@ export default function AdminPage() {
       {activeTab === "dashboard" && <AdminDashboard />}
       {activeTab === "products" && <ProductsList />}
       {activeTab === "orders" && <OrdersList />}
+      {activeTab === "promocodes" && <PromoCodeManager />}
       {activeTab === "users" && <UsersList />}
       {activeTab === "reviews" && <ReviewsList />}
       {activeTab === "settings" && <SettingsPage />}

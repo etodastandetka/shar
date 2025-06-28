@@ -33,6 +33,18 @@ export default function SettingsPage() {
       return res.json();
     }
   });
+
+  // Загрузка настроек Telegram
+  const { data: telegramSettings, isLoading: isLoadingTelegramSettings } = useQuery({
+    queryKey: ["/api/telegram-settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/telegram-settings", {
+        credentials: "include"
+      });
+      if (!res.ok) throw new Error("Ошибка загрузки настроек Telegram");
+      return res.json();
+    }
+  });
   
   // Заполняем форму данными при их получении
   useEffect(() => {
@@ -40,6 +52,14 @@ export default function SettingsPage() {
       setBankDetails(paymentDetails.bankDetails || "");
     }
   }, [paymentDetails]);
+
+  useEffect(() => {
+    if (telegramSettings) {
+      setBotToken(telegramSettings.botToken || "");
+      setChatId(telegramSettings.chatId || "");
+      setEnableNotifications(telegramSettings.enableNotifications || false);
+    }
+  }, [telegramSettings]);
   
   // Мутация для обновления платежных реквизитов
   const updatePaymentDetailsMutation = useMutation({
@@ -113,13 +133,82 @@ export default function SettingsPage() {
     }
   };
   
+  // Мутация для обновления настроек Telegram
+  const updateTelegramSettingsMutation = useMutation({
+    mutationFn: async (data: { botToken: string; chatId: string; enableNotifications: boolean }) => {
+      await apiRequest("PUT", "/api/telegram-settings", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/telegram-settings"] });
+      toast({
+        title: "Настройки сохранены",
+        description: "Настройки Telegram-бота успешно обновлены"
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка сохранения",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Мутация для тестирования Telegram-бота
+  const testTelegramMutation = useMutation({
+    mutationFn: async (data: { botToken: string; chatId: string }) => {
+      const res = await fetch("/api/telegram-test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Ошибка тестирования бота");
+      }
+      
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Тест успешен",
+        description: data.message
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка тестирования",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+
   // Обработчик сохранения настроек Telegram-бота
   const handleSaveTelegramSettings = () => {
-    // В реальном приложении здесь была бы логика сохранения настроек бота
-    toast({
-      title: "Настройки сохранены",
-      description: "Настройки Telegram-бота успешно обновлены"
+    updateTelegramSettingsMutation.mutate({
+      botToken,
+      chatId,
+      enableNotifications
     });
+  };
+
+  // Обработчик тестирования Telegram-бота
+  const handleTestTelegram = () => {
+    if (!botToken || !chatId) {
+      toast({
+        title: "Ошибка",
+        description: "Необходимо указать токен бота и ID чата",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    testTelegramMutation.mutate({ botToken, chatId });
   };
   
   // Обработчик сохранения настроек интерфейса
@@ -300,9 +389,21 @@ export default function SettingsPage() {
                   <Label htmlFor="notifications">Включить уведомления</Label>
                 </div>
                 
-                <Button onClick={handleSaveTelegramSettings}>
-                  Сохранить настройки
-                </Button>
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleTestTelegram}
+                    disabled={testTelegramMutation.isPending || !botToken || !chatId}
+                  >
+                    {testTelegramMutation.isPending ? "Тестирование..." : "Тест соединения"}
+                  </Button>
+                  <Button 
+                    onClick={handleSaveTelegramSettings}
+                    disabled={updateTelegramSettingsMutation.isPending}
+                  >
+                    {updateTelegramSettingsMutation.isPending ? "Сохранение..." : "Сохранить настройки"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

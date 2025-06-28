@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { ShoppingCart, AlertTriangle, ChevronRight, X } from "lucide-react";
 import CartItem from "@/components/CartItem";
+import PromoCodeInput from "@/components/cart/PromoCodeInput";
 import { Product } from "@shared/schema";
 import { 
   Sheet,
@@ -34,6 +35,7 @@ export default function CartPage() {
   const { user } = useAuth();
   const [waitlistItems, setWaitlistItems] = useState<CartItem[]>([]);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const [promoCodeDiscount, setPromoCodeDiscount] = useState(0);
   
   // Get cart items from localStorage
   const { data: cartItems = [], refetch: refetchCart } = useQuery<CartItem[]>({
@@ -54,17 +56,37 @@ export default function CartPage() {
     }
   });
   
-  // Get delivery cost (maximum from all items)
+  // Новая функция расчёта доставки для корзины (по умолчанию Почта России)
   const calculateDeliveryCost = () => {
-    if (cartItems.length === 0) return 0;
-    
-    const deliveryCosts = cartItems.map(item => {
+    if (cartItems.length === 0 || products.length === 0) return 0;
+    // Собираем массив deliveryCost для каждого товара (по количеству)
+    let deliveryCosts: number[] = [];
+    cartItems.forEach(item => {
       const product = products.find(p => p.id === item.id);
-      if (!product) return 0;
-      return parseFloat(product.deliveryCost.toString());
+      const cost = product && product.deliveryCost != null ? parseFloat(product.deliveryCost.toString()) : 0;
+      for (let i = 0; i < item.quantity; i++) {
+        deliveryCosts.push(cost);
+      }
     });
-    
-    return Math.max(...deliveryCosts);
+    if (deliveryCosts.length === 0) return 0;
+    // Сортируем по убыванию
+    deliveryCosts.sort((a, b) => b - a);
+    // До 3 товаров — только максимальная стоимость
+    if (deliveryCosts.length <= 3) {
+      return deliveryCosts[0];
+    }
+    // 4 и более: макс + 200р за каждую единицу сверх 3
+    const base = deliveryCosts[0];
+    const extra = (deliveryCosts.length - 3) * 200;
+    return base + extra;
+  };
+  
+  // Пояснение для доставки
+  const deliveryNote = () => {
+    if (cartItems.length > 3) {
+      return "Сумма доставки: максимальная стоимость среди всех растений + 200₽ за каждую единицу товара начиная с 4-й.";
+    }
+    return "Сумма доставки равна максимальной стоимости доставки среди всех растений в заказе.";
   };
   
   // Calculate subtotal (items cost)
@@ -75,9 +97,16 @@ export default function CartPage() {
     }, 0);
   };
   
-  // Calculate total (subtotal + delivery)
+  // Calculate total (subtotal + delivery - promo code discount)
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateDeliveryCost();
+    const subtotal = calculateSubtotal();
+    const deliveryCost = calculateDeliveryCost();
+    
+    // Apply discount only to subtotal
+    const discountedSubtotal = subtotal - promoCodeDiscount;
+    const finalSubtotal = Math.max(0, discountedSubtotal); // Ensure subtotal doesn't go below zero
+
+    return finalSubtotal + deliveryCost;
   };
   
   // Format price
@@ -184,6 +213,15 @@ export default function CartPage() {
   // Check if we have unavailable items
   const hasUnavailable = waitlistItems.length > 0;
   
+  // Function to apply promo code (assuming it exists in this file or a related component)
+  const applyPromoCode = async (code: string) => {
+    // Assuming a mutation or API call to apply promo code
+    // After successful application:
+    queryClient.invalidateQueries({ queryKey: ["/api/user/orders"] });
+    // You might also need to refetch cart data if the discount is applied to the cart before checkout
+    refetchCart(); 
+  };
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="heading font-montserrat font-bold text-2xl md:text-3xl mb-6">Корзина</h1>
@@ -209,7 +247,7 @@ export default function CartPage() {
               <div className="divide-y">
                 {cartItems.map((item) => {
                   const product = products.find(p => p.id === item.id);
-                  const isAvailable = product?.isAvailable;
+                  const isAvailable = product?.isAvailable ?? false;
                   const availableQuantity = product?.quantity || 0;
                   const isLimited = isAvailable && availableQuantity < item.quantity;
                   
@@ -264,11 +302,28 @@ export default function CartPage() {
                   <span className="text-gray-600">Доставка:</span>
                   <span>{formatPrice(calculateDeliveryCost())} ₽</span>
                 </div>
+                {/* Пояснение по доставке */}
+                {deliveryNote() && (
+                  <div className="text-xs text-gray-500 mt-1 mb-2">{deliveryNote()}</div>
+                )}
+                {promoCodeDiscount > 0 && (
+                  <div className="flex justify-between text-success-foreground font-medium mt-2">
+                    <span>Скидка по промокоду:</span>
+                    <span>-{formatPrice(promoCodeDiscount)} ₽</span>
+                  </div>
+                )}
                 <Separator className="my-2" />
                 <div className="flex justify-between font-semibold text-lg">
                   <span>Итого:</span>
                   <span className="text-primary">{formatPrice(calculateTotal())} ₽</span>
                 </div>
+              </div>
+              
+              <div className="mb-6">
+                <PromoCodeInput
+                  itemsTotal={calculateSubtotal()}
+                  onPromoCodeApplied={setPromoCodeDiscount}
+                />
               </div>
               
               <Button 

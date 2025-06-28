@@ -32,7 +32,7 @@ export default function FaqPage() {
         <>
           <p>У нас доступны два способа оплаты:</p>
           <ul className="list-disc pl-5 my-3">
-            <li>Через YooMoney (онлайн-оплата картой)</li>
+            <li>Через Ozon Pay (онлайн-оплата картой)</li>
             <li>Прямым переводом по реквизитам (с подтверждением платежа)</li>
           </ul>
           <p>После оформления заказа вы сможете выбрать подходящий способ оплаты.</p>
@@ -73,12 +73,13 @@ export default function FaqPage() {
       question: "Какие способы доставки вы предлагаете?",
       answer: (
         <>
-          <p className="mb-3">Мы осуществляем доставку растений двумя способами:</p>
+          <p className="mb-3">Мы осуществляем доставку растений тремя способами:</p>
           <ul className="list-disc pl-5 mb-3">
             <li><strong>CDEK</strong> - надежная курьерская доставка с возможностью отслеживания</li>
             <li><strong>Почта России</strong> - доставка в любую точку страны</li>
+            <li><strong>Самовывоз</strong> - получение заказа по адресу г. Кореновск, ул. Железнодорожная, д. 5</li>
           </ul>
-          <p>Для обоих способов доставки вы можете выбрать стандартную или экспресс-доставку (с наценкой 20%).</p>
+          <p>Для CDEK и Почты России вы можете выбрать стандартную или экспресс-доставку (с наценкой 20%).</p>
         </>
       ),
     },
@@ -86,14 +87,13 @@ export default function FaqPage() {
       question: "Сколько стоит доставка?",
       answer: (
         <>
-          <p className="mb-3">Стоимость доставки зависит от:</p>
+          <p className="mb-3">Стоимость доставки зависит от выбранного способа:</p>
           <ul className="list-disc pl-5 mb-3">
-            <li>Выбранного способа доставки (CDEK или Почта России)</li>
-            <li>Скорости доставки (стандартная или экспресс)</li>
-            <li>Региона доставки</li>
-            <li>Размера и веса растений</li>
+            <li><strong>CDEK</strong> - доставка оплачивается получателем при получении в пункте выдачи</li>
+            <li><strong>Самовывоз</strong> - бесплатно (только для оплаченных заказов)</li>
+            <li><strong>Почта России</strong> - рассчитывается исходя из размера и веса растений</li>
           </ul>
-          <p className="mb-3">Базовая стоимость доставки начинается от 300 рублей.</p>
+          <p className="mb-3">Для Почты России: базовая стоимость доставки начинается от 300 рублей.</p>
           <p>При оформлении заказа с несколькими растениями мы берем максимальную стоимость доставки из всех растений в заказе, а не сумму за каждое.</p>
         </>
       ),
@@ -117,6 +117,7 @@ export default function FaqPage() {
         <>
           <p className="mb-3">Время доставки зависит от выбранного способа и региона:</p>
           <ul className="list-disc pl-5 mb-3">
+            <li><strong>Самовывоз</strong>: сразу после оплаты заказа</li>
             <li><strong>CDEK стандарт</strong>: 3-7 рабочих дней</li>
             <li><strong>CDEK экспресс</strong>: 1-3 рабочих дня</li>
             <li><strong>Почта России стандарт</strong>: 5-14 рабочих дней</li>
@@ -135,7 +136,7 @@ export default function FaqPage() {
         <>
           <p className="mb-3">Мы предлагаем несколько способов оплаты:</p>
           <ul className="list-disc pl-5 mb-3">
-            <li><strong>YooMoney</strong> - быстрая и безопасная онлайн-оплата с использованием банковских карт</li>
+                            <li><strong>Ozon Pay</strong> - быстрая и безопасная онлайн-оплата с использованием банковских карт. Заказ создается после успешной оплаты</li>
             <li><strong>Прямой перевод</strong> - оплата по реквизитам с подтверждением платежа</li>
             <li><strong>Баланс аккаунта</strong> - использование средств с баланса вашего аккаунта</li>
           </ul>
@@ -338,8 +339,7 @@ export default function FaqPage() {
       <p className="text-muted-foreground mb-8">Ответы на наиболее популярные вопросы о нашем магазине, товарах и услугах</p>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <div className="flex overflow-auto pb-2 scrollbar-hide">
-          <TabsList>
+          <TabsList className="flex space-x-4 mb-8 overflow-x-auto whitespace-nowrap">
             <TabsTrigger value="general" className="flex items-center">
               <Share className="h-4 w-4 mr-2" />
               Общие вопросы
@@ -361,7 +361,6 @@ export default function FaqPage() {
               Другое
             </TabsTrigger>
           </TabsList>
-        </div>
 
         <TabsContent value="general" className="space-y-4">
           <Accordion type="single" collapsible className="space-y-4">
@@ -459,22 +458,15 @@ export default function FaqPage() {
         </TabsContent>
       </Tabs>
 
-      <div className="mt-12 bg-primary bg-opacity-5 p-6 rounded-lg text-center">
-        <h2 className="heading font-montserrat font-semibold text-xl mb-3">Не нашли ответ на свой вопрос?</h2>
-        <p className="mb-4">Свяжитесь с нами любым удобным способом, и мы с радостью поможем</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button asChild variant="default" className="bg-primary text-white">
-            <a href="https://t.me/helen_heinlein" target="_blank" rel="noreferrer">
-              <MessageCircle className="mr-2 h-4 w-4" />
-              Написать в Telegram
-            </a>
-          </Button>
-          <Button asChild variant="outline">
-            <a href="mailto:info@jungleplants.ru">
-              Написать на Email
-            </a>
-          </Button>
-        </div>
+      <div className="mt-12 bg-white shadow-lg p-8 rounded-2xl text-center flex flex-col items-center max-w-xl mx-auto border border-primary/20">
+        <h2 className="heading font-montserrat font-semibold text-2xl mb-3 text-primary">Не нашли ответ на свой вопрос?</h2>
+        <p className="mb-6 text-gray-700 text-base md:text-lg">Свяжитесь с нами в Telegram — мы с радостью поможем!</p>
+        <Button asChild size="lg" className="bg-[#229ED9] hover:bg-[#1b8bb8] text-white font-bold text-lg px-8 py-4 rounded-xl shadow-md transition-all duration-200">
+          <a href="https://t.me/helen_heinlein" target="_blank" rel="noreferrer">
+            <MessageCircle className="mr-3 h-6 w-6" />
+            Написать в Telegram
+          </a>
+        </Button>
       </div>
 
       <div className="mt-12 text-center">

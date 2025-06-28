@@ -1,0 +1,12 @@
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+ReferenceError: app is not defined
+    at Object.<anonymous> (/var/www/russkii-portal/dist/index.cjs:6104:1)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at cjsLoader (node:internal/modules/esm/translators:298:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)

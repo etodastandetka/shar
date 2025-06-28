@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
-import { Product, Review, InsertReview } from "@shared/schema";
+import { Product, Review } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -48,7 +48,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Loader2, ShoppingCart, Bell, Star, AlertTriangle, ChevronLeft } from "lucide-react";
+import { Loader2, ShoppingCart, Bell, Star, AlertTriangle, ChevronLeft, Truck, Clock, CreditCard, QrCode } from "lucide-react";
 
 // Review form schema
 const reviewSchema = z.object({
@@ -57,6 +57,7 @@ const reviewSchema = z.object({
 });
 
 type ReviewFormValues = z.infer<typeof reviewSchema>;
+type InsertReview = ReviewFormValues & { userId: number; productId: number; images: string[] };
 
 export default function ProductPage() {
   const params = useParams<{ id: string }>();
@@ -69,7 +70,7 @@ export default function ProductPage() {
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   
   // Fetch product details
-  const { data: product, isLoading: isLoadingProduct } = useQuery<Product>({
+  const { data: product, isLoading: isLoadingProduct, error: productError } = useQuery<Product, Error>({
     queryKey: [`/api/products/${productId}`],
     queryFn: async ({ queryKey }) => {
       const res = await fetch(queryKey[0] as string);
@@ -77,30 +78,49 @@ export default function ProductPage() {
         if (res.status === 404) {
           throw new Error("Товар не найден");
         }
-        throw new Error("Ошибка при загрузке товара");
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Ошибка при загрузке товара");
       }
       return res.json();
     },
-    onError: (error) => {
-      toast({
-        title: "Ошибка",
-        description: error.message,
-        variant: "destructive",
-      });
-      setLocation("/catalog");
-    }
   });
   
   // Fetch product reviews
-  const { data: reviews = [] } = useQuery<Review[]>({
+  const { data: reviews = [], isLoading: isLoadingReviews, error: reviewsError } = useQuery<Review[], Error>({
     queryKey: [`/api/reviews?productId=${productId}`],
     queryFn: async ({ queryKey }) => {
       const res = await fetch(queryKey[0] as string);
-      if (!res.ok) throw new Error("Failed to fetch reviews");
+      if (!res.ok) {
+         const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to fetch reviews");
+      }
       return res.json();
     },
     enabled: !!productId,
   });
+  
+  // React to product loading/error state
+  useEffect(() => {
+    if (productError) {
+      toast({
+        title: "Ошибка при загрузке товара",
+        description: productError.message,
+        variant: "destructive",
+      });
+      setLocation("/catalog");
+    }
+  }, [productError, setLocation, toast]);
+  
+  // React to reviews loading/error state (optional, depending on desired UX)
+  // useEffect(() => {
+  //   if (reviewsError) {
+  //     toast({
+  //       title: "Ошибка при загрузке отзывов",
+  //       description: reviewsError.message,
+  //       variant: "destructive",
+  //     });
+  //   }
+  // }, [reviewsError, toast]);
   
   // Add to cart
   const addToCart = () => {
@@ -108,7 +128,7 @@ export default function ProductPage() {
     
     // Get current cart from localStorage
     const cartJson = localStorage.getItem("cart") || "[]";
-    let cart = JSON.parse(cartJson);
+    let cart: any[] = JSON.parse(cartJson);
     
     // Check if product is already in cart
     const existingItemIndex = cart.findIndex((item: any) => item.id === product.id);
@@ -164,10 +184,10 @@ export default function ProductPage() {
         title: "Подписка оформлена",
         description: `Вы получите уведомление, когда ${product.name} появится в наличии`,
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Ошибка",
-        description: "Не удалось подписаться на уведомления",
+        description: error.message || "Не удалось подписаться на уведомления",
         variant: "destructive"
       });
     } finally {
@@ -185,9 +205,13 @@ export default function ProductPage() {
   });
   
   // Submit review mutation
-  const reviewMutation = useMutation({
-    mutationFn: async (data: InsertReview) => {
+  const reviewMutation = useMutation<Review, Error, InsertReview>({
+    mutationFn: async (data) => {
       const res = await apiRequest("POST", "/api/reviews", data);
+       if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Ошибка при отправке отзыва");
+      }
       return res.json();
     },
     onSuccess: () => {
@@ -229,7 +253,7 @@ export default function ProductPage() {
   };
   
   // Calculate discount percentage
-  const calculateDiscount = (price: string | number, originalPrice: string | number | undefined) => {
+  const calculateDiscount = (price: string | number, originalPrice: string | number | null | undefined) => {
     if (!originalPrice) return 0;
     
     const currentPrice = typeof price === 'string' ? parseFloat(price) : price;
@@ -242,6 +266,20 @@ export default function ProductPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
+  if (productError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <AlertTriangle className="h-16 w-16 text-error mb-4" />
+        <h1 className="text-2xl font-bold mb-2">Ошибка загрузки товара</h1>
+        <p className="text-gray-600 mb-6">{productError.message}</p>
+        <Button onClick={() => setLocation("/catalog")}>
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Вернуться в каталог
+        </Button>
       </div>
     );
   }
@@ -276,354 +314,372 @@ export default function ProductPage() {
   const discountPercentage = calculateDiscount(price, originalPrice);
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:text-primary"
-          onClick={() => setLocation("/catalog")}
-        >
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Назад в каталог
-        </Button>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 w-full max-w-screen-lg">
+      <Button variant="ghost" onClick={() => setLocation("/catalog")} className="mb-4 sm:mb-6 flex items-center">
+        <ChevronLeft className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+        Назад к каталогу
+      </Button>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         {/* Product Images */}
-        <div>
-          <Carousel className="w-full max-w-md mx-auto">
-            <CarouselContent>
-              {images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div className="p-1">
-                    <div className="aspect-square relative bg-white rounded-md overflow-hidden">
-                      <img
-                        src={image}
-                        alt={`${name} фото ${index + 1}`}
-                        className="object-cover w-full h-full"
-                      />
+        <div className="md:col-span-1 w-full max-w-md mx-auto relative">
+          {images && images.length > 0 ? (
+            <Carousel className="w-full">
+              <CarouselContent>
+                {images.map((image: string, index: number) => (
+                  <CarouselItem key={index}>
+                    <Card>
+                      <CardContent className="flex aspect-square items-center justify-center p-0">
+                        <img
+                          src={image}
+                          alt={`${name} ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {/* Position arrows absolutely */}
+              <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10" />
+              <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10" />
+            </Carousel>
+          ) : (
+            <div className="flex aspect-square items-center justify-center p-6 bg-gray-200 rounded-lg">
+              <AlertTriangle className="h-12 w-12 text-gray-500" />
+              <span className="ml-2 text-gray-600">Нет изображений</span>
+            </div>
+          )}
+        </div>
+
+        {/* Product Details */}
+        <div className="md:col-span-1 space-y-4 sm:space-y-6 w-full max-w-md mx-auto md:max-w-full md:mx-0">
+          <div>
+            <h1 className="heading font-montserrat font-bold text-2xl md:text-3xl">{name}</h1>
+            {labels && Array.isArray(labels) && labels.length > 0 && (
+              <div className="mt-2 sm:mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+                {labels.includes("Скидка") && originalPrice && (
+                  <span className="bg-secondary px-2 py-0.5 rounded-full text-white text-xs font-medium">
+                    Скидка {calculateDiscount(price, originalPrice)}%
+                  </span>
+                )}
+                {labels.includes("Без выбора") && (
+                  <span className="bg-gray-500 px-2 py-0.5 rounded-full text-white text-xs font-medium">
+                    Без выбора
+                  </span>
+                )}
+                {labels.includes("Растение с фото") && (
+                  <span className="bg-accent px-2 py-0.5 rounded-full text-white text-xs font-medium">
+                    Растение с фото
+                  </span>
+                )}
+                {labels.includes("Нет в наличии") && (
+                  <span className="bg-error px-2 py-0.5 rounded-full text-white text-xs font-medium">
+                    Нет в наличии
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-3 sm:space-x-4 flex-wrap">
+            <span className="text-primary font-bold text-2xl sm:text-3xl">{formatPrice(price)} ₽</span>
+            {originalPrice && parseFloat(originalPrice.toString()) > parseFloat(price.toString()) && (
+              <span className="text-gray-500 line-through text-base sm:text-xl">{formatPrice(originalPrice)} ₽</span>
+            )}
+          </div>
+
+          {isAvailable ? (
+            <Button
+              className="w-full md:w-auto bg-secondary hover:bg-yellow-500 text-white text-base sm:text-lg py-4 sm:py-6"
+              onClick={addToCart}
+            >
+              <ShoppingCart className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+              Добавить в корзину
+            </Button>
+          ) : (
+            <Button
+              className="w-full md:w-auto bg-primary hover:bg-green-700 text-white text-base sm:text-lg py-4 sm:py-6"
+              onClick={subscribeToNotifications}
+              disabled={notifying}
+            >
+              {notifying ? "Подписка..." : (
+                <>
+                  <Bell className="mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+                  Уведомить о наличии
+                </>
+              )}
+            </Button>
+          )}
+
+          {/* Tabs for Description, Care, Delivery, Payment, and Reviews */}
+          <Tabs defaultValue="description" className="mt-6 sm:mt-8 w-full overflow-x-hidden">
+            {/* Ensure this div handles horizontal scrolling */}
+            <div className="flex overflow-x-auto pb-2 scrollbar-hide w-full px-0 sm:px-0">
+              <TabsList className="flex space-x-2 sm:space-x-3 mb-4 md:mb-6 lg:mb-8 flex-nowrap min-w-0 justify-start">
+                <TabsTrigger value="description" className="flex-shrink-0 text-sm sm:text-base">Описание</TabsTrigger>
+                <TabsTrigger value="care" className="flex-shrink-0 text-sm sm:text-base">Уход</TabsTrigger>
+                <TabsTrigger value="delivery" className="flex-shrink-0 text-sm sm:text-base">Доставка</TabsTrigger>
+                <TabsTrigger value="payment" className="flex-shrink-0 text-sm sm:text-base">Оплата</TabsTrigger>
+                <TabsTrigger value="reviews" className="flex-shrink-0 text-sm sm:text-base">Отзывы ({reviews.length})</TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="description">
+              <div className="prose max-w-none">
+                <h3 className="heading font-montserrat font-semibold text-xl mb-4">Описание</h3>
+                <p>{description}</p>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="care">
+              <div className="prose max-w-none">
+                <h3 className="heading font-montserrat font-semibold text-xl mb-4">Уход за растением</h3>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2">Освещение:</h4>
+                  <p>
+                    Большинство комнатных растений предпочитают яркий рассеянный свет. Разместите растение возле окна, защищая от прямых солнечных лучей, которые могут вызвать ожоги листьев.
+                  </p>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2">Полив:</h4>
+                  <p>
+                    Частота полива зависит от вида растения, сезона и условий содержания. Общее правило - поливать, когда верхний слой почвы подсох на 2-3 см. Избегайте застоя воды в поддоне.
+                  </p>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2">Влажность:</h4>
+                  <p>
+                    Тропические растения предпочитают повышенную влажность воздуха. Регулярно опрыскивайте листья или используйте увлажнитель воздуха.
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-2">Пересадка и удобрение:</h4>
+                  <p>
+                    Пересаживайте растения весной каждые 1-2 года. Используйте подходящий грунт и горшок с дренажными отверстиями. Подкармливайте растения в период активного роста (весна-лето) специальными удобрениями.
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Подробные инструкции по уходу за конкретным растением будут приложены к вашему заказу.
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="delivery">
+              <div className="space-y-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-lg mb-3">Информация о доставке</h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <p className="font-medium">Стоимость доставки:</p>
+                      <p>350 ₽ (стандартная)</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        * При заказе от 5000 ₽ доставка бесплатная
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-medium">Способы доставки:</p>
+                      <ul className="mt-2 space-y-2 text-sm">
+                        <li className="flex items-start">
+                          <Truck className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>CDEK – доставка в большинство городов России</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Truck className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Почта России – доставка в отдаленные регионы</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Truck className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Самовывоз – г. Кореновск, ул. Железнодорожная, д. 5</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="font-medium">Сроки доставки:</p>
+                      <ul className="mt-2 space-y-2 text-sm">
+                        <li className="flex items-start">
+                          <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Самовывоз: сразу после оплаты</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Москва и Санкт-Петербург: 1-3 дня</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Другие города: 3-7 дней</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Отдаленные регионы: 7-14 дней</span>
+                        </li>
+                      </ul>
                     </div>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-        </div>
-        
-        {/* Product Info */}
-        <div>
-          <h1 className="heading font-montserrat font-bold text-2xl md:text-3xl mb-2">{name}</h1>
-          
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="inline-block bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full">
-              {category}
-            </span>
-            
-            {labels.includes("Скидка") && (
-              <span className="inline-block bg-secondary text-white text-xs px-3 py-1 rounded-full">
-                Скидка {discountPercentage}%
-              </span>
-            )}
-            
-            {labels.includes("Растение с фото") && (
-              <span className="inline-block bg-accent text-white text-xs px-3 py-1 rounded-full">
-                Растение с фото
-              </span>
-            )}
-            
-            {labels.includes("Без выбора") && (
-              <span className="inline-block bg-gray-500 text-white text-xs px-3 py-1 rounded-full">
-                Без выбора
-              </span>
-            )}
-          </div>
-          
-          <div className="mb-6">
-            <div className="flex items-baseline mb-2">
-              <span className="text-2xl font-bold text-primary mr-2">
-                {formatPrice(price)} ₽
-              </span>
-              
-              {originalPrice && (
-                <span className="text-gray-400 line-through">
-                  {formatPrice(originalPrice)} ₽
-                </span>
-              )}
-            </div>
-            
-            <p className={`text-sm ${isAvailable ? 'text-success' : 'text-error'} mb-1`}>
-              {isAvailable ? 'В наличии' : 'Нет в наличии'}
-            </p>
-            
-            {isAvailable && (
-              <p className="text-sm text-gray-600">
-                Осталось: {quantity} шт.
-              </p>
-            )}
-          </div>
-          
-          <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-2">
-              Стоимость доставки: от {formatPrice(deliveryCost)} ₽
-            </p>
-          </div>
-          
-          <div className="mb-8">
-            {isAvailable ? (
-              <Button 
-                className="bg-secondary hover:bg-yellow-500 text-white w-full md:w-auto"
-                onClick={addToCart}
-              >
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                Добавить в корзину
-              </Button>
-            ) : (
-              <Button 
-                className="bg-primary hover:bg-green-700 text-white w-full md:w-auto"
-                onClick={subscribeToNotifications}
-                disabled={notifying || !user}
-              >
-                {notifying ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Подписка...
-                  </>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-lg mb-3">Способы оплаты</h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <p className="font-medium">Онлайн-оплата:</p>
+                      <ul className="mt-2 space-y-2 text-sm">
+                        <li className="flex items-start">
+                          <CreditCard className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Оплата банковской картой через Ozon Pay — заказ создается после успешной оплаты</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="font-medium">Прямой перевод:</p>
+                      <ul className="mt-2 space-y-2 text-sm">
+                        <li className="flex items-start">
+                          <QrCode className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
+                          <span>Перевод по QR-коду или по реквизитам карты</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="payment">
+              <div className="prose max-w-none">
+                <h3 className="heading font-montserrat font-semibold text-xl mb-4">Оплата</h3>
+
+                <div className="mb-6">
+                  <h4 className="font-semibold mb-2">Онлайн-оплата:</h4>
+                  <p>
+                    Оплата банковской картой через Ozon Pay — заказ создается после успешной оплаты
+                  </p>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold mb-2">Прямой перевод:</h4>
+                  <p>
+                    Перевод по QR-коду или по реквизитам карты
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="reviews">
+              <div className="space-y-6">
+                <h3 className="heading font-montserrat font-semibold text-xl mb-4">Отзывы о товаре</h3>
+
+                {reviews.length === 0 ? (
+                  <div className="text-center text-muted-foreground">
+                    Отзывов пока нет. Будьте первым!
+                  </div>
                 ) : (
-                  <>
-                    <Bell className="mr-2 h-5 w-5" />
-                    Уведомить о наличии
-                  </>
+                  <div className="space-y-6">
+                    {reviews.map((review) => (
+                      <Card key={review.id}>
+                        <CardHeader>
+                          <CardTitle className="flex items-center text-lg">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <Star
+                                key={i}
+                                className={
+                                  `h-5 w-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`
+                                }
+                              />
+                            ))}
+                            <span className="ml-3 text-base font-medium text-gray-700">{review.rating} из 5</span>
+                          </CardTitle>
+                          <CardDescription>{new Date(review.createdAt || '').toLocaleDateString()}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p>{review.text}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 )}
-              </Button>
-            )}
-          </div>
-          
-          <div className="prose max-w-none">
-            <h3 className="heading font-montserrat font-semibold text-lg mb-2">Описание</h3>
-            <p>{description}</p>
-          </div>
+
+                {user ? (
+                  <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="mt-6">
+                        Оставить отзыв
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Оставить отзыв о товаре</DialogTitle>
+                        <DialogDescription>
+                          Поделитесь своим мнением о товаре.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Form {...form}>
+                        <form onSubmit={form.handleSubmit(handleReviewSubmit)} className="space-y-4">
+                          <div>
+                            <FormLabel>Ваша оценка</FormLabel>
+                            <div className="flex items-center space-x-1 mt-1">
+                              {Array.from({ length: 5 }, (_, i) => (
+                                <Star
+                                  key={i}
+                                  className={
+                                    `h-8 w-8 cursor-pointer ${i < selectedRating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`
+                                  }
+                                  onClick={() => {
+                                    setSelectedRating(i + 1);
+                                    form.setValue("rating", i + 1);
+                                  }}
+                                />
+                              ))}
+                            </div>
+                            {form.formState.errors.rating && (
+                              <p className="text-sm font-medium text-destructive mt-2">
+                                {form.formState.errors.rating.message}
+                              </p>
+                            )}
+                          </div>
+                          <FormField
+                            control={form.control}
+                            name="text"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Ваш отзыв</FormLabel>
+                                <FormControl>
+                                  <Textarea placeholder="Напишите ваш отзыв здесь..." {...field} rows={4} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <DialogFooter>
+                            <Button type="submit" disabled={reviewMutation.isPending}>
+                              {reviewMutation.isPending ? "Отправка..." : "Отправить отзыв"}
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <div className="mt-6 text-center text-muted-foreground">
+                    <p className="mb-2">Чтобы оставить отзыв, пожалуйста, авторизуйтесь:</p>
+                    <Button onClick={() => setLocation("/auth")}>
+                      Войти / Зарегистрироваться
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
-      
-      {/* Tabs for Reviews and Delivery Info */}
-      <Tabs defaultValue="reviews" className="mb-12">
-        <TabsList className="mb-6">
-          <TabsTrigger value="reviews">Отзывы ({reviews.length})</TabsTrigger>
-          <TabsTrigger value="delivery">Доставка и оплата</TabsTrigger>
-          <TabsTrigger value="care">Уход за растением</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="reviews">
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="heading font-montserrat font-semibold text-xl">Отзывы о товаре</h2>
-              
-              <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    disabled={!user}
-                    variant="outline"
-                  >
-                    Оставить отзыв
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Оставить отзыв</DialogTitle>
-                    <DialogDescription>
-                      Поделитесь своим мнением о {name}
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleReviewSubmit)} className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="rating"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Оценка</FormLabel>
-                            <FormControl>
-                              <div className="flex items-center gap-1">
-                                {[1, 2, 3, 4, 5].map((rating) => (
-                                  <button
-                                    key={rating}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedRating(rating);
-                                      field.onChange(rating);
-                                    }}
-                                    className="focus:outline-none"
-                                  >
-                                    <Star
-                                      className={`h-6 w-6 ${
-                                        rating <= selectedRating || rating <= field.value
-                                          ? "text-secondary fill-current"
-                                          : "text-gray-300"
-                                      }`}
-                                    />
-                                  </button>
-                                ))}
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="text"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Текст отзыва</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                placeholder="Поделитесь вашим мнением о товаре..."
-                                rows={5}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <DialogFooter>
-                        <Button
-                          type="submit"
-                          className="bg-primary hover:bg-green-700 text-white"
-                          disabled={reviewMutation.isPending}
-                        >
-                          {reviewMutation.isPending ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Отправка...
-                            </>
-                          ) : (
-                            "Отправить отзыв"
-                          )}
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
-            </div>
-            
-            {reviews.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {reviews.map((review) => (
-                  <Card key={review.id}>
-                    <CardHeader>
-                      <div className="flex justify-between">
-                        <div>
-                          <CardTitle className="text-base">Пользователь #{review.userId}</CardTitle>
-                          <CardDescription>{new Date(review.createdAt).toLocaleDateString('ru-RU')}</CardDescription>
-                        </div>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-4 w-4 ${
-                                i < review.rating ? "text-secondary fill-current" : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p>{review.text}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-600 mb-2">У этого товара пока нет отзывов</p>
-                <p className="text-sm">Будьте первым, кто оставит отзыв!</p>
-              </div>
-            )}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="delivery">
-          <div className="prose max-w-none">
-            <h3 className="heading font-montserrat font-semibold text-xl mb-4">Доставка и оплата</h3>
-            
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Способы доставки:</h4>
-              <ul className="list-disc pl-6">
-                <li>CDEK - от 300 ₽</li>
-                <li>Почта России - от 250 ₽</li>
-                <li>Экспресс-доставка (+20% к стоимости)</li>
-              </ul>
-              <p className="text-sm text-gray-600 mt-2">
-                Сроки доставки: 2-7 рабочих дней в зависимости от региона.
-              </p>
-            </div>
-            
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Способы оплаты:</h4>
-              <ul className="list-disc pl-6">
-                <li>Онлайн-оплата через YooMoney</li>
-                <li>Прямой перевод по реквизитам (с подтверждением платежа)</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-2">Дополнительные услуги:</h4>
-              <ul className="list-disc pl-6">
-                <li>Передержка растений до весны</li>
-                <li>Утепление посылки в холодное время года</li>
-              </ul>
-              <p className="text-sm text-gray-600 mt-2">
-                Подробности о доставке и оплате можно узнать в нашем <a href="https://telegra.ph/CHasto-zadavaemye-voprosy-o-Dzhunglevom-bote-i-zakupke-07-15" className="text-primary hover:underline" target="_blank" rel="noreferrer">FAQ</a>.
-              </p>
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="care">
-          <div className="prose max-w-none">
-            <h3 className="heading font-montserrat font-semibold text-xl mb-4">Уход за растением</h3>
-            
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Освещение:</h4>
-              <p>
-                Большинство комнатных растений предпочитают яркий рассеянный свет. Разместите растение возле окна, защищая от прямых солнечных лучей, которые могут вызвать ожоги листьев.
-              </p>
-            </div>
-            
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Полив:</h4>
-              <p>
-                Частота полива зависит от вида растения, сезона и условий содержания. Общее правило - поливать, когда верхний слой почвы подсох на 2-3 см. Избегайте застоя воды в поддоне.
-              </p>
-            </div>
-            
-            <div className="mb-6">
-              <h4 className="font-semibold mb-2">Влажность:</h4>
-              <p>
-                Тропические растения предпочитают повышенную влажность воздуха. Регулярно опрыскивайте листья или используйте увлажнитель воздуха.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-2">Пересадка и удобрение:</h4>
-              <p>
-                Пересаживайте растения весной каждые 1-2 года. Используйте подходящий грунт и горшок с дренажными отверстиями. Подкармливайте растения в период активного роста (весна-лето) специальными удобрениями.
-              </p>
-              <p className="text-sm text-gray-600 mt-2">
-                Подробные инструкции по уходу за конкретным растением будут приложены к вашему заказу.
-              </p>
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }

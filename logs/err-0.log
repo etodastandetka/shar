@@ -1,0 +1,790 @@
+2025-06-23T13:38:20: Error creating order: SqliteError: 26 values for 22 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:83:41)
+    at /var/www/russkii-portal/dist/index.cjs:3391:27
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at ensureAuthenticated (/var/www/russkii-portal/dist/index.cjs:1782:14)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-23T13:38:35: Error creating order: SqliteError: 26 values for 22 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:83:41)
+    at /var/www/russkii-portal/dist/index.cjs:3391:27
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at ensureAuthenticated (/var/www/russkii-portal/dist/index.cjs:1782:14)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-23T13:38:40: Error creating order: SqliteError: 26 values for 22 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:83:41)
+    at /var/www/russkii-portal/dist/index.cjs:3391:27
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at ensureAuthenticated (/var/www/russkii-portal/dist/index.cjs:1782:14)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-23T13:42:31: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T13:42:31: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T13:42:41: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T13:42:41: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T13:43:32: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T13:43:32: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T19:45:08: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T19:45:08: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T20:18:47: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T20:18:47: Ошибка при создании платежа для пополнения: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T20:47:12: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T20:47:12: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T20:47:12: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T20:47:12: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T20:48:55: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2038:33
+2025-06-23T20:48:55: Ошибка при создании повторного платежа: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2038:33
+2025-06-23T21:23:32: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T21:23:32: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3543:37
+2025-06-23T21:38:59: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T21:38:59: Ошибка при создании платежа для пополнения: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T21:39:17: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2038:33
+2025-06-23T21:39:17: Ошибка при создании повторного платежа: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2038:33
+2025-06-23T21:46:33: Ozon Pay API Error: Error: Ozon Pay API Error: проверьте введенные данные
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1513:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T21:46:33: Ошибка при создании платежа для пополнения: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:2098:35
+2025-06-23T22:01:43: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:01:43: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:12: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:12: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:33: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:33: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:33: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:33: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:47: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:02:47: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:00: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:00: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:01: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:01: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:45: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:03:45: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:04:28: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:04:28: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:05:05: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:05:05: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:28:30: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:28:30: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:32:38: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:32:38: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:32:56: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:32:56: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:34:51: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:34:51: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:39:58: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-23T22:39:58: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:34:18: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:34:18: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:35:19: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:35:19: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:43:25: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1525:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T00:43:25: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:1537:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:3555:37
+2025-06-24T12:06:10: Ozon Pay API Error: Error: Ozon Pay API Error: недостаточно прав
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:2070:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:4116:37
+2025-06-24T12:06:10: Ошибка при создании платежа Ozon Pay: Error: Ошибка при создании платежа в Ozon Pay
+    at OzonPayAPI.createPayment (/var/www/russkii-portal/dist/index.cjs:2082:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /var/www/russkii-portal/dist/index.cjs:4116:37
+2025-06-25T04:57:34: [Auth] Неверный формат сохраненного пароля
+2025-06-25T04:58:02: [Auth] Неверный формат сохраненного пароля
+2025-06-25T04:58:10: [Auth] Неверный формат сохраненного пароля
+2025-06-25T08:47:17: [Auth] Неверный формат сохраненного пароля
+2025-06-25T08:47:19: [Auth] Неверный формат сохраненного пароля
+2025-06-25T08:47:23: [Auth] Неверный формат сохраненного пароля
+2025-06-25T09:12:58: [Auth] Неверный формат сохраненного пароля
+2025-06-25T09:13:04: [Auth] Неверный формат сохраненного пароля
+2025-06-25T09:14:46: [Auth] Неверный формат сохраненного пароля
+2025-06-25T09:14:52: [Auth] Неверный формат сохраненного пароля
+2025-06-25T11:32:38: [Auth] Неверный формат сохраненного пароля
+2025-06-25T13:39:04: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T13:39:04: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T13:41:16: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T13:44:41: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T13:46:06: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T13:47:48: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T13:48:26: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T13:49:34: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T14:03:37: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T19:50:46: Ошибка при сохранении данных верификации: ReferenceError: savePendingRegistration is not defined
+    at /var/www/russkii-portal/dist/index.cjs:5854:21
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10)
+    at preserveAdminStatus (/var/www/russkii-portal/dist/index.cjs:2651:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+2025-06-25T20:02:31: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T20:02:31: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T20:26:46: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T20:26:46: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T20:45:35: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-25T20:45:35: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:11:31: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:11:31: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:29:26: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:29:26: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:48:54: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T06:48:54: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T07:06:13: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T07:06:13: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T07:58:05: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T07:58:05: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T16:02:10: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T16:02:10: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T19:21:43: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T19:21:43: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:25:57: Ошибка создания пользователя в БД: SqliteError: table users has no column named first_name
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:26:05: Ошибка создания пользователя в БД: SqliteError: table users has no column named first_name
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:29:33: Ошибка создания пользователя в БД: SqliteError: table users has no column named first_name
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:34:54: Ошибка создания пользователя в БД: SqliteError: table users has no column named first_name
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:36:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:36:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:37:19: Ошибка создания пользователя в БД: SqliteError: table users has no column named first_name
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:38:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:38:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:38:26: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:38:27: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:38:37: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:40:47: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:40:48: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:41:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:41:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:41:31: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:45:34: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:45:34: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:45:47: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:46:04: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:46:22: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:47:08: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:49:18: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:49:18: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:49:56: Ошибка создания пользователя в БД: SqliteError: 13 values for 12 columns
+    at Database.prepare (/var/www/russkii-portal/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at Object.run (/var/www/russkii-portal/dist/index.cjs:86:41)
+    at /var/www/russkii-portal/dist/index.cjs:1981:14
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/var/www/russkii-portal/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/var/www/russkii-portal/node_modules/express/lib/router/layer.js:95:5)
+    at /var/www/russkii-portal/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/var/www/russkii-portal/node_modules/express/lib/router/index.js:346:12)
+    at next (/var/www/russkii-portal/node_modules/express/lib/router/index.js:280:10) {
+  code: 'SQLITE_ERROR'
+}
+2025-06-26T20:52:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T20:52:17: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T21:44:01: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-26T21:44:01: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:00:29: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:00:29: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:00:37: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:00:37: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:06:19: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:06:19: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:30:16: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:30:16: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:53:14: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:53:14: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T00:54:47: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T00:54:52: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T00:55:45: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:07:01: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T01:07:01: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T01:08:46: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:08:53: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:07: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:15: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:22: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:28: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:35: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:42: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:09:49: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:10:08: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:10:15: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:10:20: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:10:26: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:11:27: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:12:58: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T01:12:58: Warning: connect.session() MemoryStore is not
+designed for a production environment, as it will leak
+memory, and will not scale past a single process.
+2025-06-27T01:13:33: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:14:01: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:14:18: Неизвестный формат хеша пароля: 1 частей
+2025-06-27T01:14:40: Неизвестный формат хеша пароля: 1 частей
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+ReferenceError: app is not defined
+    at Object.<anonymous> (/var/www/russkii-portal/dist/index.cjs:6104:1)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at cjsLoader (node:internal/modules/esm/translators:298:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+ReferenceError: app is not defined
+    at Object.<anonymous> (/var/www/russkii-portal/dist/index.cjs:6104:1)
+    at Module._compile (node:internal/modules/cjs/loader:1529:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1613:10)
+    at Module.load (node:internal/modules/cjs/loader:1275:32)
+    at Module._load (node:internal/modules/cjs/loader:1096:12)
+    at cjsLoader (node:internal/modules/esm/translators:298:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+    at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+TypeError: Unknown file extension ".ts" for /var/www/russkii-portal/server/production-server.ts
+    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:189:9)
+    at defaultGetFormat (node:internal/modules/esm/get_format:232:36)
+    at defaultLoad (node:internal/modules/esm/load:145:22)
+    at async ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:477:45)
+    at async ModuleJob._link (node:internal/modules/esm/module_job:110:19)
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+TypeError: Unknown file extension ".ts" for /var/www/russkii-portal/server/production-server.ts
+    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:189:9)
+    at defaultGetFormat (node:internal/modules/esm/get_format:232:36)
+    at defaultLoad (node:internal/modules/esm/load:145:22)
+    at async ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:477:45)
+    at async ModuleJob._link (node:internal/modules/esm/module_job:110:19)
+You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+TypeError: Unknown file extension ".ts" for /var/www/russkii-portal/server/production-server.ts
+    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:189:9)
+    at defaultGetFormat (node:internal/modules/esm/get_format:232:36)
+    at defaultLoad (node:internal/modules/esm/load:145:22)
+    at async ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:477:45)
+    at async ModuleJob._link (node:internal/modules/esm/module_job:110:19)

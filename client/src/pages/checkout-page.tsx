@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { insertOrderSchema, InsertOrder, PaymentDetails } from "@shared/schema";
+import { insertOrderSchema, InsertOrder, PaymentDetails, Product } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -43,23 +43,29 @@ type CartItem = {
 const checkoutSchema = z.object({
   fullName: z.string().min(3, "Введите ФИО"),
   phone: z.string().min(10, "Введите корректный номер телефона"),
-  address: z.string().min(5, "Введите адрес доставки"),
-  deliveryType: z.enum(["cdek", "russianPost"], {
+  address: z.string().optional(),
+  deliveryType: z.enum(["cdek", "russianPost", "pickup"], {
     required_error: "Выберите тип доставки"
   }),
   deliverySpeed: z.enum(["standard", "express"], {
     required_error: "Выберите скорость доставки"
   }),
-  paymentMethod: z.enum(["yoomoney", "directTransfer", "balance"], {
+  paymentMethod: z.enum(["ozonpay", "directTransfer", "balance"], {
     required_error: "Выберите способ оплаты"
   }),
-  socialNetwork: z.enum(["telegram", "instagram", "vk"], {
-    required_error: "Выберите социальную сеть"
-  }).optional(),
+  socialNetwork: z.enum(["telegram", "whatsapp"]).optional(),
   socialUsername: z.string().optional(),
   needStorage: z.boolean().default(false),
   needInsulation: z.boolean().default(false),
   comment: z.string().optional(),
+}).refine((data) => {
+  if (data.deliveryType === "pickup") {
+    return true; // Для самовывоза адрес не обязателен
+  }
+  return data.address && data.address.length >= 5; // Для доставки адрес обязателен
+}, {
+  message: "Введите адрес доставки",
+  path: ["address"]
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
@@ -67,11 +73,24 @@ type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 export default function CheckoutPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, refreshUserData } = useAuth();
   const [step, setStep] = useState<"shipping" | "payment" | "questions" | "success">("shipping");
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [proofUploaded, setProofUploaded] = useState(false);
+  const queryClient = useQueryClient();
+  
+  // Get promo code from localStorage
+  const [promoCodeInfo, setPromoCodeInfo] = useState<{
+    code: string;
+    discount: number;
+    discountType: 'percentage' | 'fixed';
+    discountValue: number;
+  } | null>(() => {
+    const stored = localStorage.getItem('appliedPromoCode');
+    return stored ? JSON.parse(stored) : null;
+  });
   
   // Redirect if not authenticated
   useEffect(() => {
@@ -85,13 +104,25 @@ export default function CheckoutPage() {
     }
   }, [user, setLocation, toast]);
   
-  // Get cart items from localStorage
+  // Get cart items from localStorage (using useQuery for caching)
   const { data: cartItems = [] } = useQuery<CartItem[]>({
     queryKey: ["/api/cart"],
     queryFn: () => {
       const storedCart = localStorage.getItem("cart");
       return storedCart ? JSON.parse(storedCart) : [];
     },
+  });
+  
+  // Получаем данные о продуктах для расчета доставки
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ["/api/products"],
+    queryFn: async ({ queryKey }) => {
+      const res = await fetch(queryKey[0] as string);
+      if (!res.ok) throw new Error("Failed to fetch products");
+      return res.json();
+    },
+    // Включаем этот запрос только если есть товары в корзине, чтобы не делать лишних запросов
+    enabled: cartItems.length > 0,
   });
   
   // Get payment details
@@ -112,10 +143,10 @@ export default function CheckoutPage() {
       fullName: user?.fullName || "",
       phone: user?.phone || "",
       address: user?.address || "",
-      deliveryType: "cdek",
-      deliverySpeed: "standard",
-      paymentMethod: "yoomoney",
-      socialNetwork: "telegram",
+      deliveryType: "cdek" as const,
+      deliverySpeed: "standard" as const,
+      paymentMethod: "ozonpay" as const,
+      socialNetwork: "telegram" as const,
       socialUsername: "",
       needStorage: false,
       needInsulation: false,
@@ -131,18 +162,56 @@ export default function CheckoutPage() {
     }, 0);
   };
   
+  // Новая функция расчёта доставки
   const calculateDeliveryCost = () => {
-    const baseDeliveryCost = 350;
-    const deliverySpeed = form.watch("deliverySpeed");
-    
-    // Apply 20% markup for express delivery
-    return deliverySpeed === "express" 
-      ? baseDeliveryCost * 1.2 
-      : baseDeliveryCost;
+    if (cartItems.length === 0 || products.length === 0) return 0;
+    const deliveryType = form.watch("deliveryType");
+    if (deliveryType === "cdek" || deliveryType === "pickup") {
+      return 0;
+    }
+    // Почта России
+    // Собираем массив deliveryCost для каждого товара (по количеству)
+    let deliveryCosts: number[] = [];
+    cartItems.forEach(item => {
+      const product = products.find(p => p.id === item.id);
+      const cost = product && product.deliveryCost != null ? parseFloat(product.deliveryCost.toString()) : 0;
+      for (let i = 0; i < item.quantity; i++) {
+        deliveryCosts.push(cost);
+      }
+    });
+    if (deliveryCosts.length === 0) return 0;
+    // Сортируем по убыванию
+    deliveryCosts.sort((a, b) => b - a);
+    // До 3 товаров — только максимальная стоимость
+    if (deliveryCosts.length <= 3) {
+      return deliveryCosts[0];
+    }
+    // 4 и более: макс + 200р за каждую единицу сверх 3
+    const base = deliveryCosts[0];
+    const extra = (deliveryCosts.length - 3) * 200;
+    return base + extra;
+  };
+  
+  // Пояснение для доставки
+  const deliveryNote = () => {
+    const deliveryType = form.watch("deliveryType");
+    if (deliveryType === "cdek") {
+      return "Доставка оплачивается самостоятельно при получении в пункте выдачи СДЭК.";
+    }
+    if (deliveryType === "pickup") {
+      return "Самовывоз по адресу: г. Кореновск, ул. Железнодорожная, д. 5. Только для оплаченных заказов.";
+    }
+    if (cartItems.length > 3) {
+      return "Сумма доставки: максимальная стоимость среди всех растений + 200₽ за каждую единицу товара начиная с 4-й.";
+    }
+    return "Сумма доставки равна максимальной стоимости доставки среди всех растений в заказе.";
   };
   
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateDeliveryCost();
+    const subtotal = calculateSubtotal();
+    const deliveryCost = calculateDeliveryCost();
+    const discount = promoCodeInfo?.discount || 0;
+    return subtotal + deliveryCost - discount;
   };
   
   // Format price
@@ -150,7 +219,7 @@ export default function CheckoutPage() {
     return new Intl.NumberFormat('ru-RU').format(price);
   };
   
-  // Handle file upload
+  // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -176,44 +245,16 @@ export default function CheckoutPage() {
       }
       
       setPaymentProof(file);
+      setProofUploaded(false);
+      
+      // Показать уведомление о успешном прикреплении файла
+      toast({
+        title: "Файл прикреплен",
+        description: "Чек успешно прикреплен к заказу. Нажмите 'Загрузить чек' для отправки.",
+        variant: "success"
+      });
     }
   };
-  
-  // Create order mutation
-  const createOrderMutation = useMutation({
-    mutationFn: async (data: InsertOrder) => {
-      const res = await apiRequest("POST", "/api/orders", data);
-      return res.json();
-    },
-    onSuccess: (data) => {
-      setOrderId(data.id);
-      
-      // If payment method is YooMoney or balance, go directly to success
-      const paymentMethod = form.getValues("paymentMethod");
-      if (paymentMethod === "yoomoney" || paymentMethod === "balance") {
-        setStep("success");
-        
-        // Clear cart
-        localStorage.setItem("cart", "[]");
-        queryClient.setQueryData(["/api/cart"], []);
-      } else {
-        // For direct transfer, go to questions step to upload proof
-        setStep("questions");
-      }
-      
-      toast({
-        title: "Заказ создан",
-        description: `Заказ #${data.id} успешно создан`,
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Ошибка",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  });
   
   // Upload payment proof mutation
   const uploadProofMutation = useMutation({
@@ -221,20 +262,72 @@ export default function CheckoutPage() {
       const formData = new FormData();
       formData.append("proof", file);
       
-      const res = await fetch(`/api/orders/${id}/payment-proof`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/orders/${id}/payment-proof`, {
         method: "POST",
         body: formData,
         credentials: "include",
       });
       
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || "Failed to upload payment proof");
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Ошибка загрузки подтверждения оплаты");
       }
       
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // После успешной загрузки чека уведомляем пользователя и устанавливаем флаг
+      setProofUploaded(true);
+      
+      toast({
+        title: "Чек загружен",
+        description: "Чек успешно загружен! Теперь нажмите 'Завершить заказ' для завершения заказа",
+        variant: "success"
+      });
+      
+      setIsUploading(false);
+    },
+    onError: (error: Error) => {
+      setIsUploading(false);
+      toast({
+        title: "Ошибка загрузки",
+        description: error.message || "Произошла ошибка при загрузке файла",
+        variant: "destructive"
+      });
+    },
+    onSettled: () => {
+      setIsUploading(false);
+    }
+  });
+  
+  // Final complete order after proof upload
+  const completeOrderMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/orders/${id}/complete`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Ошибка при завершении заказа");
+      }
+      
+      return res.json();
+    },
+    onSuccess: (data) => {
+      // После финализации заказа обновляем данные пользователя и статус заказа
+      queryClient.invalidateQueries({queryKey: ["/api/auth/user"]});
+      queryClient.invalidateQueries({queryKey: ["/api/user/orders"]});
+      queryClient.invalidateQueries({queryKey: ["/api/orders"]});
+      
+      // Явное обновление пользовательских данных для актуализации баланса
+      refreshUserData();
+      
+      // Четкий переход на страницу успешного оформления
       setStep("success");
       
       // Clear cart
@@ -242,13 +335,123 @@ export default function CheckoutPage() {
       queryClient.setQueryData(["/api/cart"], []);
       
       toast({
-        title: "Платеж подтвержден",
-        description: "Подтверждение платежа загружено и будет проверено администратором",
+        title: "Заказ завершен",
+        description: data.message || `Заказ #${orderId} успешно оформлен`,
+        variant: "success"
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast({
-        title: "Ошибка",
+        title: "Ошибка завершения заказа",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+  
+  // Create order mutation
+  const createOrderMutation = useMutation({
+    mutationFn: async (data: InsertOrder) => {
+      try {
+        // Перед созданием заказа обновим данные пользователя
+        await refreshUserData();
+        
+        const response = await apiRequest("POST", "/api/orders", data);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || "Ошибка при создании заказа");
+        }
+        return response.json();
+      } catch (error) {
+        console.error("Ошибка при создании заказа:", error);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      // Сохраняем ID заказа
+      console.log("Заказ успешно создан:", data);
+      console.log("Server order data:", data.order);
+      setOrderId(data.id);
+      
+      // If payment method is Ozon Pay or balance, go directly to success
+      const paymentMethod = form.getValues("paymentMethod");
+      if (paymentMethod === "ozonpay") {
+        // Clear cart first
+        localStorage.setItem("cart", "[]");
+        queryClient.setQueryData(["/api/cart"], []);
+        
+        // Check if we have payment URL
+        if (data.paymentUrl) {
+        toast({
+            title: "Заказ создан",
+            description: `Заказ #${data.id} создан. Переходим к оплате...`,
+          variant: "success"
+        });
+          
+          // Redirect to Ozon Pay
+          setTimeout(() => {
+            window.location.href = data.paymentUrl;
+          }, 1500);
+        } else if (data.paymentError) {
+          toast({
+            title: "Заказ создан",
+            description: `Заказ #${data.id} создан, но возникла ошибка с оплатой: ${data.paymentError}`,
+            variant: "destructive"
+          });
+          setStep("success");
+        } else {
+          toast({
+            title: "Заказ создан",
+            description: `Заказ #${data.id} создан. Ссылка на оплату будет отправлена на email.`,
+            variant: "success"
+          });
+          setStep("success");
+        }
+      } else if (paymentMethod === "balance") {
+        // Обновление данных пользователя после оплаты с баланса
+        queryClient.invalidateQueries({queryKey: ["/api/auth/user"]});
+        queryClient.invalidateQueries({queryKey: ["/api/orders"]});
+        queryClient.invalidateQueries({queryKey: ["/api/user/orders"]});
+        
+        // Принудительное обновление данных пользователя с небольшой задержкой
+        setTimeout(async () => {
+          await refreshUserData();
+          
+          // Показываем уведомление с актуальным балансом
+          if (user) {
+            toast({
+              title: "Баланс обновлен",
+              description: `Ваш текущий баланс: ${formatPrice(parseFloat(user.balance || "0"))} ₽`,
+              variant: "default"
+            });
+          }
+        }, 500);
+        
+        setStep("success");
+        
+        // Clear cart
+        localStorage.setItem("cart", "[]");
+        queryClient.setQueryData(["/api/cart"], []);
+        
+        toast({
+          title: "Заказ оформлен",
+          description: `Заказ #${data.id} успешно оформлен и оплачен с вашего баланса`,
+          variant: "success"
+        });
+      } else {
+        // Для прямого перевода переходим на этап загрузки подтверждения
+        setStep("questions");
+        
+        toast({
+          title: "Заказ создан",
+          description: `Заказ #${data.id} создан. Пожалуйста, загрузите подтверждение оплаты`,
+        });
+      }
+    },
+    onError: (error: Error) => {
+      console.error("Ошибка при создании заказа:", error);
+      toast({
+        title: "Ошибка оформления заказа",
         description: error.message,
         variant: "destructive"
       });
@@ -265,48 +468,60 @@ export default function CheckoutPage() {
     }
     
     if (step === "payment") {
-      // Prepare order items
-      const items = cartItems.map(item => ({
-        productId: item.id,
-        quantity: item.quantity,
-        price: typeof item.price === 'string' ? parseFloat(item.price) : item.price,
-      }));
+      // Получаем метод оплаты
+      const paymentMethod = form.getValues("paymentMethod");
       
       // Create order
       const orderData: InsertOrder = {
-        userId: user.id,
-        items,
+        userId: String(user.id),
+        items: cartItems.map(item => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: typeof item.price === 'string' ? parseFloat(item.price) : item.price,
+        })),
         totalAmount: calculateTotal().toString(),
-        deliveryAmount: calculateDeliveryCost().toString(),
+        deliveryAmount: calculateDeliveryCost(),
         fullName: data.fullName,
-        address: data.address,
+        address: data.address || "",
         phone: data.phone,
         socialNetwork: data.socialNetwork,
-        socialUsername: data.socialUsername,
+        socialUsername: data.socialUsername || undefined,
         deliveryType: data.deliveryType,
         deliverySpeed: data.deliverySpeed,
         paymentMethod: data.paymentMethod,
         needStorage: data.needStorage,
         needInsulation: data.needInsulation,
+        comment: data.comment || undefined,
+        promoCode: promoCodeInfo?.code || null,
       };
       
+      console.log("Отправка данных заказа:", orderData);
       createOrderMutation.mutate(orderData);
     }
     
     if (step === "questions" && orderId) {
-      if (data.paymentMethod === "directTransfer" && !paymentProof) {
-        toast({
-          title: "Требуется подтверждение",
-          description: "Загрузите подтверждение платежа",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      // If payment proof is uploaded, submit it
-      if (paymentProof) {
-        setIsUploading(true);
-        uploadProofMutation.mutate({ id: orderId, file: paymentProof });
+      if (data.paymentMethod === "directTransfer") {
+        // Если файл еще не выбран
+        if (!paymentProof && !proofUploaded) {
+          toast({
+            title: "Требуется подтверждение",
+            description: "Пожалуйста, загрузите подтверждение платежа",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        // Если файл выбран, но еще не загружен на сервер
+        if (paymentProof && !proofUploaded && !isUploading) {
+          setIsUploading(true);
+          uploadProofMutation.mutate({ id: orderId, file: paymentProof });
+          return;
+        }
+        
+        // Если файл уже загружен, финализируем заказ
+        if (proofUploaded) {
+          completeOrderMutation.mutate(orderId);
+        }
       } else {
         setStep("success");
         
@@ -436,19 +651,42 @@ export default function CheckoutPage() {
                       <FormField
                         control={form.control}
                         name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Адрес доставки</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Полный адрес доставки, включая индекс" 
-                                {...field} 
-                                className="form-input"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        render={({ field }) => {
+                          const deliveryType = form.watch("deliveryType");
+                          const isPickup = deliveryType === "pickup";
+                          
+                          // Автоматически устанавливаем адрес самовывоза
+                          if (isPickup && field.value !== "г. Кореновск, ул. Железнодорожная, д. 5") {
+                            field.onChange("г. Кореновск, ул. Железнодорожная, д. 5");
+                          }
+                          
+                          return (
+                            <FormItem>
+                              <FormLabel>
+                                {isPickup ? "Адрес самовывоза" : "Адрес доставки"}
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  placeholder={
+                                    isPickup 
+                                      ? "Адрес самовывоза" 
+                                      : "Полный адрес доставки, включая индекс"
+                                  } 
+                                  {...field}
+                                  value={isPickup ? "г. Кореновск, ул. Железнодорожная, д. 5" : field.value}
+                                  disabled={isPickup}
+                                  className={`form-input ${isPickup ? 'bg-gray-100 text-gray-700' : ''}`}
+                                />
+                              </FormControl>
+                              {isPickup && (
+                                <p className="text-sm text-green-600 font-medium">
+                                  Заказ можно забрать только после полной оплаты
+                                </p>
+                              )}
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -457,7 +695,7 @@ export default function CheckoutPage() {
                           name="socialNetwork"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Соцсеть для уведомлений</FormLabel>
+                              <FormLabel>Соцсеть для связи</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger className="form-input">
@@ -466,8 +704,7 @@ export default function CheckoutPage() {
                                 </FormControl>
                                 <SelectContent>
                                   <SelectItem value="telegram">Telegram</SelectItem>
-                                  <SelectItem value="instagram">Instagram</SelectItem>
-                                  <SelectItem value="vk">VK</SelectItem>
+                                  <SelectItem value="whatsapp">WhatsApp</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -482,10 +719,7 @@ export default function CheckoutPage() {
                             <FormItem>
                               <FormLabel>Имя пользователя</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="@username" 
-                                  {...field} 
-                                />
+                                <Input placeholder="@username" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -493,7 +727,7 @@ export default function CheckoutPage() {
                         />
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className={`grid gap-4 ${form.watch("deliveryType") === "pickup" ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"}`}>
                         <FormField
                           control={form.control}
                           name="deliveryType"
@@ -509,6 +743,7 @@ export default function CheckoutPage() {
                                 <SelectContent>
                                   <SelectItem value="cdek">CDEK</SelectItem>
                                   <SelectItem value="russianPost">Почта России</SelectItem>
+                                  <SelectItem value="pickup">Самовывоз</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -516,27 +751,29 @@ export default function CheckoutPage() {
                           )}
                         />
                         
-                        <FormField
-                          control={form.control}
-                          name="deliverySpeed"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Скорость доставки</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger className="form-input">
-                                    <SelectValue placeholder="Выберите скорость доставки" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="standard">Стандартная</SelectItem>
-                                  <SelectItem value="express">Экспресс (+20%)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {form.watch("deliveryType") !== "pickup" && (
+                          <FormField
+                            control={form.control}
+                            name="deliverySpeed"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Скорость доставки</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                    <SelectTrigger className="form-input">
+                                      <SelectValue placeholder="Выберите скорость доставки" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="standard">Стандартная</SelectItem>
+                                    <SelectItem value="express">Экспресс (+20%)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
                       </div>
                       
                       <FormField
@@ -593,13 +830,14 @@ export default function CheckoutPage() {
                                 defaultValue={field.value}
                                 className="space-y-4"
                               >
+                                {/* Оплата картой (Ozon Pay) */}
                                 <div className="flex items-center space-x-2 border rounded-lg p-4 transition-colors hover:bg-gray-50">
-                                  <RadioGroupItem value="yoomoney" id="yoomoney" />
-                                  <Label htmlFor="yoomoney" className="flex items-center cursor-pointer">
+                                  <RadioGroupItem value="ozonpay" id="ozonpay" />
+                                  <Label htmlFor="ozonpay" className="flex items-center cursor-pointer">
                                     <CreditCard className="h-5 w-5 mr-2 text-blue-500" />
                                     <div>
                                       <div className="font-medium">Оплата картой</div>
-                                      <div className="text-sm text-gray-500">YooMoney - быстрая онлайн оплата</div>
+                                      <div className="text-sm text-gray-500">Ozon Pay — быстро и безопасно. Заказ создается после успешной оплаты</div>
                                     </div>
                                   </Label>
                                 </div>
@@ -615,20 +853,32 @@ export default function CheckoutPage() {
                                   </Label>
                                 </div>
                                 
-                                {user?.balance && parseFloat(user.balance) > 0 && (
-                                  <div className="flex items-center space-x-2 border rounded-lg p-4 transition-colors hover:bg-gray-50">
-                                    <RadioGroupItem value="balance" id="balance" />
-                                    <Label htmlFor="balance" className="flex items-center cursor-pointer">
-                                      <Wallet className="h-5 w-5 mr-2 text-primary" />
-                                      <div>
-                                        <div className="font-medium">Баланс</div>
-                                        <div className="text-sm text-gray-500">
-                                          Ваш баланс: {formatPrice(parseFloat(user.balance))} ₽
-                                        </div>
+                                {/* Всегда показываем опцию баланса, но делаем её неактивной если он недостаточен */}
+                                <div className={`flex items-center space-x-2 border rounded-lg p-4 transition-colors ${
+                                  user?.balance && parseFloat(user.balance) >= calculateTotal() 
+                                  ? "hover:bg-gray-50" 
+                                  : "opacity-60 cursor-not-allowed"
+                                }`}>
+                                  <RadioGroupItem 
+                                    value="balance" 
+                                    id="balance" 
+                                    disabled={!user?.balance || parseFloat(user.balance) < calculateTotal()}
+                                  />
+                                  <Label htmlFor="balance" className="flex items-center cursor-pointer">
+                                    <Wallet className="h-5 w-5 mr-2 text-primary" />
+                                    <div>
+                                      <div className="font-medium">Баланс</div>
+                                      <div className="text-sm text-gray-500">
+                                        Ваш баланс: {formatPrice(user?.balance ? parseFloat(user.balance) : 0)} ₽
+                                        {(!user?.balance || parseFloat(user.balance) < calculateTotal()) && (
+                                          <span className="text-red-500 ml-2">
+                                            (Недостаточно средств)
+                                          </span>
+                                        )}
                                       </div>
-                                    </Label>
-                                  </div>
-                                )}
+                                    </div>
+                                  </Label>
+                                </div>
                               </RadioGroup>
                             </FormControl>
                             <FormMessage />
@@ -770,15 +1020,38 @@ export default function CheckoutPage() {
                       <Button 
                         type="submit" 
                         className="bg-primary hover:bg-green-700 text-white"
-                        disabled={isUploading || uploadProofMutation.isPending}
+                        disabled={isUploading || uploadProofMutation.isPending || completeOrderMutation.isPending}
                       >
-                        {isUploading || uploadProofMutation.isPending ? (
+                        {isUploading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Отправка...
+                            Загрузка чека...
+                          </>
+                        ) : uploadProofMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Отправка чека...
+                          </>
+                        ) : completeOrderMutation.isPending ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Завершение заказа...
+                          </>
+                        ) : proofUploaded ? (
+                          <>
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Завершить заказ
+                          </>
+                        ) : paymentProof ? (
+                          <>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Загрузить чек
                           </>
                         ) : (
-                          "Завершить заказ"
+                          <>
+                            <Upload className="mr-2 h-4 w-4" />
+                            Прикрепить чек
+                          </>
                         )}
                       </Button>
                     </CardFooter>
@@ -804,7 +1077,7 @@ export default function CheckoutPage() {
                       <div>
                         <p className="font-medium">{item.name}</p>
                         <div className="flex justify-between text-sm text-gray-600">
-                          <span>Кол-во: {item.quantity}</span>
+                          <span>Кол-во: {item.quantity} шт.</span>
                           <span>
                             {formatPrice(
                               (typeof item.price === 'string' ? parseFloat(item.price) : item.price) * item.quantity
@@ -827,13 +1100,21 @@ export default function CheckoutPage() {
                     <span className="text-gray-600">Доставка:</span>
                     <span>{formatPrice(calculateDeliveryCost())} ₽</span>
                   </div>
-                </div>
-                
-                <Separator className="my-4" />
-                
-                <div className="flex justify-between font-semibold text-lg">
-                  <span>Итого:</span>
-                  <span className="text-primary">{formatPrice(calculateTotal())} ₽</span>
+                  {/* Пояснение по доставке */}
+                  {deliveryNote() && (
+                    <div className="text-xs text-gray-500 mt-1 mb-2">{deliveryNote()}</div>
+                  )}
+                  {promoCodeInfo && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Скидка по промокоду:</span>
+                      <span>-{formatPrice(promoCodeInfo.discount)} ₽</span>
+                    </div>
+                  )}
+                  <Separator className="my-4" />
+                  <div className="flex justify-between font-semibold text-lg">
+                    <span>Итого:</span>
+                    <span className="text-primary">{formatPrice(calculateTotal())} ₽</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>

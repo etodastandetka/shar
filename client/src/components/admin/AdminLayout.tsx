@@ -7,7 +7,8 @@ import {
   Users,
   MessageSquare,
   Settings,
-  LogOut
+  LogOut,
+  Ticket
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -56,6 +57,11 @@ export default function AdminLayout({
       icon: <FileText className="w-5 h-5 mr-2" /> 
     },
     { 
+      id: "promocodes", 
+      label: "Промокоды", 
+      icon: <Ticket className="w-5 h-5 mr-2" /> 
+    },
+    { 
       id: "users", 
       label: "Пользователи", 
       icon: <Users className="w-5 h-5 mr-2" /> 
@@ -73,9 +79,9 @@ export default function AdminLayout({
   ];
   
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-md flex flex-col">
+      <div className="w-full md:w-64 bg-white shadow-md flex flex-col md:flex-shrink-0">
         <div className="p-4 border-b">
           <h1 className="text-lg font-bold text-primary">Jungle Plants</h1>
           <p className="text-sm text-gray-500">Панель администратора</p>
@@ -101,7 +107,7 @@ export default function AdminLayout({
           </ul>
         </nav>
         
-        <div className="p-4 border-t">
+        <div className="p-4 border-t mt-auto">
           <Button 
             variant="outline" 
             className="w-full flex items-center justify-center"
@@ -115,8 +121,8 @@ export default function AdminLayout({
       </div>
       
       {/* Main Content */}
-      <div className="flex-1">
-        <main className="bg-gray-50 min-h-screen">
+      <div className="flex-1 w-full">
+        <main className="bg-gray-50 min-h-screen p-4">
           {children}
         </main>
       </div>

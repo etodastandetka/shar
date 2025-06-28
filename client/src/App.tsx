@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/lib/protected-route";
+import ScrollToTop from "@/components/ScrollToTop";
 
 // Pages
 import HomePage from "@/pages/home-page";
@@ -16,6 +17,9 @@ import CheckoutPage from "@/pages/checkout-page";
 import ProfilePage from "@/pages/profile-page";
 import AdminPage from "@/pages/admin-page";
 import FaqPage from "@/pages/faq-page";
+import OfferPage from "@/pages/offer-page";
+import PrivacyPage from "@/pages/privacy-page";
+import TermsPage from "@/pages/terms-page";
 
 // Components
 import Header from "@/components/Header";
@@ -26,6 +30,7 @@ function Router() {
   return (
     <div className="flex flex-col min-h-screen pb-16 md:pb-0">
       <Header />
+      <ScrollToTop />
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={HomePage} />
@@ -37,6 +42,9 @@ function Router() {
           <ProtectedRoute path="/profile" component={ProfilePage} />
           <ProtectedRoute path="/admin" component={AdminPage} />
           <Route path="/faq" component={FaqPage} />
+          <Route path="/offer" component={OfferPage} />
+          <Route path="/privacy" component={PrivacyPage} />
+          <Route path="/terms" component={TermsPage} />
           <Route component={NotFound} />
         </Switch>
       </main>

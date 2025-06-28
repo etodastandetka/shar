@@ -1,0 +1,1 @@
+const sqlite3 = require('sqlite3').verbose(); const path = require('path'); const DB_PATH = path.join(__dirname, 'db', 'database.sqlite'); const TOKEN = 'jemniawnsydzmyi7ceufma'; const db = new sqlite3.Database(DB_PATH); db.get('SELECT * FROM pending_registrations WHERE verification_token = ?', [TOKEN], (err, row) => { console.log('Запись:', err || row); db.close(); });

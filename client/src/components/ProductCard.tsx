@@ -106,50 +106,75 @@ function ProductCard({ product }: ProductCardProps) {
   };
   
   return (
-    <div className="card bg-white rounded-lg overflow-hidden shadow-md">
+    <div className="card bg-white rounded-lg overflow-hidden shadow-md w-full max-w-[280px] transition-transform hover:scale-[1.02] h-full flex flex-col">
       <div className="relative">
         <Link href={`/product/${id}`}>
           <img 
             src={images[0]} 
             alt={name} 
-            className={`w-full h-64 object-cover ${!isAvailable ? 'opacity-70' : ''}`}
+            className={`w-full aspect-square object-cover ${!isAvailable ? 'opacity-70' : ''}`}
           />
         </Link>
         
-        {labels.length > 0 && (
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {labels.includes("Скидка") && (
-              <span className="bg-secondary px-3 py-1 rounded-full text-white text-xs font-medium">
+        {/* Флажки товара */}
+        <div className="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
+          {product.isHotDeal && (
+            <span className="bg-red-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              🔥 Горячая цена
+            </span>
+          )}
+          {product.isBestseller && (
+            <span className="bg-orange-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              ⭐ Хит продаж
+            </span>
+          )}
+          {product.isNewArrival && (
+            <span className="bg-blue-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              ✨ Новинка
+            </span>
+          )}
+          {product.isLimitedEdition && (
+            <span className="bg-purple-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              💎 Лимитированная
+            </span>
+          )}
+          {hasDiscount && (
+            <span className="bg-secondary px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
                 Скидка {discountPercentage}%
               </span>
             )}
+          
+          {/* Старые лейблы для совместимости */}
+          {labels && Array.isArray(labels) && labels.length > 0 && (
+            <>
             {labels.includes("Без выбора") && (
-              <span className="bg-gray-500 px-3 py-1 rounded-full text-white text-xs font-medium">
+              <span className="bg-gray-500 px-2 py-0.5 rounded-full text-white text-xs font-medium">
                 Без выбора
               </span>
             )}
             {labels.includes("Растение с фото") && (
-              <span className="bg-accent px-3 py-1 rounded-full text-white text-xs font-medium">
+              <span className="bg-accent px-2 py-0.5 rounded-full text-white text-xs font-medium">
                 Растение с фото
               </span>
             )}
             {labels.includes("Нет в наличии") && (
-              <span className="bg-error px-3 py-1 rounded-full text-white text-xs font-medium">
+              <span className="bg-error px-2 py-0.5 rounded-full text-white text-xs font-medium">
                 Нет в наличии
               </span>
+              )}
+            </>
             )}
           </div>
-        )}
       </div>
       
-      <div className="p-4">
+      <div className="p-3 sm:p-4 flex flex-col flex-grow">
         <Link href={`/product/${id}`}>
-          <h3 className="heading font-montserrat font-semibold text-lg mb-2">{name}</h3>
+          <h3 className="heading font-montserrat font-semibold text-base sm:text-lg line-clamp-2 mb-2 hover:text-primary transition-colors min-h-[3rem]">{name}</h3>
         </Link>
         
-        <div className="flex justify-between items-center mb-3">
-          <div>
-            <span className="text-primary font-bold text-lg">
+        <div className="flex justify-between items-center mb-3 flex-wrap sm:flex-nowrap flex-grow">
+          <div className="w-full sm:w-auto mb-2 sm:mb-0">
+            <span className="text-primary font-bold text-base sm:text-lg">
               {new Intl.NumberFormat('ru-RU').format(parseFloat(price.toString()))} ₽
             </span>
             {hasDiscount && (
@@ -158,21 +183,22 @@ function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
           </div>
-          <span className={`text-sm ${isAvailable ? 'text-success' : 'text-error'}`}>
+          <span className={`text-xs sm:text-sm ${isAvailable ? 'text-success' : 'text-error'}`}>
             {isAvailable ? 'В наличии' : 'Нет в наличии'}
           </span>
         </div>
         
+        <div className="mt-auto">
         {isAvailable ? (
           <Button 
-            className="w-full bg-secondary hover:bg-yellow-500 text-white rounded-lg py-2 font-medium"
+            className="w-full bg-secondary hover:bg-yellow-500 text-white rounded-lg py-2 font-medium text-sm sm:text-base transition-colors"
             onClick={addToCart}
           >
             В корзину
           </Button>
         ) : (
           <Button 
-            className="w-full bg-primary hover:bg-green-700 text-white rounded-lg py-2 font-medium"
+            className="w-full bg-primary hover:bg-green-700 text-white rounded-lg py-2 font-medium text-sm sm:text-base transition-colors"
             onClick={subscribeToNotifications}
             disabled={notifying}
           >
@@ -184,6 +210,7 @@ function ProductCard({ product }: ProductCardProps) {
             )}
           </Button>
         )}
+        </div>
       </div>
     </div>
   );

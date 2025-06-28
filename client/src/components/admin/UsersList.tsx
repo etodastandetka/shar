@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Edit, CreditCard, User as UserIcon } from "lucide-react";
+import { Search, Edit, CreditCard, User as UserIcon, FileDown } from "lucide-react";
 import { 
   Dialog,
   DialogContent,
@@ -27,6 +27,15 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import { Workbook } from 'exceljs';
+import { saveAs } from 'file-saver';
+
+function s2ab(s: string) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+  return buf;
+}
 
 export default function UsersList() {
   const { toast } = useToast();
@@ -141,20 +150,85 @@ export default function UsersList() {
     (user.fullName && user.fullName.toLowerCase().includes(searchQuery.toLowerCase()))
   );
   
+  // Функция для экспорта пользователей в Excel
+  const exportToExcel = async () => {
+    try {
+      const data = users.map(user => ({
+        ID: user.id,
+        'Имя пользователя': user.username,
+        'Email': user.email,
+        'ФИО': user.fullName,
+        'Телефон': user.phone,
+        'Адрес': user.address,
+        'Тип соцсети': user.socialType || '-',
+        'Баланс': user.balance,
+        'Дата регистрации': new Date(user.createdAt).toLocaleDateString('ru-RU'),
+      }));
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Пользователи');
+
+      // Добавляем заголовки
+      worksheet.columns = Object.keys(data[0]).map(key => ({
+        header: key,
+        key: key,
+        width: 20
+      }));
+
+      // Добавляем данные
+      worksheet.addRows(data);
+
+      // Стилизация заголовков
+      worksheet.getRow(1).font = { bold: true };
+      worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+      // Генерируем файл
+      const buffer = await workbook.xlsx.writeBuffer();
+      
+      // Создаем blob и скачиваем файл
+      const blob = new Blob([buffer], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      saveAs(blob, 'users.xlsx');
+
+      toast({
+        title: "Экспорт завершен",
+        description: "Список пользователей экспортирован в users.xlsx",
+      });
+    } catch (error) {
+      console.error('Ошибка при экспорте:', error);
+      toast({
+        title: "Ошибка экспорта",
+        description: "Не удалось экспортировать данные",
+        variant: "destructive"
+      });
+    }
+  };
+  
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Управление пользователями</h2>
       
       <Card className="mb-6">
         <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Поиск пользователей по имени, email или профилю"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+          <div className="flex items-center justify-between gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Поиск пользователей по имени, email или профилю"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button 
+              onClick={exportToExcel} 
+              className="bg-green-600 hover:bg-green-700 text-white"
+              disabled={isLoading || !users || users.length === 0}
+            >
+              <FileDown className="mr-2 h-4 w-4" />
+              Экспорт в Excel
+            </Button>
           </div>
         </div>
       </Card>

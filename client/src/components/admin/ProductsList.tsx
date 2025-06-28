@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, FileDown } from "lucide-react";
 import { 
   Table, 
   TableBody, 
@@ -17,6 +17,8 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
+import { Workbook } from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export default function ProductsList() {
   const { toast } = useToast();
@@ -75,6 +77,66 @@ export default function ProductsList() {
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
+  const exportToExcel = async () => {
+    try {
+      const data = products.map(product => ({
+        ID: product.id,
+        'Название': product.name,
+        'Описание': product.description,
+        'Цена': product.price,
+        'Старая цена': product.originalPrice || '-',
+        'Количество': product.quantity,
+        'Категория': product.category,
+        'Доступен': product.isAvailable ? 'Да' : 'Нет',
+        'Предзаказ': product.isPreorder ? 'Да' : 'Нет',
+        'Редкий': product.isRare ? 'Да' : 'Нет',
+        'Легкий уход': product.isEasyToCare ? 'Да' : 'Нет',
+        'Метки': product.labels?.join(', ') || '-',
+        'Стоимость доставки': product.deliveryCost || '0',
+        'Дата создания': new Date(product.createdAt).toLocaleDateString('ru-RU'),
+        'Дата обновления': product.updatedAt ? new Date(product.updatedAt).toLocaleDateString('ru-RU') : '-',
+      }));
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Товары');
+
+      // Добавляем заголовки
+      worksheet.columns = Object.keys(data[0]).map(key => ({
+        header: key,
+        key: key,
+        width: 20
+      }));
+
+      // Добавляем данные
+      worksheet.addRows(data);
+
+      // Стилизация заголовков
+      worksheet.getRow(1).font = { bold: true };
+      worksheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+      // Генерируем файл
+      const buffer = await workbook.xlsx.writeBuffer();
+      
+      // Создаем blob и скачиваем файл
+      const blob = new Blob([buffer], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      saveAs(blob, 'products.xlsx');
+
+      toast({
+        title: "Экспорт завершен",
+        description: "Список товаров экспортирован в products.xlsx",
+      });
+    } catch (error) {
+      console.error('Ошибка при экспорте:', error);
+      toast({
+        title: "Ошибка экспорта",
+        description: "Не удалось экспортировать данные",
+        variant: "destructive"
+      });
+    }
+  };
+  
   if (showForm) {
     return (
       <div className="p-6">
@@ -106,10 +168,16 @@ export default function ProductsList() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Управление товарами</h2>
-        <Button onClick={() => setShowForm(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Добавить товар
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={exportToExcel}>
+            <FileDown className="w-4 h-4 mr-2" />
+            Экспорт в Excel
+          </Button>
+          <Button onClick={() => setShowForm(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Добавить товар
+          </Button>
+        </div>
       </div>
       
       <Card className="mb-6">

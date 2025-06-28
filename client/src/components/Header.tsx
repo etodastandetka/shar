@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import ExternalLink from "@/components/ExternalLink";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sprout, User, ShoppingCart, Menu, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
 
 function Header() {
   const [location] = useLocation();
@@ -69,9 +71,9 @@ function Header() {
           <Link href="/faq" className={`hover:text-primary transition-colors ${location === "/faq" ? "text-primary" : ""}`}>
             Оплата
           </Link>
-          <Link href="https://t.me/junglefeedback" target="_blank" className="hover:text-primary transition-colors">
+          <ExternalLink href="https://t.me/junglefeedback" className="hover:text-primary transition-colors">
             Отзывы
-          </Link>
+          </ExternalLink>
           <Link href="/faq" className={`hover:text-primary transition-colors ${location === "/faq" ? "text-primary" : ""}`}>
             FAQ
           </Link>
@@ -129,52 +131,114 @@ function Header() {
       
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white absolute w-full py-3 shadow-md animate-fadeIn">
-          <div className="container mx-auto px-4 flex flex-col space-y-3">
-            <Link href="/catalog" onClick={closeMobileMenu} className="py-2 hover:text-primary transition-colors">
-              Каталог
-            </Link>
-            <Link href="/faq" onClick={closeMobileMenu} className="py-2 hover:text-primary transition-colors">
-              Доставка
-            </Link>
-            <Link href="/faq" onClick={closeMobileMenu} className="py-2 hover:text-primary transition-colors">
-              Оплата
-            </Link>
-            <Link href="https://t.me/junglefeedback" target="_blank" onClick={closeMobileMenu} className="py-2 hover:text-primary transition-colors">
-              Отзывы
-            </Link>
-            <Link href="/faq" onClick={closeMobileMenu} className="py-2 hover:text-primary transition-colors">
-              FAQ
-            </Link>
-            <div className="pt-2 border-t border-gray-100">
-              {user ? (
-                <>
-                  <Link href="/profile" onClick={closeMobileMenu} className="py-2 block hover:text-primary transition-colors">
-                    Мой профиль
-                  </Link>
-                  <Link href="/profile?tab=orders" onClick={closeMobileMenu} className="py-2 block hover:text-primary transition-colors">
-                    Мои заказы
-                  </Link>
-                  {user.isAdmin && (
-                    <Link href="/admin" onClick={closeMobileMenu} className="py-2 block hover:text-primary transition-colors">
-                      Админ панель
-                    </Link>
-                  )}
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      closeMobileMenu();
-                    }}
-                    className="py-2 text-left w-full hover:text-primary transition-colors"
-                  >
-                    Выйти
-                  </button>
-                </>
-              ) : (
-                <Link href="/auth" onClick={closeMobileMenu} className="py-2 block hover:text-primary transition-colors">
-                  Войти / Зарегистрироваться
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="absolute top-0 left-0 w-full bg-white shadow-lg animate-slideDown">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center justify-between mb-4">
+                <Link href="/" className="font-montserrat font-bold text-xl text-primary flex items-center" onClick={closeMobileMenu}>
+                  <Sprout className="mr-2 h-6 w-6" />
+                  <span>Jungle Plants</span>
                 </Link>
-              )}
+                <button 
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors" 
+                  onClick={closeMobileMenu}
+                  aria-label="Закрыть меню"
+                >
+                  <X className="h-6 w-6 text-gray-600" />
+                </button>
+              </div>
+              
+              <nav className="flex flex-col space-y-1">
+                <Link 
+                  href="/catalog" 
+                  onClick={closeMobileMenu} 
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                    location === "/catalog" 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Каталог
+                </Link>
+                <Link 
+                  href="/faq" 
+                  onClick={closeMobileMenu} 
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                    location === "/faq" 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Доставка
+                </Link>
+                <Link 
+                  href="/faq" 
+                  onClick={closeMobileMenu} 
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                    location === "/faq" 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Оплата
+                </Link>
+                <ExternalLink 
+                  href="https://t.me/junglefeedback" 
+                  onClick={closeMobileMenu} 
+                  className="px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  Отзывы
+                </ExternalLink>
+                <Link 
+                  href="/faq" 
+                  onClick={closeMobileMenu} 
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-base font-medium transition-colors",
+                    location === "/faq" 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  FAQ
+                </Link>
+              </nav>
+
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                {user ? (
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{user.fullName}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        handleLogout();
+                        closeMobileMenu();
+                      }}
+                    >
+                      Выйти
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-3">
+                    <Link href="/auth" onClick={closeMobileMenu}>
+                      <Button className="w-full" size="lg">
+                        Войти
+                      </Button>
+                    </Link>
+                    <Link href="/auth?register=true" onClick={closeMobileMenu}>
+                      <Button variant="outline" className="w-full" size="lg">
+                        Регистрация
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
