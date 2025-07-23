@@ -100,6 +100,7 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
       isBestseller: product?.isBestseller ?? false,
       isNewArrival: product?.isNewArrival ?? false,
       isLimitedEdition: product?.isLimitedEdition ?? false,
+      isDiscounted: product?.isDiscounted ?? false,
     },
   });
   
@@ -158,6 +159,7 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
       };
       
       console.log("Updating product data:", productData); // Для отладки
+      console.log("🏷️ isDiscounted значение:", productData.isDiscounted, typeof productData.isDiscounted);
       
       const response = await apiRequest("PUT", `/api/products/${data.id}`, productData);
       if (!response.ok) {
@@ -194,6 +196,16 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
   
   // Обработчик отправки формы
   function onSubmit(values: ProductFormValues) {
+    console.log("📝 Form onSubmit вызван с данными:", values);
+    console.log("🏷️ isDiscounted в форме:", values.isDiscounted, typeof values.isDiscounted);
+    console.log("🏷️ Все флажки:", {
+      isHotDeal: values.isHotDeal,
+      isBestseller: values.isBestseller,
+      isNewArrival: values.isNewArrival,
+      isLimitedEdition: values.isLimitedEdition,
+      isDiscounted: values.isDiscounted
+    });
+    
     if (product) {
       // Обновление существующего товара
       updateProductMutation.mutate({
@@ -246,10 +258,16 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
         return;
       }
       
-      if (!file.type.startsWith("image/")) {
+      // Поддержка различных форматов изображений (включая мобильные)
+      const supportedTypes = [
+        'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+        'image/heic', 'image/heif', 'image/avif', 'image/bmp', 'image/tiff'
+      ];
+      
+      if (!file.type.startsWith("image/") && !supportedTypes.includes(file.type.toLowerCase())) {
         toast({
           title: "Неверный тип файла",
-          description: `Файл "${file.name}" не является изображением`,
+          description: `Файл "${file.name}" не является поддерживаемым изображением`,
           variant: "destructive"
         });
         return;
@@ -615,6 +633,30 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
                   </FormItem>
                 )}
               />
+              
+              <FormField
+                control={form.control}
+                name="isDiscounted"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Уценка</FormLabel>
+                      <FormDescription>
+                        Товар со скидкой или уценкой
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(value) => {
+                          console.log("🏷️ Switch isDiscounted изменен на:", value, typeof value);
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
           
@@ -627,11 +669,13 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
               <input
                 type="file"
                 multiple
-                accept="image/*"
+                accept="image/*,image/heic,image/heif"
+                capture="environment"
                 onChange={handleImageFiles}
                 className="hidden"
                 id="file-upload"
                 disabled={uploadingImages}
+                webkitdirectory={false}
               />
               <label htmlFor="file-upload" className="cursor-pointer">
                 <div className="flex flex-col items-center">
@@ -640,7 +684,10 @@ export default function ProductForm({ product, onSuccess, onCancel }: ProductFor
                     {uploadingImages ? "Загрузка..." : "Нажмите для загрузки изображений"}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    PNG, JPG, GIF до 5 МБ каждое
+                    PNG, JPG, HEIC, GIF до 5 МБ каждое
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    📱 Поддерживается съемка с камеры телефона
                   </p>
                 </div>
               </label>

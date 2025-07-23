@@ -25,14 +25,32 @@ export default function AdminDashboard() {
     }
   });
   
-  const { data: orders, isLoading: isLoadingOrders } = useQuery({
-    queryKey: ["/api/orders"],
+  const { data: ordersResponse, isLoading: isLoadingOrders } = useQuery({
+    queryKey: ["/api/orders", 1, 1000], // Get first 1000 orders for dashboard stats
     queryFn: async () => {
-      const res = await fetch("/api/orders", { credentials: "include" });
+      const res = await fetch("/api/orders?page=1&limit=1000", { credentials: "include" });
       if (!res.ok) throw new Error("Ошибка загрузки заказов");
-      return res.json();
+      const data = await res.json();
+      
+      // Handle both old and new API response formats
+      if (Array.isArray(data)) {
+        // Old format: direct array
+        return { orders: data, pagination: null };
+      } else if (data && data.orders && Array.isArray(data.orders)) {
+        // New format: paginated response
+        return data;
+      } else {
+        // Invalid format
+        console.warn("Invalid orders response format:", data);
+        return { orders: [], pagination: null };
+      }
     }
   });
+  
+  // Extract orders from the response with additional safety checks
+  const orders = ordersResponse?.orders && Array.isArray(ordersResponse.orders) 
+    ? ordersResponse.orders 
+    : [];
   
   const { data: users, isLoading: isLoadingUsers } = useQuery({
     queryKey: ["/api/users"],
@@ -55,7 +73,7 @@ export default function AdminDashboard() {
   const isLoading = isLoadingProducts || isLoadingOrders || isLoadingUsers || isLoadingReviews;
   
   // Подготовка данных для графиков
-  const ordersByStatus = orders ? [
+  const ordersByStatus = orders && Array.isArray(orders) ? [
     { name: "В ожидании", value: orders.filter(o => o.orderStatus === "pending").length },
     { name: "Оплачено", value: orders.filter(o => o.orderStatus === "paid").length },
     { name: "Отправлено", value: orders.filter(o => o.orderStatus === "shipped").length },
@@ -65,7 +83,7 @@ export default function AdminDashboard() {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
   
   // Данные для графика продаж по дням
-  const salesData = orders ? Array.from({ length: 7 }).map((_, i) => {
+  const salesData = orders && Array.isArray(orders) ? Array.from({ length: 7 }).map((_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (6 - i));
     const dateString = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });

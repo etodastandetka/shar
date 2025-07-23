@@ -1,7 +1,12 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'db', 'database.sqlite');
+// ИСПРАВЛЕНО: Используем динамический путь в зависимости от окружения
+const dbPath = process.env.NODE_ENV === 'production' 
+  ? './db/database.sqlite'
+  : path.join(process.cwd(), 'db', 'database.sqlite');
+
+console.log(`📁 Путь к базе данных phone-verification: ${dbPath}`);
 const db = new Database(dbPath);
 
 // Создаем таблицу для временных регистраций, если она не существует

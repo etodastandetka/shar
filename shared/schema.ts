@@ -53,6 +53,7 @@ export const products = pgTable("products", {
   isBestseller: boolean("is_bestseller").default(false),
   isNewArrival: boolean("is_new_arrival").default(false),
   isLimitedEdition: boolean("is_limited_edition").default(false),
+  isDiscounted: boolean("is_discounted").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

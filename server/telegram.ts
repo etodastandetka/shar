@@ -105,6 +105,31 @@ export class TelegramService {
       return false;
     }
   }
+
+  public async sendPaymentProofNotification(orderData: OrderData): Promise<boolean> {
+    try {
+      const settings = await this.getSettings();
+      
+      if (!settings || !settings.enable_notifications || !settings.bot_token || !settings.chat_id) {
+        console.log("Telegram notifications disabled or not configured");
+        return false;
+      }
+      
+      const message = `📄 *Загружен чек для подтверждения!*\n\n` +
+        `🛒 *Заказ:* #${orderData.id}\n` +
+        `👤 *Клиент:* ${orderData.userName}\n` +
+        `📧 *Email:* ${orderData.userEmail}\n` +
+        `📱 *Телефон:* ${orderData.userPhone}\n` +
+        `💰 *Сумма:* ${orderData.totalAmount}₽\n\n` +
+        `⚠️ *Требуется проверка чека на сайте!*\n` +
+        `👉 Перейдите в админ-панель для подтверждения платежа.`;
+      
+      return await this.sendMessage(settings.bot_token, settings.chat_id, message);
+    } catch (error) {
+      console.error("Error sending payment proof notification:", error);
+      return false;
+    }
+  }
   
   public async testConnection(botToken: string, chatId: string): Promise<{ success: boolean; message: string }> {
     try {

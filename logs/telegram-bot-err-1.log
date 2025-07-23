@@ -1,0 +1,16 @@
+2025-06-29T17:58:07: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925279, allowed_updates: [] }
+  }
+}

@@ -78,6 +78,9 @@ export default function CheckoutPage() {
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [orderPaymentMethod, setOrderPaymentMethod] = useState<string>("");
   const [proofUploaded, setProofUploaded] = useState(false);
   const queryClient = useQueryClient();
   
@@ -91,6 +94,72 @@ export default function CheckoutPage() {
     const stored = localStorage.getItem('appliedPromoCode');
     return stored ? JSON.parse(stored) : null;
   });
+
+  // Get cart items from localStorage (using useQuery for caching)
+  const { data: cartItems = [] } = useQuery<CartItem[]>({
+    queryKey: ["/api/cart"],
+    queryFn: () => {
+      const storedCart = localStorage.getItem("cart");
+      return storedCart ? JSON.parse(storedCart) : [];
+    },
+  });
+
+  // Calculate totals
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => {
+      const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+      return total + (price * item.quantity);
+    }, 0);
+  };
+  
+  // Валидация промокода при изменении корзины
+  useEffect(() => {
+    if (promoCodeInfo && cartItems.length > 0) {
+      const validatePromoCode = async () => {
+        try {
+          const subtotal = calculateSubtotal();
+          const response = await fetch('/api/promo-codes/validate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              code: promoCodeInfo.code,
+              cartTotal: subtotal
+            })
+          });
+          
+          if (!response.ok) {
+            // Промокод больше не действителен
+            localStorage.removeItem('appliedPromoCode');
+            setPromoCodeInfo(null);
+            toast({
+              title: "Промокод сброшен",
+              description: "Промокод больше не действителен для текущей суммы заказа",
+              variant: "destructive"
+            });
+          } else {
+            const data = await response.json();
+            // Обновляем информацию о промокоде если скидка изменилась
+            if (data.discount !== promoCodeInfo.discount) {
+              const updatedPromoInfo = {
+                code: promoCodeInfo.code,
+                discount: data.discount,
+                discountType: data.discountType,
+                discountValue: data.discountValue
+              };
+              setPromoCodeInfo(updatedPromoInfo);
+              localStorage.setItem('appliedPromoCode', JSON.stringify(updatedPromoInfo));
+            }
+          }
+        } catch (error) {
+          console.error('Ошибка валидации промокода:', error);
+        }
+      };
+      
+      validatePromoCode();
+    }
+  }, [cartItems, promoCodeInfo, toast]);
   
   // Redirect if not authenticated
   useEffect(() => {
@@ -103,15 +172,6 @@ export default function CheckoutPage() {
       });
     }
   }, [user, setLocation, toast]);
-  
-  // Get cart items from localStorage (using useQuery for caching)
-  const { data: cartItems = [] } = useQuery<CartItem[]>({
-    queryKey: ["/api/cart"],
-    queryFn: () => {
-      const storedCart = localStorage.getItem("cart");
-      return storedCart ? JSON.parse(storedCart) : [];
-    },
-  });
   
   // Получаем данные о продуктах для расчета доставки
   const { data: products = [] } = useQuery<Product[]>({
@@ -154,63 +214,89 @@ export default function CheckoutPage() {
     },
   });
   
-  // Calculate totals
-  const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => {
-      const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-      return total + (price * item.quantity);
-    }, 0);
+  // Calculate promo code discount (only on products, not delivery)
+  const calculatePromoDiscount = () => {
+    const subtotal = calculateSubtotal();
+    if (!promoCodeInfo) return 0;
+    if (promoCodeInfo.discountType === 'percentage') {
+      return Math.round(subtotal * (promoCodeInfo.discountValue / 100));
+    } else {
+      return Math.min(promoCodeInfo.discountValue, subtotal);
+    }
   };
   
   // Новая функция расчёта доставки
   const calculateDeliveryCost = () => {
     if (cartItems.length === 0 || products.length === 0) return 0;
     const deliveryType = form.watch("deliveryType");
-    if (deliveryType === "cdek" || deliveryType === "pickup") {
+    
+    // Самовывоз — бесплатно
+    if (deliveryType === "pickup") {
       return 0;
     }
-    // Почта России
-    // Собираем массив deliveryCost для каждого товара (по количеству)
-    let deliveryCosts: number[] = [];
-    cartItems.forEach(item => {
-      const product = products.find(p => p.id === item.id);
-      const cost = product && product.deliveryCost != null ? parseFloat(product.deliveryCost.toString()) : 0;
-      for (let i = 0; i < item.quantity; i++) {
-        deliveryCosts.push(cost);
-      }
-    });
-    if (deliveryCosts.length === 0) return 0;
-    // Сортируем по убыванию
-    deliveryCosts.sort((a, b) => b - a);
-    // До 3 товаров — только максимальная стоимость
-    if (deliveryCosts.length <= 3) {
-      return deliveryCosts[0];
+    
+    // CDEK — оплачивается при получении, НЕ включается в заказ
+    if (deliveryType === "cdek") {
+      return 0;
     }
-    // 4 и более: макс + 200р за каждую единицу сверх 3
-    const base = deliveryCosts[0];
-    const extra = (deliveryCosts.length - 3) * 200;
-    return base + extra;
+    
+    // Только Почта России включается в стоимость заказа
+    if (deliveryType === "russianPost") {
+      // Собираем массив deliveryCost для каждого товара (по количеству)
+      let deliveryCosts: number[] = [];
+      cartItems.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        const cost = product && product.deliveryCost != null ? parseFloat(product.deliveryCost.toString()) : 0;
+        for (let i = 0; i < item.quantity; i++) {
+          deliveryCosts.push(cost);
+        }
+      });
+      if (deliveryCosts.length === 0) return 0;
+      // Сортируем по убыванию
+      deliveryCosts.sort((a, b) => b - a);
+      // До 3 товаров — только максимальная стоимость
+      if (deliveryCosts.length <= 3) {
+        return deliveryCosts[0];
+      }
+      // 4 и более: макс + 200р за каждую единицу сверх 3
+      const base = deliveryCosts[0];
+      const extra = (deliveryCosts.length - 3) * 200;
+      return base + extra;
+    }
+    
+    return 0;
   };
   
   // Пояснение для доставки
   const deliveryNote = () => {
     const deliveryType = form.watch("deliveryType");
     if (deliveryType === "cdek") {
-      return "Доставка оплачивается самостоятельно при получении в пункте выдачи СДЭК.";
+      return "Доставка СДЭК оплачивается отдельно при получении в пункте выдачи (не включена в стоимость заказа).";
     }
     if (deliveryType === "pickup") {
       return "Самовывоз по адресу: г. Кореновск, ул. Железнодорожная, д. 5. Только для оплаченных заказов.";
     }
-    if (cartItems.length > 3) {
-      return "Сумма доставки: максимальная стоимость среди всех растений + 200₽ за каждую единицу товара начиная с 4-й.";
+    if (deliveryType === "russianPost") {
+      if (cartItems.length > 3) {
+        return "Доставка Почтой России: максимальная стоимость среди всех растений + 200₽ за каждую единицу товара начиная с 4-й.";
+      }
+      return "Доставка Почтой России равна максимальной стоимости доставки среди всех растений в заказе.";
     }
-    return "Сумма доставки равна максимальной стоимости доставки среди всех растений в заказе.";
+    return "";
   };
   
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
     const deliveryCost = calculateDeliveryCost();
-    const discount = promoCodeInfo?.discount || 0;
+    const discount = calculatePromoDiscount();
+    return subtotal + deliveryCost - discount;
+  };
+  
+  // Calculate full total including delivery (for display purposes)
+  const calculateFullTotal = () => {
+    const subtotal = calculateSubtotal();
+    const deliveryCost = calculateDeliveryCost();
+    const discount = calculatePromoDiscount();
     return subtotal + deliveryCost - discount;
   };
   
@@ -250,7 +336,7 @@ export default function CheckoutPage() {
       // Показать уведомление о успешном прикреплении файла
       toast({
         title: "Файл прикреплен",
-        description: "Чек успешно прикреплен к заказу. Нажмите 'Загрузить чек' для отправки.",
+        description: "Чек успешно прикреплен к заказу. Нажмите 'Подтвердить чек' для отправки.",
         variant: "success"
       });
     }
@@ -280,8 +366,8 @@ export default function CheckoutPage() {
       setProofUploaded(true);
       
       toast({
-        title: "Чек загружен",
-        description: "Чек успешно загружен! Теперь нажмите 'Завершить заказ' для завершения заказа",
+        title: "Чек подтвержден",
+        description: "Мы проверим ваш чек, вы получите уведомление о статусе заказа. Теперь нажмите 'Подтвердить заказ' для завершения.",
         variant: "success"
       });
       
@@ -300,43 +386,29 @@ export default function CheckoutPage() {
     }
   });
   
-  // Final complete order after proof upload
+  // Complete order mutation (for direct transfer)
   const completeOrderMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/orders/${id}/complete`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      });
-      
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
+    mutationFn: async (orderId: number) => {
+      const response = await apiRequest("POST", `/api/orders/${orderId}/complete`, {});
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
         throw new Error(errorData?.message || "Ошибка при завершении заказа");
       }
-      
-      return res.json();
+      return response.json();
     },
-    onSuccess: (data) => {
-      // После финализации заказа обновляем данные пользователя и статус заказа
-      queryClient.invalidateQueries({queryKey: ["/api/auth/user"]});
-      queryClient.invalidateQueries({queryKey: ["/api/user/orders"]});
-      queryClient.invalidateQueries({queryKey: ["/api/orders"]});
-      
-      // Явное обновление пользовательских данных для актуализации баланса
-      refreshUserData();
-      
-      // Четкий переход на страницу успешного оформления
+    onSuccess: () => {
+      // Сохраняем способ оплаты для прямого перевода  
+      setOrderPaymentMethod("directTransfer");
       setStep("success");
       
-      // Clear cart
+      // Clear cart and promo code
       localStorage.setItem("cart", "[]");
+      localStorage.removeItem("appliedPromoCode");
       queryClient.setQueryData(["/api/cart"], []);
       
       toast({
         title: "Заказ завершен",
-        description: data.message || `Заказ #${orderId} успешно оформлен`,
+        description: "Подтверждение оплаты загружено. Заказ передан в обработку",
         variant: "success"
       });
     },
@@ -375,9 +447,12 @@ export default function CheckoutPage() {
       
       // If payment method is Ozon Pay or balance, go directly to success
       const paymentMethod = form.getValues("paymentMethod");
+      setOrderPaymentMethod(paymentMethod); // Сохраняем способ оплаты
+      
       if (paymentMethod === "ozonpay") {
-        // Clear cart first
+        // Clear cart and promo code first
         localStorage.setItem("cart", "[]");
+        localStorage.removeItem("appliedPromoCode");
         queryClient.setQueryData(["/api/cart"], []);
         
         // Check if we have payment URL
@@ -429,8 +504,9 @@ export default function CheckoutPage() {
         
         setStep("success");
         
-        // Clear cart
+        // Clear cart and promo code
         localStorage.setItem("cart", "[]");
+        localStorage.removeItem("appliedPromoCode");
         queryClient.setQueryData(["/api/cart"], []);
         
         toast({
@@ -468,38 +544,43 @@ export default function CheckoutPage() {
     }
     
     if (step === "payment") {
-      // Получаем метод оплаты
-      const paymentMethod = form.getValues("paymentMethod");
-      
-      // Create order
-      const orderData: InsertOrder = {
-        userId: String(user.id),
-        items: cartItems.map(item => ({
-          id: item.id,
-          quantity: item.quantity,
-          price: typeof item.price === 'string' ? parseFloat(item.price) : item.price,
-        })),
-        totalAmount: calculateTotal().toString(),
-        deliveryAmount: calculateDeliveryCost(),
-        fullName: data.fullName,
-        address: data.address || "",
-        phone: data.phone,
-        socialNetwork: data.socialNetwork,
-        socialUsername: data.socialUsername || undefined,
-        deliveryType: data.deliveryType,
-        deliverySpeed: data.deliverySpeed,
-        paymentMethod: data.paymentMethod,
-        needStorage: data.needStorage,
-        needInsulation: data.needInsulation,
-        comment: data.comment || undefined,
-        promoCode: promoCodeInfo?.code || null,
-      };
-      
-      console.log("Отправка данных заказа:", orderData);
-      createOrderMutation.mutate(orderData);
+      // Переходим к дополнительным вопросам
+      setStep("questions");
+      return;
     }
     
-    if (step === "questions" && orderId) {
+    if (step === "questions") {
+      // Создаем заказ на этапе вопросов
+      if (!orderId) {
+        const orderData: InsertOrder = {
+          userId: String(user.id),
+          items: cartItems.map(item => ({
+            id: item.id,
+            quantity: item.quantity,
+            price: typeof item.price === 'string' ? parseFloat(item.price) : item.price,
+          })),
+          totalAmount: calculateTotal().toString(),
+          deliveryAmount: calculateDeliveryCost(),
+          fullName: data.fullName,
+          address: data.address || "",
+          phone: data.phone,
+          socialNetwork: data.socialNetwork,
+          socialUsername: data.socialUsername || undefined,
+          deliveryType: data.deliveryType,
+          deliverySpeed: data.deliverySpeed,
+          paymentMethod: data.paymentMethod,
+          needStorage: data.needStorage,
+          needInsulation: data.needInsulation,
+          comment: data.comment || undefined,
+          promoCode: promoCodeInfo?.code || null,
+        };
+        
+        console.log("Отправка данных заказа:", orderData);
+        createOrderMutation.mutate(orderData);
+        return;
+      }
+      
+      // Если заказ уже создан, обрабатываем загрузку документов
       if (data.paymentMethod === "directTransfer") {
         // Если файл еще не выбран
         if (!paymentProof && !proofUploaded) {
@@ -525,8 +606,9 @@ export default function CheckoutPage() {
       } else {
         setStep("success");
         
-        // Clear cart
+        // Clear cart and promo code
         localStorage.setItem("cart", "[]");
+        localStorage.removeItem("appliedPromoCode");
         queryClient.setQueryData(["/api/cart"], []);
       }
     }
@@ -534,7 +616,9 @@ export default function CheckoutPage() {
   
   // Handle back button
   const handleBack = () => {
-    if (step === "payment") {
+    if (step === "shipping") {
+      setLocation("/cart");
+    } else if (step === "payment") {
       setStep("shipping");
     } else if (step === "questions") {
       setStep("payment");
@@ -565,7 +649,7 @@ export default function CheckoutPage() {
           onClick={handleBack}
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
-          {step === "success" ? "На главную" : "Назад"}
+          {step === "success" ? "На главную" : step === "shipping" ? "В корзину" : "Назад"}
         </Button>
         
         <h1 className="heading font-montserrat font-bold text-xl md:text-2xl ml-4">
@@ -661,30 +745,30 @@ export default function CheckoutPage() {
                           }
                           
                           return (
-                            <FormItem>
+                          <FormItem>
                               <FormLabel>
                                 {isPickup ? "Адрес самовывоза" : "Адрес доставки"}
                               </FormLabel>
-                              <FormControl>
-                                <Textarea 
+                            <FormControl>
+                              <Textarea 
                                   placeholder={
                                     isPickup 
                                       ? "Адрес самовывоза" 
                                       : "Полный адрес доставки, включая индекс"
                                   } 
-                                  {...field}
+                                {...field} 
                                   value={isPickup ? "г. Кореновск, ул. Железнодорожная, д. 5" : field.value}
                                   disabled={isPickup}
                                   className={`form-input ${isPickup ? 'bg-gray-100 text-gray-700' : ''}`}
-                                />
-                              </FormControl>
+                              />
+                            </FormControl>
                               {isPickup && (
                                 <p className="text-sm text-green-600 font-medium">
                                   Заказ можно забрать только после полной оплаты
                                 </p>
                               )}
-                              <FormMessage />
-                            </FormItem>
+                            <FormMessage />
+                          </FormItem>
                           );
                         }}
                       />
@@ -752,27 +836,27 @@ export default function CheckoutPage() {
                         />
                         
                         {form.watch("deliveryType") !== "pickup" && (
-                          <FormField
-                            control={form.control}
-                            name="deliverySpeed"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Скорость доставки</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                    <SelectTrigger className="form-input">
-                                      <SelectValue placeholder="Выберите скорость доставки" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="standard">Стандартная</SelectItem>
-                                    <SelectItem value="express">Экспресс (+20%)</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                        <FormField
+                          control={form.control}
+                          name="deliverySpeed"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Скорость доставки</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className="form-input">
+                                    <SelectValue placeholder="Выберите скорость доставки" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="standard">Стандартная</SelectItem>
+                                  <SelectItem value="express">Экспресс (+20%)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         )}
                       </div>
                       
@@ -837,7 +921,7 @@ export default function CheckoutPage() {
                                     <CreditCard className="h-5 w-5 mr-2 text-blue-500" />
                                     <div>
                                       <div className="font-medium">Оплата картой</div>
-                                      <div className="text-sm text-gray-500">Ozon Pay — быстро и безопасно. Заказ создается после успешной оплаты</div>
+                                      <div className="text-sm text-gray-500">Ozon Pay — быстро и безопасно</div>
                                     </div>
                                   </Label>
                                 </div>
@@ -1016,44 +1100,63 @@ export default function CheckoutPage() {
                         </div>
                       )}
                     </CardContent>
-                    <CardFooter className="flex justify-end">
+                    <CardFooter className="flex justify-between">
                       <Button 
-                        type="submit" 
-                        className="bg-primary hover:bg-green-700 text-white"
-                        disabled={isUploading || uploadProofMutation.isPending || completeOrderMutation.isPending}
+                        type="button"
+                        variant="outline"
+                        onClick={handleBack}
                       >
-                        {isUploading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Загрузка чека...
-                          </>
-                        ) : uploadProofMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Отправка чека...
-                          </>
-                        ) : completeOrderMutation.isPending ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Завершение заказа...
-                          </>
-                        ) : proofUploaded ? (
-                          <>
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
-                            Завершить заказ
-                          </>
-                        ) : paymentProof ? (
-                          <>
-                            <Upload className="mr-2 h-4 w-4" />
-                            Загрузить чек
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="mr-2 h-4 w-4" />
-                            Прикрепить чек
-                          </>
-                        )}
+                        <ChevronLeft className="mr-2 h-4 w-4" />
+                        Назад
                       </Button>
+                      
+                      {form.watch("paymentMethod") === "directTransfer" ? (
+                        <Button 
+                          type="submit" 
+                          className="bg-primary hover:bg-green-700 text-white"
+                          disabled={isUploading || uploadProofMutation.isPending || completeOrderMutation.isPending}
+                        >
+                          {isUploading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Загрузка чека...
+                            </>
+                          ) : uploadProofMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Отправка чека...
+                            </>
+                          ) : completeOrderMutation.isPending ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Завершение заказа...
+                            </>
+                          ) : proofUploaded ? (
+                            <>
+                              <CheckCircle2 className="mr-2 h-4 w-4" />
+                              Подтвердить заказ
+                            </>
+                          ) : paymentProof ? (
+                            <>
+                              <Upload className="mr-2 h-4 w-4" />
+                              Подтвердить чек
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="mr-2 h-4 w-4" />
+                              Прикрепить чек
+                            </>
+                          )}
+                        </Button>
+                      ) : (
+                        <Button 
+                          type="submit" 
+                          className="bg-primary hover:bg-green-700 text-white"
+                        >
+                          Далее
+                          <ChevronRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      )}
                     </CardFooter>
                   </Card>
                 )}
@@ -1107,7 +1210,7 @@ export default function CheckoutPage() {
                   {promoCodeInfo && (
                     <div className="flex justify-between text-green-600">
                       <span>Скидка по промокоду:</span>
-                      <span>-{formatPrice(promoCodeInfo.discount)} ₽</span>
+                      <span>-{formatPrice(calculatePromoDiscount())} ₽</span>
                     </div>
                   )}
                   <Separator className="my-4" />
@@ -1134,12 +1237,50 @@ export default function CheckoutPage() {
           <div className="max-w-md mx-auto mb-8">
             <div className="bg-gray-50 p-4 rounded-lg text-left">
               <h3 className="font-medium mb-2">Что дальше?</h3>
-              <p className="text-sm text-gray-600 mb-2">
-                Мы уже получили ваш заказ и начали его обработку. Вы получите уведомление на email о статусе вашего заказа.
+              
+              {orderPaymentMethod === "directTransfer" ? (
+                <>
+                  <p className="text-sm text-gray-600 mb-2">
+                    🔍 <strong>Мы проверим ваш чек и подтвердим оплату</strong>
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    📲 Вы получите уведомление о статусе заказа и начале обработки
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    📦 После подтверждения оплаты мы начнем подготовку вашего заказа к отправке
+                  </p>
+                </>
+              ) : orderPaymentMethod === "balance" ? (
+                <>
+                  <p className="text-sm text-gray-600 mb-2">
+                    ✅ <strong>Заказ оплачен с вашего баланса!</strong>
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    📦 Мы уже начали обработку вашего заказа
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    📲 Вы получите уведомления о всех этапах доставки на email
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-600 mb-2">
+                    ✅ <strong>Заказ успешно оплачен!</strong>
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    📦 Мы уже получили ваш заказ и начали его обработку
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    📲 Вы получите уведомления о статусе заказа на email
+                  </p>
+                </>
+              )}
+              
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-500">
+                  💡 Вы всегда можете проверить статус заказа в личном кабинете в разделе "Мои заказы"
               </p>
-              <p className="text-sm text-gray-600">
-                Вы всегда можете проверить статус заказа в личном кабинете в разделе "Мои заказы".
-              </p>
+              </div>
             </div>
           </div>
           

@@ -8,7 +8,7 @@ console.log('🗑️ Быстрое удаление пользователя');
 console.log('📁 Путь к базе данных:', DB_PATH);
 
 // ИЗМЕНИТЕ НА СВОЙ EMAIL
-const USER_EMAIL = 'admin@primeballoons.ru'; // Замените на ваш email
+const USER_EMAIL ='dastandzhumanaliev42@gmail.com'; // Замените на ваш email
 
 function deleteUserByEmail(email) { 
   const db = new sqlite3.Database(DB_PATH, (err) => {

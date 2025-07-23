@@ -1,3 +1,6 @@
+console.log('🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀');
+process.stdout.write('НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН\n');
+
 const { Telegraf } = require('telegraf');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
@@ -25,6 +28,7 @@ const DB_PATH = path.join(__dirname, '..', 'db', 'database.sqlite');
 
 console.log('🤖 Запуск Telegram бота...');
 console.log('📁 Путь к базе данных:', DB_PATH);
+console.log('🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)');
 
 // Функция для работы с базой данных
 function getDatabase() {
@@ -247,11 +251,11 @@ function getUserByTokenOrVerified(token) {
   });
 }
 
-// Функция для поиска пользователя с расширенным логированием
+// НОВАЯ ФУНКЦИЯ ДЛЯ ПОИСКА ПОЛЬЗОВАТЕЛЯ - ВЕРСИЯ 3.0
 async function findUserForVerification(token, chatId) {
-  console.log(`🔍 Поиск пользователя для верификации:`);
-  console.log(`   Токен: ${token}`);
-  console.log(`   Chat ID: ${chatId}`);
+  console.log(`🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:`);
+  console.log(`   🔑 Токен: ${token}`);
+  console.log(`   💬 Chat ID: ${chatId}`);
   
   const db = getDatabase();
   
@@ -264,72 +268,83 @@ async function findUserForVerification(token, chatId) {
         if (err) {
           console.error('❌ Ошибка поиска в pending_registrations:', err);
           // Продолжаем поиск в users
-        } else if (pendingReg) {
-          console.log(`📋 Найдена запись в pending_registrations:`);
-          console.log(`   Телефон: ${pendingReg.phone}`);
-          console.log(`   Верифицирован: ${pendingReg.verified ? 'Да' : 'Нет'}`);
-          console.log(`   Создан: ${pendingReg.created_at}`);
+                        } else if (pendingReg) {
+          console.log(`🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:`);
+          console.log(`   📞 Телефон: ${pendingReg.phone}`);
+          console.log(`   ✅ Верифицирован: ${pendingReg.verified ? 'Да' : 'Нет'}`);
+          console.log(`   📅 Создан: ${pendingReg.created_at}`);
           
           try {
             const userData = JSON.parse(pendingReg.user_data);
-            console.log(`   Email: ${userData.email}`);
+            console.log(`   📧 ВЕРСИЯ 3.0 - Email: ${userData.email}`);
             
-            // Ищем соответствующего пользователя в таблице users
-            db.get(
-              'SELECT * FROM users WHERE email = ? OR phone = ?',
-              [userData.email, pendingReg.phone],
-              (userErr, user) => {
-                if (userErr) {
-                  console.error('❌ Ошибка поиска пользователя:', userErr);
+            // Если регистрация еще не верифицирована, верифицируем её
+            if (!pendingReg.verified) {
+              console.log(`🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...`);
+              
+              db.run(
+                'UPDATE pending_registrations SET verified = 1 WHERE id = ?',
+                [pendingReg.id],
+                function(updateErr) {
+                  if (updateErr) {
+                    console.error('❌ Ошибка верификации pending_registrations:', updateErr);
+                    db.close();
+                    reject(updateErr);
+                    return;
+                  }
+                  
+                  console.log(`🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно`);
+                  
+                  // Возвращаем специальный объект, который покажет пользователю, что нужно вернуться на сайт
+                  const result = {
+                    isPendingVerification: true,
+                    email: userData.email,
+                    phone: pendingReg.phone,
+                    message: 'Номер подтвержден! Вернитесь на сайт и нажмите "Я подтвердил номер"'
+                  };
+                  
                   db.close();
-                  reject(userErr);
-                  return;
+                  resolve(result);
                 }
-                
-                                 if (user) {
-                   console.log(`✅ Найден соответствующий пользователь: ${user.email}`);
-                   
-                   // Если регистрация верифицирована, но пользователь не обновлен
-                   if (pendingReg.verified && !user.phone_verified) {
-                     console.log(`🔄 Обновляем статус верификации пользователя...`);
-                     
-                     // Обновляем пользователя
-                     db.run(
-                       'UPDATE users SET phone_verified = 1, phone_verification_token = NULL WHERE id = ?',
-                       [user.id],
-                       function(updateErr) {
-                         if (updateErr) {
-                           console.error('❌ Ошибка обновления пользователя:', updateErr);
-                         } else {
-                           console.log(`✅ Пользователь обновлен успешно`);
-                           user.phone_verified = 1;
-                           user.phone_verification_token = null;
-                         }
-                         
-                         db.close();
-                         resolve(user);
-                       }
-                     );
-                     return;
-                   }
-                   
-                   db.close();
-                   resolve(user);
-                 } else {
-                   console.log(`❌ Пользователь не найден в таблице users`);
-                   console.log(`💡 Попытка создать пользователя из pending_registrations...`);
-                   
-                   // НЕ СОЗДАЕМ пользователя здесь! Это должно происходить только через /api/auth/check-phone-verification
-                   console.log(`❌ Пользователь не найден, но НЕ создаем его в Telegram боте!`);
-                   console.log(`💡 Пользователь должен быть создан через /api/auth/check-phone-verification`);
-                   
-                   db.close();
-                   resolve(null);
-                   return;
-                   
-                 }
-              }
-            );
+              );
+              return;
+            } else {
+              // Регистрация уже верифицирована, проверяем, создан ли пользователь
+              console.log(`✅ Регистрация уже верифицирована, проверяем пользователя...`);
+              
+              // Ищем пользователя в таблице users
+              db.get(
+                'SELECT * FROM users WHERE email = ? OR phone = ?',
+                [userData.email, pendingReg.phone],
+                (userErr, user) => {
+                  if (userErr) {
+                    console.error('❌ Ошибка поиска пользователя:', userErr);
+                    db.close();
+                    reject(userErr);
+                    return;
+                  }
+                  
+                  if (user) {
+                    console.log(`✅ Найден пользователь: ${user.email}`);
+                    db.close();
+                    resolve(user);
+                  } else {
+                    console.log(`⏳ Пользователь еще не создан, ждем завершения регистрации...`);
+                    
+                    // Возвращаем специальный объект
+                    const result = {
+                      isPendingVerification: true,
+                      email: userData.email,
+                      phone: pendingReg.phone,
+                      message: 'Номер уже подтвержден! Вернитесь на сайт и нажмите "Я подтвердил номер"'
+                    };
+                    
+                    db.close();
+                    resolve(result);
+                  }
+                }
+              );
+            }
           } catch (parseErr) {
             console.error('❌ Ошибка парсинга данных пользователя:', parseErr);
             db.close();
@@ -406,6 +421,30 @@ bot.start(async (ctx) => {
       const user = await findUserForVerification(startPayload, chatId);
       
       if (user) {
+        // Проверяем, это ли ожидающая верификация
+        if (user.isPendingVerification) {
+          console.log(`⏳ Обработка ожидающей верификации для: ${user.email}`);
+          
+          await ctx.reply(
+            `✅ ${user.message}\n\n` +
+            `📧 Email: ${user.email}\n` +
+            `📱 Телефон: ${user.phone}\n\n` +
+            `🔄 Что делать дальше:\n` +
+            `1️⃣ Вернитесь на сайт\n` +
+            `2️⃣ Нажмите кнопку "Я подтвердил номер"\n` +
+            `3️⃣ Завершите регистрацию\n\n` +
+            `🌐 Сайт: https://helens-jungle.ru`,
+            {
+              reply_markup: {
+                inline_keyboard: [[
+                  { text: '🌐 Перейти на сайт', url: 'https://helens-jungle.ru' }
+                ]]
+              }
+            }
+          );
+          return;
+        }
+        
         console.log(`✅ Пользователь найден: ${user.email} (ID: ${user.id})`);
         
         // Проверяем, уже ли верифицирован
@@ -932,6 +971,251 @@ async function sendUserOrdersStatus(chatId) {
   }
 }
 
+// Отправка фискального чека пользователю (требования 54-ФЗ)
+async function sendFiscalReceiptToUser(userPhone, receiptData) {
+  try {
+    console.log(`🧾 Отправка фискального чека для номера: ${userPhone}`);
+    
+    // Нормализуем номер телефона
+    let normalizedPhone = userPhone.replace(/[^\d+]/g, '');
+    if (normalizedPhone.startsWith('8')) {
+      normalizedPhone = '+7' + normalizedPhone.slice(1);
+    }
+    if (normalizedPhone.startsWith('7') && !normalizedPhone.startsWith('+7')) {
+      normalizedPhone = '+' + normalizedPhone;
+    }
+    if (!normalizedPhone.startsWith('+') && normalizedPhone.length === 11 && normalizedPhone.startsWith('7')) {
+      normalizedPhone = '+' + normalizedPhone;
+    }
+    if (!normalizedPhone.startsWith('+') && normalizedPhone.length === 10) {
+      normalizedPhone = '+7' + normalizedPhone;
+    }
+    
+    // Находим пользователя по телефону
+    const db = getDatabase();
+    const user = await new Promise((resolve, reject) => {
+      db.get(
+        'SELECT * FROM users WHERE phone = ? AND telegram_chat_id IS NOT NULL AND telegram_chat_id != ""',
+        [normalizedPhone],
+        (err, row) => {
+          if (err) {
+            console.error('❌ Ошибка поиска пользователя по телефону:', err);
+            reject(err);
+          } else {
+            resolve(row);
+          }
+          db.close();
+        }
+      );
+    });
+    
+    if (!user || !user.telegram_chat_id) {
+      console.log(`⚠️ Пользователь с номером ${normalizedPhone} не найден или не имеет Telegram`);
+      return false;
+    }
+
+    // Формируем фискальный чек согласно 54-ФЗ для интернет-магазина
+    const fiscalReceipt = formatFiscalReceipt(receiptData, user);
+    
+    await bot.telegram.sendMessage(user.telegram_chat_id, fiscalReceipt, {
+      parse_mode: 'HTML'
+    });
+    
+    console.log(`✅ Фискальный чек отправлен пользователю ${user.id} (${user.email})`);
+    return true;
+  } catch (error) {
+    console.error(`❌ Ошибка отправки фискального чека:`, error);
+    return false;
+  }
+}
+
+// Форматирование фискального чека согласно 54-ФЗ для интернет-магазина
+function formatFiscalReceipt(receiptData, user) {
+  const {
+    orderId,
+    items,
+    totalAmount,
+    deliveryAmount,
+    paymentMethod,
+    transactionId,
+    companyInfo,
+    kassaInfo
+  } = receiptData;
+  
+  // Генерируем номер чека и смены (в реальной системе это данные от ККТ)
+  const receiptNumber = `${orderId}-${Date.now().toString().slice(-6)}`;
+  const shiftNumber = Math.floor(Date.now() / 86400000) % 1000; // Условный номер смены
+  const fiscalDocumentNumber = Date.now().toString().slice(-8); // Порядковый номер ФД
+  const currentDate = new Date();
+  const fiscalDateTime = currentDate.toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit', 
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  
+  // Заголовок чека с реквизитами (ст. 4.7 п.1 54-ФЗ)
+  let receipt = `🧾 <b>КАССОВЫЙ ЧЕК</b>\n`; // Обязательный реквизит: наименование документа
+  receipt += `📄 <b>ПРИХОД</b>\n`; // Обязательный реквизит: признак расчета
+  receipt += `🌐 <b>ИНТЕРНЕТ-МАГАЗИН</b>\n\n`;
+  
+  // Реквизиты получателя платежа (обязательные по 54-ФЗ)
+  receipt += `🏢 <b>${companyInfo?.name || 'Helen\'s Jungle'}</b>\n`; // Наименование организации
+  receipt += `🆔 ИНН: ${companyInfo?.inn || 'НЕ УКАЗАН'}\n`; // ИНН организации
+  receipt += `📍 ${companyInfo?.address || 'НЕ УКАЗАН'}\n`; // Место осуществления расчета
+  receipt += `📞 ${companyInfo?.phone || 'НЕ УКАЗАН'}\n`;
+  receipt += `📧 ${companyInfo?.email || 'info@helens-jungle.ru'}\n`;
+  receipt += `🌐 ${companyInfo?.website || 'helens-jungle.ru'}\n\n`;
+  
+  // Налоговая система (обязательный реквизит)
+  const taxSystemName = {
+    'OSN': 'ОСН',
+    'USN': 'УСН ДОХОД',
+    'USN_EXPENSE': 'УСН ДОХОД-РАСХОД',
+    'ESHN': 'ЕСХН',
+    'PATENT': 'ПАТЕНТ'
+  }[companyInfo?.taxSystem || 'USN'] || 'УСН ДОХОД';
+  
+  receipt += `🏛️ <b>Система налогообложения:</b> ${taxSystemName}\n\n`;
+  
+  // Информация об онлайн-кассе (обязательные реквизиты)
+  receipt += `🖨️ <b>ОНЛАЙН-КАССА:</b>\n`;
+  receipt += `🔢 РН ККТ: ${kassaInfo?.registrationNumber || 'НЕ УКАЗАН'}\n`; // Регистрационный номер ККТ
+  receipt += `💾 ФН: ${kassaInfo?.fiscalStorageNumber || 'НЕ УКАЗАН'}\n`; // Заводской номер ФН
+  receipt += `👤 Кассир: Система автоматического формирования чеков\n\n`; // Должность и фамилия
+  
+  // Дата, время и место (обязательные реквизиты)
+  receipt += `📅 <b>Дата и время:</b> ${fiscalDateTime}\n`;
+  receipt += `📋 <b>Чек №</b> ${receiptNumber}\n`; // Порядковый номер чека за смену
+  receipt += `🔄 <b>Смена №</b> ${shiftNumber}\n`;
+  receipt += `📄 <b>ФД №</b> ${fiscalDocumentNumber}\n\n`; // Порядковый номер фискального документа
+  
+  receipt += `═══════════════════════\n`;
+  receipt += `📦 <b>ЗАКАЗ #${orderId}</b>\n`;
+  receipt += `═══════════════════════\n\n`;
+  
+  // Постатейное разбитие товаров (обязательные реквизиты)
+  let itemsTotal = 0;
+  items.forEach((item, index) => {
+    const itemTotal = item.price * item.quantity;
+    itemsTotal += itemTotal;
+    
+    // Наименование товара (до 128 символов)
+    const itemName = item.name.length > 128 ? item.name.substring(0, 125) + '...' : item.name;
+    
+    receipt += `${index + 1}. <b>${itemName}</b>\n`; // Наименование товара
+    receipt += `   Кол-во: ${item.quantity} шт.\n`; // Количество
+    receipt += `   Цена: ${item.price.toFixed(2)} ₽\n`; // Цена за единицу
+    receipt += `   Сумма: ${itemTotal.toFixed(2)} ₽\n`; // Стоимость товара
+    
+    // НДС (обязательный реквизит)
+    if (companyInfo?.taxSystem === 'USN' || companyInfo?.taxSystem === 'USN_EXPENSE') {
+      receipt += `   НДС: без НДС\n`;
+    } else {
+      const vatRate = item.vatRate || 20;
+      const vatAmount = (itemTotal * vatRate) / (100 + vatRate);
+      receipt += `   НДС ${vatRate}%: ${vatAmount.toFixed(2)} ₽\n`;
+    }
+    receipt += `\n`;
+  });
+  
+  // Доставка (не включается в фискализацию)
+  if (deliveryAmount > 0) {
+    receipt += `🚚 <i>Доставка: ${deliveryAmount.toFixed(2)} ₽</i>\n`;
+    receipt += `<i>💡 Доставка оплачивается отдельно при получении</i>\n\n`;
+  }
+  
+  receipt += `═══════════════════════\n`;
+  
+  // Итоговые суммы (обязательные реквизиты)
+  receipt += `💳 <b>ИТОГО: ${itemsTotal.toFixed(2)} ₽</b>\n`; // Сумма расчета
+  
+  // НДС итого (обязательный реквизит)
+  if (companyInfo?.taxSystem === 'USN' || companyInfo?.taxSystem === 'USN_EXPENSE') {
+    receipt += `💰 Сумма без НДС: ${itemsTotal.toFixed(2)} ₽\n`;
+  } else {
+    const totalVat = items.reduce((sum, item) => {
+      const itemTotal = item.price * item.quantity;
+      const vatRate = item.vatRate || 20;
+      return sum + (itemTotal * vatRate) / (100 + vatRate);
+    }, 0);
+    receipt += `💰 В т.ч. НДС: ${totalVat.toFixed(2)} ₽\n`;
+  }
+  
+  // Форма расчета (обязательный реквизит)
+  const paymentMethodText = {
+    'ozonpay': 'ЭЛЕКТРОННЫМИ',
+    'card': 'ЭЛЕКТРОННЫМИ', 
+    'balance': 'ЭЛЕКТРОННЫМИ',
+    'bank_transfer': 'БЕЗНАЛИЧНЫЙ РАСЧЕТ'
+  }[paymentMethod] || 'ЭЛЕКТРОННЫМИ';
+  
+  receipt += `💳 <b>${paymentMethodText}: ${itemsTotal.toFixed(2)} ₽</b>\n\n`; // Сумма оплаты по форме расчета
+  
+  // Данные покупателя (обязательный реквизит для электронной формы)
+  if (user?.phone) {
+    receipt += `📱 <b>Покупатель:</b> ${user.phone}\n`;
+  }
+  if (user?.email) {
+    receipt += `📧 <b>Email:</b> ${user.email}\n`;
+  }
+  
+  // Информация о транзакции
+  if (transactionId) {
+    receipt += `🔗 <b>ID транзакции:</b> <code>${transactionId}</code>\n`;
+  }
+  
+  receipt += `\n═══════════════════════\n`;
+  
+  // Фискальный признак документа (обязательный реквизит)
+  const fiscalSign = generateFiscalSign(receiptData);
+  receipt += `🔐 <b>Фискальный признак:</b> ${fiscalSign}\n\n`;
+  
+  // Адрес сайта для проверки (обязательный реквизит)
+  receipt += `ℹ️ <b>ПРОВЕРКА ЧЕКА:</b>\n`;
+  receipt += `🌐 <b>Сайт ФНС:</b> www.nalog.ru\n`;
+  receipt += `📱 <b>Приложение:</b> "Проверка чека ФНС России"\n\n`;
+  
+  // QR-код для проверки (обязательный реквизит)
+  const qrData = generateQRCodeData(receiptData, fiscalSign, fiscalDocumentNumber);
+  receipt += `📱 <b>QR-КОД ДЛЯ ПРОВЕРКИ:</b>\n`;
+  receipt += `<code>${qrData}</code>\n\n`;
+  
+  receipt += `✅ <b>СПАСИБО ЗА ПОКУПКУ!</b>\n`;
+  receipt += `🌱 <i>Helen's Jungle - Ваши зеленые друзья</i>\n`;
+  receipt += `🏠 <i>Заказ будет доставлен по указанному адресу</i>`;
+  
+  return receipt;
+}
+
+// Генерация QR-кода для проверки чека (обязательный реквизит)
+function generateQRCodeData(receiptData, fiscalSign, fiscalDocumentNumber) {
+  const qrData = {
+    t: receiptData.transactionId || '0', // ID транзакции
+    s: receiptData.totalAmount.toFixed(2), // Сумма
+    fn: '0000000000000000', // Номер ФН (заменить на реальный)
+    i: fiscalDocumentNumber, // Номер ФД
+    fp: fiscalSign, // Фискальный признак
+    n: 1 // Признак расчета (1 - приход)
+  };
+  
+  // Формируем строку QR-кода
+  return `t=${qrData.t}&s=${qrData.s}&fn=${qrData.fn}&i=${qrData.i}&fp=${qrData.fp}&n=${qrData.n}`;
+}
+
+// Генерация условного фискального признака (в реальной системе это делает ФН)
+function generateFiscalSign(receiptData) {
+  const data = JSON.stringify({
+    orderId: receiptData.orderId,
+    total: receiptData.totalAmount,
+    timestamp: Date.now()
+  });
+  
+  return crypto.createHash('md5').update(data).digest('hex').substring(0, 10).toUpperCase();
+}
+
 // Обработка ошибок
 bot.catch((err, ctx) => {
   console.error('❌ Ошибка в боте:', err);
@@ -967,6 +1251,7 @@ module.exports = {
   sendOrderStatusUpdateToUser,
   sendNewProductNotificationToAllUsers,
   sendUserOrdersStatus,
+  sendFiscalReceiptToUser,
   bot
 };
 

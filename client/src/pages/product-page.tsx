@@ -315,9 +315,34 @@ export default function ProductPage() {
   
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 w-full max-w-screen-lg">
-      <Button variant="ghost" onClick={() => setLocation("/catalog")} className="mb-4 sm:mb-6 flex items-center">
+      <Button 
+        variant="ghost" 
+        onClick={() => {
+          // Проверяем есть ли сохраненный URL для возврата
+          const catalogReturnUrl = localStorage.getItem('catalogReturnUrl');
+          if (catalogReturnUrl) {
+            if (catalogReturnUrl === '/') {
+              // Возвращаемся на главную страницу
+              setLocation("/");
+            } else if (catalogReturnUrl.includes('/catalog')) {
+              // Возвращаемся к сохраненному URL каталога
+              window.location.href = catalogReturnUrl;
+            } else {
+              // Fallback к обычному каталогу
+              setLocation("/catalog");
+            }
+          } else {
+            // Fallback к обычному каталогу
+            setLocation("/catalog");
+          }
+        }} 
+        className="mb-4 sm:mb-6 flex items-center"
+      >
         <ChevronLeft className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-        Назад к каталогу
+        {(() => {
+          const catalogReturnUrl = localStorage.getItem('catalogReturnUrl');
+          return catalogReturnUrl === '/' ? 'Назад на главную' : 'Назад к каталогу';
+        })()}
       </Button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
@@ -453,7 +478,7 @@ export default function ProductPage() {
                 <div className="mb-6">
                   <h4 className="font-semibold mb-2">Влажность:</h4>
                   <p>
-                    Тропические растения предпочитают повышенную влажность воздуха. Регулярно опрыскивайте листья или используйте увлажнитель воздуха.
+                    Тропические растения предпочитают повышенную влажность воздуха. 
                   </p>
                 </div>
 
@@ -462,9 +487,23 @@ export default function ProductPage() {
                   <p>
                     Пересаживайте растения весной каждые 1-2 года. Используйте подходящий грунт и горшок с дренажными отверстиями. Подкармливайте растения в период активного роста (весна-лето) специальными удобрениями.
                   </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Подробные инструкции по уходу за конкретным растением будут приложены к вашему заказу.
-                  </p>
+                 
+                  
+                  {/* Блок с ссылкой на Telegram канал */}
+                  <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                    <h4 className="font-semibold mb-2 text-green-800 flex items-center">
+                      💬 Больше советов по уходу в нашем Telegram канале!
+                    </h4>
+                    <p className="text-sm text-green-700 mb-2">
+                      Присоединяйтесь к нашему каналу <a href="https://t.me/helensjungle" target="_blank" rel="noreferrer" className="text-primary underline font-medium">@helensjungle</a> — там вы найдете множество полезных статей об уходе за растениями в закрепленных постах.
+                    </p>
+                    <div className="text-xs text-green-600 space-y-1">
+                      <p>🔹 Подробные гайды по уходу</p>
+                      <p>🔹 Советы по пересадке</p>
+                      <p>🔹 Борьба с вредителями</p>
+                      <p>🔹 Сезонный уход</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </TabsContent>
@@ -477,10 +516,7 @@ export default function ProductPage() {
                   <div className="space-y-4">
                     <div>
                       <p className="font-medium">Стоимость доставки:</p>
-                      <p>350 ₽ (стандартная)</p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        * При заказе от 5000 ₽ доставка бесплатная
-                      </p>
+                      <p>Стоимость доставки рассчитывается отдельно, в зависимости от размера посылки.</p>
                     </div>
 
                     <div>
@@ -510,7 +546,7 @@ export default function ProductPage() {
                         </li>
                         <li className="flex items-start">
                           <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />
-                          <span>Москва и Санкт-Петербург: 1-3 дня</span>
+                          <span>Москва и Санкт-Петербург: 3-5 дней</span>
                         </li>
                         <li className="flex items-start">
                           <Clock className="h-4 w-4 text-primary mt-0.5 mr-2 flex-shrink-0" />

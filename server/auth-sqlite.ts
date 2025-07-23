@@ -12,6 +12,9 @@ import {
   removePendingRegistration 
 } from "./phone-verification";
 
+// Импортируем SQLite store для сессий
+const SQLiteStore = require('connect-sqlite3')(session);
+
 // Типы для пользователя
 export type UserRecord = {
   id: string;
@@ -57,6 +60,15 @@ export function comparePasswords(storedPassword: string, suppliedPassword: strin
   if (!storedPassword || !suppliedPassword) return false;
   
   try {
+    // Если пароль не содержит разделители, значит он сохранен как открытый текст
+    // (это произошло в старых версиях)
+    if (!storedPassword.includes(':')) {
+      console.log(`⚠️ НАЙДЕН ОТКРЫТЫЙ ПАРОЛЬ! Сравниваем напрямую: "${storedPassword}" === "${suppliedPassword}"`);
+      const match = storedPassword === suppliedPassword;
+      console.log(`🔍 Результат сравнения открытого пароля: ${match}`);
+      return match;
+    }
+    
     // Проверяем новый формат (salt:iterations:keylen:digest:hash)
     const parts = storedPassword.split(':');
     
@@ -74,8 +86,8 @@ export function comparePasswords(storedPassword: string, suppliedPassword: strin
     } else if (parts.length === 2) {
       // Старый формат: salt:hash
       const [salt, hash] = parts;
-      const suppliedHash = crypto.pbkdf2Sync(suppliedPassword, salt, 1000, 64, 'sha512').toString('hex');
-      return hash === suppliedHash;
+    const suppliedHash = crypto.pbkdf2Sync(suppliedPassword, salt, 1000, 64, 'sha512').toString('hex');
+    return hash === suppliedHash;
     } else {
       console.error('Неизвестный формат хеша пароля:', parts.length, 'частей');
       return false;
@@ -145,16 +157,25 @@ export function userRecordToSessionUser(dbUser: UserRecord): Express.User {
 
 // Настройка аутентификации
 export function setupAuth(app: express.Application) {
-  // Настройка сессий
+  // ИСПРАВЛЕННЫЕ настройки сессий с SQLite хранилищем
   app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key-here',
     resave: false,
     saveUninitialized: false,
+    rolling: true, // Обновляем сессию при каждом запросе (продлеваем срок)
     cookie: {
       secure: false,
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 дней вместо года
       httpOnly: true
-    }
+    },
+    // SQLite хранилище для сессий - НЕ ПРОПАДУТ при перезапуске!
+    store: new SQLiteStore({
+      db: 'sessions.sqlite',
+      dir: './db',
+      table: 'sessions',
+      cleanup_interval: 60000, // Очистка старых сессий каждую минуту
+    }),
+    name: 'sessionId'
   }));
 
   // Инициализация Passport
@@ -194,17 +215,27 @@ export function setupAuth(app: express.Application) {
     }
   ));
 
-  // Сериализация пользователя для сессии
+  // ОПТИМИЗИРОВАННАЯ сериализация - сохраняем только ID
   passport.serializeUser((user: Express.User, done) => {
     done(null, user.id);
   });
 
-  // Десериализация пользователя из сессии
+  // ОПТИМИЗИРОВАННАЯ десериализация - кешируем результат
+  const userCache = new Map<string, Express.User>();
   passport.deserializeUser((id: string, done) => {
     try {
+      // Проверяем кеш сначала
+      if (userCache.has(id)) {
+        const cachedUser = userCache.get(id)!;
+        return done(null, cachedUser);
+      }
+
       const user = db.queryOne("SELECT * FROM users WHERE id = ?", [id]) as UserRecord;
       if (user) {
         const sessionUser = userRecordToSessionUser(user);
+        // Кешируем на 5 минут
+        userCache.set(id, sessionUser);
+        setTimeout(() => userCache.delete(id), 5 * 60 * 1000);
         done(null, sessionUser);
       } else {
         done(null, null);
@@ -319,21 +350,24 @@ export function setupAuth(app: express.Application) {
   });
 }
 
-// Функция обновления сессии пользователя
+// БЕЗОПАСНАЯ функция обновления сессии пользователя (НЕ сбрасывает сессию при ошибках)
 export function updateUserSession(req: express.Request) {
   if (!req.isAuthenticated() || !req.user) {
+    console.log("[Auth] 🔄 Пользователь не авторизован, пропускаем обновление сессии");
     return Promise.resolve();
   }
 
   const user = req.user as Express.User;
   
   try {
+    console.log(`[Auth] 🔄 Обновление сессии для пользователя: ${user.email} (ID: ${user.id})`);
+    
     // Получаем актуальные данные пользователя из БД
     const dbUser = db.queryOne("SELECT * FROM users WHERE id = ?", [user.id]) as UserRecord | null;
     
     if (!dbUser) {
-      console.log(`[Auth] Пользователь ${user.id} не найден в базе данных`);
-      return Promise.reject(new Error("Пользователь не найден"));
+      console.log(`[Auth] ⚠️ Пользователь ${user.id} не найден в БД, СОХРАНЯЕМ существующую сессию`);
+      return Promise.resolve(); // НЕ сбрасываем сессию!
     }
     
     // Сохраняем текущие значения для логирования
@@ -359,29 +393,20 @@ export function updateUserSession(req: express.Request) {
     
     // Логируем изменения
     if (prevBalance !== user.balance) {
-      console.log(`[Auth] Баланс пользователя ${user.id} обновлен: ${prevBalance} → ${user.balance}`);
+      console.log(`[Auth] 💰 Баланс пользователя ${user.id} обновлен: ${prevBalance} → ${user.balance}`);
     }
     if (prevIsAdmin !== user.isAdmin) {
-      console.log(`[Auth] Статус администратора пользователя ${user.id} обновлен: ${prevIsAdmin} → ${user.isAdmin}`);
+      console.log(`[Auth] 👑 Статус администратора пользователя ${user.id} обновлен: ${prevIsAdmin} → ${user.isAdmin}`);
     }
     
-    console.log(`[Auth] Сессия пользователя ${user.email} обновлена. Админ: ${user.isAdmin}, Баланс: ${user.balance}`);
+    console.log(`[Auth] ✅ Сессия пользователя ${user.email} обновлена. Админ: ${user.isAdmin}, Баланс: ${user.balance}`);
     
-    // Принудительно сохраняем сессию
-    return new Promise<void>((resolve, reject) => {
-      req.session.save((err) => {
-        if (err) {
-          console.error("[Auth] Ошибка при сохранении сессии:", err);
-          reject(err);
-        } else {
-          console.log("[Auth] Сессия успешно сохранена для пользователя:", user.email);
-          resolve();
-        }
-      });
-    });
+    // НЕ принудительно сохраняем сессию - это может вызывать ошибки
+    return Promise.resolve();
+    
   } catch (error) {
-    console.error("[Auth] Ошибка при обновлении сессии пользователя:", error);
-    return Promise.reject(error);
+    console.error("[Auth] ❌ Ошибка при обновлении сессии, но СОХРАНЯЕМ сессию:", error);
+    return Promise.resolve(); // НЕ сбрасываем сессию при ошибках!
   }
 }
 
@@ -528,6 +553,115 @@ export async function initializeDatabase() {
     console.log('SQLite database initialized');
   } catch (error) {
     console.error('Error initializing SQLite database:', error);
+    throw error;
+  }
+}
+
+// ОПТИМИЗИРОВАННАЯ функция для быстрого создания сессии при регистрации
+export function fastSessionLogin(req: express.Request, userData: {
+  id: string;
+  email: string;
+  password: string;
+  username: string;
+  full_name: string;
+  phone: string;
+  address: string;
+  is_admin: number;
+  balance: string;
+  created_at: string;
+  updated_at: string;
+}): Promise<Express.User> {
+  return new Promise((resolve, reject) => {
+    // Создаем пользователя для сессии БЕЗ дополнительного запроса к БД
+    const sessionUser = userRecordToSessionUser(userData);
+    
+    // Быстрое создание сессии
+    req.login(sessionUser, { session: true }, (err) => {
+      if (err) {
+        console.error('❌ Ошибка при быстром создании сессии:', err);
+        reject(err);
+      } else {
+        console.log(`🚀 Быстрая сессия создана для: ${sessionUser.email}`);
+        resolve(sessionUser);
+      }
+    });
+  });
+}
+
+// ОПТИМИЗИРОВАННАЯ функция регистрации с быстрой сессией
+export async function fastRegisterWithSession(
+  req: express.Request,
+  userData: {
+    email: string;
+    password: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    address: string;
+  }
+): Promise<Express.User> {
+  try {
+    console.log(`🚀 Быстрая регистрация: ${userData.email}`);
+    
+    // Проверяем существование пользователя
+    const existingUser = db.queryOne("SELECT * FROM users WHERE email = ?", [userData.email.toLowerCase()]) as UserRecord | null;
+    if (existingUser) {
+      throw new Error('Пользователь с таким email уже существует');
+    }
+
+    // Хешируем пароль
+    const hashedPassword = hashPassword(userData.password);
+    const userId = crypto.randomUUID();
+    const now = new Date().toISOString();
+
+    // Создаем данные пользователя
+    const newUserData = {
+      id: userId,
+      email: userData.email.toLowerCase(),
+      password: hashedPassword,
+      username: userData.username,
+      full_name: userData.firstName + " " + userData.lastName,
+      phone: userData.phone,
+      address: userData.address,
+      is_admin: 0,
+      balance: '0.00',
+      created_at: now,
+      updated_at: now
+    };
+
+    // Одним запросом создаем пользователя
+    db.run(
+      `INSERT INTO users (
+        id, email, password, username, full_name, phone, address, 
+        phone_verified, balance, is_admin, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        newUserData.id,
+        newUserData.email,
+        newUserData.password,
+        newUserData.username,
+        newUserData.full_name,
+        newUserData.phone,
+        newUserData.address,
+        1, // phone_verified = true
+        newUserData.balance,
+        newUserData.is_admin,
+        newUserData.created_at,
+        newUserData.updated_at
+      ]
+    );
+
+    console.log(`✅ Пользователь создан: ${userData.email} (ID: ${userId})`);
+
+    // Быстро создаем сессию без дополнительного запроса к БД
+    const sessionUser = await fastSessionLogin(req, newUserData);
+    
+    console.log(`🎉 Быстрая регистрация завершена: ${userData.email}`);
+    return sessionUser;
+
+  } catch (error) {
+    console.error('❌ Ошибка быстрой регистрации:', error);
     throw error;
   }
 } 

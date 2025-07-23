@@ -6,7 +6,7 @@ import crypto from "crypto";
 import fs from "fs";
 import { db } from "./db-sqlite";
 import { Database } from 'better-sqlite3';
-import { setupAuth, userRecordToSessionUser, type User, type UserRecord, updateUserSession } from "./auth-sqlite";
+import { setupAuth, userRecordToSessionUser, type User, type UserRecord, updateUserSession, fastRegisterWithSession } from "./auth-sqlite";
 import { z } from "zod";
 import { insertProductSchema, insertOrderSchema, insertReviewSchema, insertNotificationSchema, insertPaymentDetailsSchema } from "@shared/schema";
 import PDFDocument from 'pdfkit';
@@ -100,7 +100,7 @@ function ensureAuthenticated(req: Request, res: Response, next: Function) {
 }
 
 // Middleware для проверки прав администратора с обновлением сессии
-function ensureAdmin(req: Request, res: Response, next: Function) {
+async function ensureAdmin(req: Request, res: Response, next: Function) {
   console.log("Проверка прав администратора:", req.user);
   
   if (!req.isAuthenticated()) {
@@ -108,8 +108,10 @@ function ensureAdmin(req: Request, res: Response, next: Function) {
     return res.status(401).json({ message: "Требуется авторизация" });
   }
   
+  try {
   // Обновляем данные пользователя перед проверкой
-  updateUserSession(req).then(() => {
+    await updateUserSession(req);
+    
     const user = req.user as any;
     
     if (!user) {
@@ -125,10 +127,11 @@ function ensureAdmin(req: Request, res: Response, next: Function) {
     
     console.log(`Пользователь ${user.email} не имеет прав администратора`);
     return res.status(403).json({ message: "Недостаточно прав доступа" });
-  }).catch(error => {
+    
+  } catch (error) {
     console.error("Ошибка при проверке прав администратора:", error);
     return res.status(500).json({ message: "Внутренняя ошибка сервера" });
-  });
+  }
 }
 
 // Кэш для администраторов
@@ -197,10 +200,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(preserveAdminStatus);
 
   // Ozon Pay webhook endpoint
-  app.post("/api/ozonpay/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
+  app.post("/api/ozonpay/webhook", express.json(), async (req, res) => {
     try {
       const ozonPayAPI = createOzonPayAPI();
-      const webhookData = JSON.parse(req.body.toString());
+      const webhookData = req.body;
       
       console.log('Ozon Pay webhook received:', webhookData);
       
@@ -279,31 +282,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (updateResult.changes > 0) {
           console.log(`Order ${extOrderID} payment status updated to: ${status}`);
           
-          // If payment succeeded, reduce product quantities if not already done
+          // If payment succeeded, reduce product quantities and send receipt
           if (status === 'Completed') {
             const order = db.queryOne(
               "SELECT * FROM orders WHERE ozonpay_payment_id = ?",
               [orderID]
             ) as any;
             
-            if (order && !order.product_quantities_reduced) {
-              try {
-                const items = JSON.parse(order.items);
-                for (const item of items) {
+            if (order) {
+              // Reduce product quantities if not already done
+              if (!order.product_quantities_reduced) {
+                try {
+                  const items = JSON.parse(order.items);
+                  for (const item of items) {
+                    db.run(
+                      `UPDATE products SET quantity = quantity - ? WHERE id = ?`,
+                      [item.quantity, item.id]
+                    );
+                  }
+                  
                   db.run(
-                    `UPDATE products SET quantity = quantity - ? WHERE id = ?`,
-                    [item.quantity, item.id]
+                    `UPDATE orders SET product_quantities_reduced = 1 WHERE id = ?`,
+                    [order.id]
                   );
+                  
+                  console.log(`Product quantities reduced for order ${order.id}`);
+                } catch (error) {
+                  console.error('Error reducing product quantities:', error);
                 }
+              }
+              
+              // Send fiscal receipt via Telegram
+              try {
+                // Импортируем функцию отправки фискального чека
+                const { sendFiscalReceiptToUser } = require('./telegram-bot-final.cjs');
+                const items = JSON.parse(order.items);
                 
-                db.run(
-                  `UPDATE orders SET product_quantities_reduced = 1 WHERE id = ?`,
-                  [order.id]
-                );
+                // Сумма только за товары (без доставки)
+                const itemsTotal = items.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0);
                 
-                console.log(`Product quantities reduced for order ${order.id}`);
-              } catch (error) {
-                console.error('Error reducing product quantities:', error);
+                // Данные для фискального чека согласно 54-ФЗ (интернет-магазин)
+                const receiptData = {
+                  orderId: order.id,
+                  items: items,
+                  totalAmount: itemsTotal, // Только товары, без доставки
+                  deliveryAmount: order.delivery_amount,
+                  paymentMethod: order.payment_method,
+                  transactionId: transactionID,
+                  includeDeliveryInReceipt: false, // Доставка оплачивается при получении
+                  companyInfo: {
+                    name: "Helen's Jungle", // TODO: Заменить на реальное название из документов
+                    inn: "000000000000", // TODO: Заменить на реальный ИНН (получить в налоговой)
+                    address: "г. Москва, ул. Примерная, д. 1", // TODO: Заменить на реальный адрес
+                    phone: "+7 (000) 000-00-00", // TODO: Заменить на реальный номер
+                    email: "info@helens-jungle.ru", // TODO: Заменить на реальный email
+                    website: "helens-jungle.ru",
+                    taxSystem: "USN" // УСН - без НДС (или изменить на вашу систему)
+                  },
+                  kassaInfo: {
+                    // TODO: Получить при регистрации онлайн-кассы в ФНС
+                    registrationNumber: "0000000000000000", // РН ККТ из свидетельства о регистрации
+                    fiscalStorageNumber: "0000000000000000"  // Номер ФН из документов кассы
+                  },
+                  // Данные пользователя для электронной формы чека
+                  user: {
+                    phone: order.phone,
+                    email: userRecord?.email || null
+                  }
+                };
+                
+                await sendFiscalReceiptToUser(order.phone, receiptData);
+                
+                console.log(`✅ Фискальный чек отправлен пользователю ${order.phone}`);
+              } catch (receiptError) {
+                console.error(`❌ Ошибка отправки фискального чека:`, receiptError);
               }
             }
           }
@@ -329,11 +381,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
           .success { color: #28a745; font-size: 24px; margin-bottom: 20px; }
           .btn { background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+          .info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; }
         </style>
       </head>
       <body>
         <div class="success">✅ Оплата прошла успешно!</div>
-        <p>Ваш заказ принят в обработку. Мы отправим вам уведомление о статусе заказа на email.</p>
+        <div class="info">
+          <p>📧 Чек по заказу отправлен в ваш Telegram!</p>
+          <p>Если вы не получили чек в боте, свяжитесь с поддержкой.</p>
+        </div>
+        <p>Ваш заказ принят в обработку. Мы свяжемся с вами для уточнения деталей доставки.</p>
         <a href="/" class="btn">Вернуться на главную</a>
       </body>
       </html>
@@ -397,28 +454,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userRecord = db.queryOne("SELECT email FROM users WHERE id = ?", [order.user_id]) as { email: string } | null;
         
         const paymentData = {
-          amount: order.total_amount,
+          amount: Math.round(order.total_amount * 100), // Включаем доставку, convert to kopecks
           currency: "RUB",
           orderId: `${order.id}_retry_${Date.now()}`,
-          description: `Заказ #${order.id} на сайте Russkii Portal (повторная оплата)`,
+          description: `Заказ #${order.id} на сайте Helen's Jungle (повторная оплата, включая доставку)`,
           customerEmail: userRecord?.email,
           customerPhone: order.phone
         };
 
         // Prepare order items for Ozon Pay
-        const orderItems = JSON.parse(order.items).map((item: any, index: number) => ({
-          extId: String(item.id),
-          name: item.name,
-          price: {
-            currencyCode: "643",
-            value: Math.round(item.price)
-          },
-          quantity: item.quantity,
-          type: "TYPE_PRODUCT",
-          unitType: "UNIT_PIECE",
-          vat: "VAT_NONE",
-          needMark: false
-        }));
+        const orderItems = JSON.parse(order.items).map((item: any, index: number) => {
+          // Ensure extId is always a string
+          const extId = item.id != null ? String(item.id) : `item_${index}`;
+          console.log(`OzonPay retry item ${index}: id=${item.id} -> extId="${extId}" (type: ${typeof extId})`);
+          
+          return {
+            extId,
+            name: item.name || 'Неизвестный товар',
+            price: {
+              currencyCode: "643",
+              value: Math.round((item.price || 0) * 100) // Convert to kopecks
+            },
+            quantity: item.quantity,
+            type: "TYPE_PRODUCT",
+            unitType: "UNIT_PIECE",
+            vat: "VAT_NONE",
+            needMark: false
+          };
+        });
 
         const paymentResponse = await ozonPayAPI.createPayment(paymentData, orderItems);
         
@@ -438,8 +501,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           paymentUrl: paymentResponse.paymentUrl,
           paymentId: paymentResponse.orderId
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error("Ошибка при создании повторного платежа:", error);
+        
+        // Обработка недоступности Ozon Pay API
+        if (error.message === 'OZON_PAY_API_UNAVAILABLE') {
+          return res.status(503).json({ 
+            message: "⚠️ Платежная система временно недоступна. Попробуйте позже или обратитесь в поддержку.",
+            code: "PAYMENT_SERVICE_UNAVAILABLE"
+          });
+        }
+        
         res.status(500).json({ 
           message: "Ошибка при создании ссылки на оплату. Попробуйте позже." 
         });
@@ -469,7 +541,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const ozonPayAPI = createOzonPayAPI();
           
           const paymentData = {
-            amount: amount,
+            amount: Math.round(amount * 100), // Convert to kopecks
             currency: "RUB",
             orderId: `balance_${user.id}_${Date.now()}`,
             description: `Пополнение баланса на ${amount} ₽`,
@@ -483,7 +555,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             name: `Пополнение баланса на ${amount} ₽`,
             price: {
               currencyCode: "643",
-              value: Math.round(amount)
+              value: Math.round(amount * 100) // Convert to kopecks
             },
             quantity: 1,
             type: "TYPE_SERVICE",
@@ -505,8 +577,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             paymentUrl: paymentResponse.paymentUrl,
             paymentId: paymentResponse.orderId
           });
-        } catch (error) {
+        } catch (error: any) {
           console.error("Ошибка при создании платежа для пополнения:", error);
+          
+          // Обработка недоступности Ozon Pay API
+          if (error.message === 'OZON_PAY_API_UNAVAILABLE') {
+            return res.status(503).json({ 
+              message: "⚠️ Платежная система временно недоступна. Попробуйте позже или обратитесь в поддержку.",
+              code: "PAYMENT_SERVICE_UNAVAILABLE"
+            });
+          }
+          
           res.status(500).json({ message: "Ошибка при создании ссылки на оплату" });
         }
       } else {
@@ -569,13 +650,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload image route
   app.post("/api/upload", ensureAdmin, upload.single("image"), (req, res) => {
     try {
+      console.log("🔥 UPLOAD: Получен запрос на загрузку изображения");
+      console.log("🔥 UPLOAD: User:", req.user ? req.user.id : 'не авторизован');
+      console.log("🔥 UPLOAD: File:", req.file ? req.file.filename : 'не загружен');
+      
       if (!req.file) {
+        console.log("❌ UPLOAD: Изображение не загружено");
         return res.status(400).json({ message: "Изображение не загружено" });
       }
       
       // Создаем URL к загруженному файлу
       const imageUrl = `/uploads/${req.file.filename}`;
-      console.log(`Файл загружен: ${imageUrl}`);
+      console.log(`✅ UPLOAD: Файл загружен: ${imageUrl}`);
       
       res.json({ 
         message: "Файл успешно загружен", 
@@ -583,7 +669,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         file: req.file
       });
     } catch (error) {
-      console.error("Ошибка при загрузке файла:", error);
+      console.error("❌ UPLOAD: Ошибка при загрузке файла:", error);
       res.status(500).json({ message: "Ошибка при загрузке файла" });
     }
   });
@@ -591,7 +677,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Добавляем новый маршрут для прямой загрузки нескольких изображений
   app.post("/api/upload-images", ensureAdmin, upload.array("images", 10), (req, res) => {
     try {
+      console.log("🔥 UPLOAD-IMAGES: Получен запрос на загрузку изображений");
+      console.log("🔥 UPLOAD-IMAGES: User:", req.user ? req.user.id : 'не авторизован');
+      console.log("🔥 UPLOAD-IMAGES: Files count:", req.files ? req.files.length : 0);
+      
       if (!req.files || req.files.length === 0) {
+        console.log("❌ UPLOAD-IMAGES: Изображения не загружены");
         return res.status(400).json({ message: "Изображения не загружены" });
       }
       
@@ -602,7 +693,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       files.forEach(file => {
         const imageUrl = `/uploads/${file.filename}`;
         imageUrls.push(imageUrl);
-        console.log(`Файл загружен: ${imageUrl}`);
+        console.log(`✅ UPLOAD-IMAGES: Файл загружен: ${imageUrl}`);
       });
       
       res.json({ 
@@ -610,7 +701,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         imageUrls: imageUrls
       });
     } catch (error) {
-      console.error("Ошибка при загрузке файлов:", error);
+      console.error("❌ UPLOAD-IMAGES: Ошибка при загрузке файлов:", error);
       res.status(500).json({ message: "Ошибка при загрузке файлов" });
     }
   });
@@ -647,6 +738,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.query.preorder === "true") {
         filteredProducts = filteredProducts.filter(
           product => product && product.isPreorder
+        );
+      }
+      
+      // Filter by rare status
+      if (req.query.rare === "true") {
+        filteredProducts = filteredProducts.filter(
+          product => product && product.isRare
         );
       }
       
@@ -864,6 +962,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       productData.isPetSafe = productData.isPetSafe === true || productData.isPetSafe === 'true';
       productData.isAirPurifying = productData.isAirPurifying === true || productData.isAirPurifying === 'true';
       productData.isFlowering = productData.isFlowering === true || productData.isFlowering === 'true';
+      productData.isHotDeal = productData.isHotDeal === true || productData.isHotDeal === 'true';
+      productData.isBestseller = productData.isBestseller === true || productData.isBestseller === 'true';
+      productData.isNewArrival = productData.isNewArrival === true || productData.isNewArrival === 'true';
+      productData.isLimitedEdition = productData.isLimitedEdition === true || productData.isLimitedEdition === 'true';
+      productData.isDiscounted = productData.isDiscounted === true || productData.isDiscounted === 'true';
 
       // Устанавливаем значения по умолчанию для новых полей
       productData.plantSize = productData.plantSize || 'medium';
@@ -905,8 +1008,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           labels, delivery_cost, plant_size, light_level,
           humidity_level, plant_type, origin, is_pet_safe,
           is_air_purifying, is_flowering, is_hot_deal,
-          is_bestseller, is_new_arrival, is_limited_edition, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          is_bestseller, is_new_arrival, is_limited_edition, is_discounted, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           productData.name, 
             productData.description || "", 
@@ -933,6 +1036,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           productData.isBestseller ? 1 : 0,
           productData.isNewArrival ? 1 : 0,
           productData.isLimitedEdition ? 1 : 0,
+          productData.isDiscounted ? 1 : 0,
           new Date().toISOString()
         ]
       );
@@ -1021,6 +1125,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const productData = req.body;
       
       console.log("Обновление товара, полученные данные:", productData);
+      console.log("🏷️ Флажок isDiscounted:", productData.isDiscounted, typeof productData.isDiscounted);
       
       // Изображения должны быть массивом строк
       if (!productData.images) {
@@ -1069,6 +1174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           is_bestseller = ?,
           is_new_arrival = ?,
           is_limited_edition = ?,
+          is_discounted = ?,
           updated_at = ?
         WHERE id = ?`,
         [
@@ -1097,6 +1203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           productData.isBestseller === true || productData.isBestseller === 'true' ? 1 : 0,
           productData.isNewArrival === true || productData.isNewArrival === 'true' ? 1 : 0,
           productData.isLimitedEdition === true || productData.isLimitedEdition === 'true' ? 1 : 0,
+          productData.isDiscounted === true || productData.isDiscounted === 'true' ? 1 : 0,
           new Date().toISOString(),
           productId
         ]
@@ -1193,14 +1300,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Платежные реквизиты не найдены" });
       }
       
-      // Преобразуем в формат, ожидаемый клиентом
+      // Возвращаем инструкции как bankDetails напрямую
       const formattedDetails = {
         id: paymentDetails.id,
-        bankDetails: `Номер карты: ${paymentDetails.card_number}
-Получатель: ${paymentDetails.card_holder}
-Банк: ${paymentDetails.bank_name}
-
-${paymentDetails.instructions}`,
+        bankDetails: paymentDetails.instructions || '',
         qrCodeUrl: paymentDetails.qr_code_url,
         updatedAt: paymentDetails.updated_at
       };
@@ -1216,107 +1319,57 @@ ${paymentDetails.instructions}`,
   app.put("/api/payment-details", ensureAdmin, async (req, res) => {
     try {
       console.log("Обновление платежных реквизитов:", req.body);
-      const { bankDetails, cardNumber, cardHolder, bankName, instructions } = req.body;
+      const { bankDetails } = req.body;
+      
+      if (!bankDetails) {
+        return res.status(400).json({ message: "Поле bankDetails обязательно" });
+      }
       
       // Получаем текущие реквизиты
       const paymentDetails = db.queryOne("SELECT * FROM payment_details LIMIT 1") as {
         id: number;
-        card_number: string;
-        card_holder: string;
-        bank_name: string;
-        instructions: string;
         qr_code_url: string;
       } | null;
-      
-      // Если пришли данные в формате bankDetails, парсим их
-      let cardNum = cardNumber;
-      let holder = cardHolder;
-      let bank = bankName;
-      let instrText = instructions;
-      
-      if (bankDetails) {
-        // Пытаемся извлечь данные из текстового поля bankDetails
-        const lines = bankDetails.split('\n');
-        const cardLineMatch = lines.find((l: string) => l.includes('Номер карты:'));
-        const holderLineMatch = lines.find((l: string) => l.includes('Получатель:'));
-        const bankLineMatch = lines.find((l: string) => l.includes('Банк:'));
-        
-        if (cardLineMatch) {
-          cardNum = cardLineMatch.replace('Номер карты:', '').trim();
-        }
-        
-        if (holderLineMatch) {
-          holder = holderLineMatch.replace('Получатель:', '').trim();
-        }
-        
-        if (bankLineMatch) {
-          bank = bankLineMatch.replace('Банк:', '').trim();
-        }
-        
-        // Извлекаем инструкции (всё, что после пустой строки)
-        const emptyLineIndex = lines.findIndex((l: string) => l.trim() === '');
-        if (emptyLineIndex !== -1 && emptyLineIndex < lines.length - 1) {
-          instrText = lines.slice(emptyLineIndex + 1).join('\n');
-        }
-      }
       
       if (!paymentDetails) {
         // Создаем новую запись, если не существует
         console.log("Создание новых платежных реквизитов");
-        const result = db.run(`
+        db.run(`
           INSERT INTO payment_details (
             card_number, card_holder, bank_name, instructions, qr_code_url
           ) VALUES (?, ?, ?, ?, ?)
         `, [
-          cardNum || '', 
-          holder || '', 
-          bank || '', 
-          instrText || '',
+          '', 
+          '', 
+          '', 
+          bankDetails,
           '/uploads/default-qr.png'
         ]);
         
         const newDetails = db.queryOne("SELECT * FROM payment_details LIMIT 1") as {
           id: number;
-          card_number: string;
-          card_holder: string;
-          bank_name: string;
-          qr_code_url: string;
           instructions: string;
+          qr_code_url: string;
         };
 
-        // Преобразуем в формат, ожидаемый клиентом
-        const formattedDetails = {
+        return res.json({
           id: newDetails.id,
-          bankDetails: `Номер карты: ${newDetails.card_number}
-Получатель: ${newDetails.card_holder}
-Банк: ${newDetails.bank_name}
-
-${newDetails.instructions}`,
+          bankDetails: newDetails.instructions,
           qrCodeUrl: newDetails.qr_code_url,
           updatedAt: new Date().toISOString()
-        };
-        
-        return res.json(formattedDetails);
+        });
       }
       
       // Обновляем существующую запись
-      console.log("Обновление существующих платежных реквизитов с данными:", {
-        cardNum, holder, bank, instrText
-      });
+      console.log("Обновление существующих платежных реквизитов");
       
       const updateResult = db.run(`
         UPDATE payment_details SET 
-        card_number = ?, 
-        card_holder = ?, 
-        bank_name = ?, 
         instructions = ?,
         updated_at = ?
         WHERE id = ?
       `, [
-        cardNum || paymentDetails.card_number, 
-        holder || paymentDetails.card_holder, 
-        bank || paymentDetails.bank_name, 
-        instrText || paymentDetails.instructions,
+        bankDetails,
         new Date().toISOString(),
         paymentDetails.id
       ]);
@@ -1325,27 +1378,17 @@ ${newDetails.instructions}`,
       
       const updatedDetails = db.queryOne("SELECT * FROM payment_details WHERE id = ?", [paymentDetails.id]) as {
         id: number;
-        card_number: string;
-        card_holder: string;
-        bank_name: string;
-        qr_code_url: string;
         instructions: string;
+        qr_code_url: string;
         updated_at: string;
       };
       
-      // Преобразуем в формат, ожидаемый клиентом
-      const formattedDetails = {
+      res.json({
         id: updatedDetails.id,
-        bankDetails: `Номер карты: ${updatedDetails.card_number}
-Получатель: ${updatedDetails.card_holder}
-Банк: ${updatedDetails.bank_name}
-
-${updatedDetails.instructions}`,
+        bankDetails: updatedDetails.instructions,
         qrCodeUrl: updatedDetails.qr_code_url,
-        updatedAt: updatedDetails.updated_at || new Date().toISOString()
-      };
-      
-      res.json(formattedDetails);
+        updatedAt: updatedDetails.updated_at
+      });
     } catch (error) {
       console.error("Error updating payment details:", error);
       res.status(500).json({ message: "Failed to update payment details" });
@@ -2098,6 +2141,38 @@ ${updatedDetails.instructions}`,
       
       console.log(`[PAYMENT] Информация о чеке сохранена для заказа #${orderId}`);
       
+      // Отправляем уведомление администратору о загрузке чека через систему админ-панели
+      try {
+        const { telegramService } = await import('./telegram');
+        
+        // Получаем данные пользователя
+        const user = db.queryOne("SELECT full_name, email FROM users WHERE id = ?", [order.user_id]) as { full_name: string; email: string } | null;
+        
+        // Создаем данные для уведомления
+        const telegramOrderData = {
+          id: Number(orderId),
+          userId: String(order.user_id),
+          userName: user?.full_name || order.full_name,
+          userEmail: user?.email || 'Не указан',
+          userPhone: order.phone,
+          totalAmount: order.total_amount,
+          paymentMethod: "directTransfer",
+          deliveryAddress: order.address,
+          items: [],
+          createdAt: order.created_at
+        };
+        
+        const notificationSent = await telegramService.sendPaymentProofNotification(telegramOrderData);
+        if (notificationSent) {
+          console.log(`✅ Уведомление о загрузке чека для заказа #${orderId} отправлено`);
+        } else {
+          console.log(`📱 Не удалось отправить уведомление о загрузке чека для заказа #${orderId}`);
+        }
+      } catch (error) {
+        console.error("Error sending admin notification about payment proof:", error);
+        // Не прерываем загрузку чека если уведомление не отправилось
+      }
+      
       // Получаем обновленный заказ
       const updatedOrder = db.queryOne("SELECT * FROM orders WHERE id = ?", [orderId]);
       
@@ -2287,15 +2362,15 @@ ${updatedDetails.instructions}`,
         
         if (product.quantity < item.quantity) {
           return res.status(400).json({ 
-            message: `Недостаточное количество товара "${product.name}" в наличии (доступно: ${product.quantity})` 
+            message: `Недостаточное количество товара \"${product.name}\" в наличии (доступно: ${product.quantity})` 
           });
         }
 
         itemsTotal += product.price * item.quantity;
       }
 
-      // Validate and calculate promo code discount
-      let promoCodeDiscount = null;
+      // Validate and calculate promo code discount (только на товары, не на доставку)
+      let promoCodeDiscount = 0;
       if (orderData.promoCode) {
         const promoCode = db.queryOne(
           `SELECT * FROM promo_codes 
@@ -2321,15 +2396,19 @@ ${updatedDetails.instructions}`,
             promoCodeDiscount = promoCode.discount_value;
           }
 
-          // Ensure discount doesn't exceed order total
+          // Ensure discount doesn't exceed items total
           promoCodeDiscount = Math.min(promoCodeDiscount, itemsTotal);
         } else {
           return res.status(400).json({ message: "Недействительный промокод" });
         }
       }
 
-      // Calculate final total
-      const totalAmount = itemsTotal - (promoCodeDiscount || 0) + orderData.deliveryAmount;
+      // Логируем входящий deliveryAmount
+      console.log('Received deliveryAmount:', orderData.deliveryAmount, 'Способ доставки:', orderData.deliveryType);
+
+      // Calculate final total: (товары - скидка) + доставка
+      const totalAmount = Math.max(0, itemsTotal - promoCodeDiscount) + orderData.deliveryAmount;
+      console.log('Calculated totalAmount:', totalAmount);
 
       // Check balance if payment method is balance
       if (orderData.paymentMethod === "balance") {
@@ -2561,6 +2640,13 @@ ${updatedDetails.instructions}`,
 
         // If payment method is ozonpay, create payment
         if (orderData.paymentMethod === "ozonpay") {
+          // Проверка: если итоговая сумма <= 0, не создавать ссылку на оплату
+          if (totalAmount <= 0) {
+            return res.status(400).json({
+              ...formattedOrder,
+              paymentError: "Сумма заказа с учётом скидки должна быть больше 0 для онлайн-оплаты."
+            });
+          }
           try {
             const ozonPayAPI = createOzonPayAPI();
             
@@ -2568,7 +2654,7 @@ ${updatedDetails.instructions}`,
             const userRecord = db.queryOne("SELECT email FROM users WHERE id = ?", [orderData.userId]) as { email: string } | null;
             
             const paymentData = {
-              amount: totalAmount,
+              amount: Math.round(totalAmount * 100), // Convert to kopecks
               currency: "RUB",
               orderId: String(orderId),
               description: `Заказ #${orderId} на сайте Russkii Portal`,
@@ -2578,14 +2664,39 @@ ${updatedDetails.instructions}`,
 
             // Prepare order items for Ozon Pay
             const parsedItems = JSON.parse(createdOrder.items);
-            const orderItems = parsedItems.map((item: any) => {
-              const product = db.queryOne("SELECT name, price FROM products WHERE id = ?", [item.id]) as { name: string; price: number } | null;
+            console.log('Parsed order items for OzonPay:', parsedItems);
+            
+            // Распределяем скидку по товарам пропорционально
+            let totalItemsPrice = 0;
+            parsedItems.forEach((item: any) => {
+              totalItemsPrice += (item.price || 0) * (item.quantity || 1);
+            });
+            let remainingDiscount = createdOrder.promo_code_discount || 0;
+            const discountedOrderItems = parsedItems.map((item: any, index: number) => {
+              // Добавляем timestamp к ID чтобы избежать конфликтов с каталогом Ozon Pay
+              const extId = item.id != null ? `FRESH_${Date.now()}_${String(item.id)}` : `item_${Date.now()}_${index}`;
+              const itemTotal = (item.price || 0) * (item.quantity || 1);
+              // Пропорциональная скидка
+              let itemDiscount = 0;
+              if (index === parsedItems.length - 1) {
+                // Последнему товару — остаток скидки (чтобы не было расхождения из-за округления)
+                itemDiscount = remainingDiscount;
+              } else {
+                itemDiscount = Math.round((itemTotal / totalItemsPrice) * (createdOrder.promo_code_discount || 0));
+                remainingDiscount -= itemDiscount;
+              }
+              const discountedPrice = Math.max(0, (item.price || 0) - (itemDiscount / (item.quantity || 1)));
+              // Делаем название уникальным чтобы Ozon Pay не матчил по каталогу
+              const cleanName = `${(item.name || 'Неизвестный товар')} [Заказ #${orderId}]`
+                .replace(/×/g, 'x')
+                .replace(/[^\w\s\-\(\)\.#]/g, '')
+                .trim();
               return {
-                extId: String(item.id),
-                name: product?.name || 'Неизвестный товар',
+                extId,
+                name: cleanName,
                 price: {
                   currencyCode: "643",
-                  value: Math.round((product?.price || 0) * 100) // Цена в копейках для OZON Pay
+                  value: Math.round(discountedPrice * 100)
                 },
                 quantity: item.quantity,
                 type: "TYPE_PRODUCT",
@@ -2594,8 +2705,53 @@ ${updatedDetails.instructions}`,
                 needMark: false
               };
             });
+            let orderItems = discountedOrderItems;
+            // Добавляем доставку отдельной позицией, если она есть и способ не самовывоз
+            if (createdOrder.delivery_amount > 0 && createdOrder.delivery_type !== 'Самовывоз') {
+              orderItems.push({
+                extId: 'delivery-service',
+                name: 'Доставка товаров',
+                price: {
+                  currencyCode: "643",
+                  value: Math.round(createdOrder.delivery_amount * 100)
+                },
+                quantity: 1,
+                type: "TYPE_PRODUCT",
+                unitType: "UNIT_PIECE",
+                vat: "VAT_NONE",
+                needMark: false
+              });
+            }
+            
+            // Доставка ВКЛЮЧАЕТСЯ в онлайн-оплату
+            console.log('Final OzonPay order items:', orderItems);
+            
+            // Сумма для OzonPay = общая сумма заказа включая доставку
+            const paymentAmount = createdOrder.total_amount;
+            console.log(`OzonPay payment amount: ${paymentAmount} ₽ (общая сумма с доставкой ${createdOrder.total_amount} ₽)`);
+            
+            // Обновляем paymentData с полной суммой включая доставку
+            paymentData.amount = Math.round(paymentAmount * 100); // Convert to kopecks, включая доставку
+            paymentData.orderId = String(orderId);
+            paymentData.description = `Заказ #${orderId} на сайте Helen's Jungle (включая доставку)`;
+            paymentData.customerEmail = user.email;
+            paymentData.customerPhone = createdOrder.phone;
 
             const paymentResponse = await ozonPayAPI.createPayment(paymentData, orderItems);
+            
+            // ⚠️ ПРОВЕРКА: Если заказ уже оплачен при создании - это проблема!
+            if (paymentResponse.status === 'STATUS_PAID') {
+              console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: Ozon Pay вернул STATUS_PAID сразу при создании заказа!');
+              console.error('Это указывает на проблему с интеграцией (тестовый режим или неправильные ключи)');
+              
+              // Вместо редиректа на оплату показываем ошибку
+              res.status(201).json({
+                ...formattedOrder,
+                paymentError: "⚠️ Обнаружена проблема с платежной системой. Заказ создан успешно. Для оплаты обратитесь в поддержку или выберите другой способ оплаты.",
+                code: "PAYMENT_SYSTEM_ERROR"
+              });
+              return;
+            }
             
             // Save payment details to database
             db.run(
@@ -2614,11 +2770,21 @@ ${updatedDetails.instructions}`,
             });
           } catch (error) {
             console.error("Ошибка при создании платежа Ozon Pay:", error);
+            
+            // Обработка недоступности Ozon Pay API
+            if (error.message === 'OZON_PAY_API_UNAVAILABLE') {
+              res.status(201).json({
+                ...formattedOrder,
+                paymentError: "⚠️ Платежная система временно недоступна. Заказ создан, но ссылка на оплату будет предоставлена позже. Свяжитесь с поддержкой.",
+                code: "PAYMENT_SERVICE_UNAVAILABLE"
+              });
+            } else {
             // Return order without payment URL, user can try again later
             res.status(201).json({
               ...formattedOrder,
               paymentError: "Ошибка при создании ссылки на оплату. Обратитесь в поддержку."
             });
+            }
           }
         } else {
           res.status(201).json(formattedOrder);
@@ -2638,16 +2804,69 @@ ${updatedDetails.instructions}`,
   app.get("/api/orders", ensureAuthenticated, async (req: Request, res: Response) => {
     try {
       let orders: Record<string, any>[];
+      let totalCount: number = 0;
 
       // TypeScript type assertion for user
       const user = req.user as Express.User;
 
+      // Параметры пагинации
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.max(1, Math.min(100, parseInt(req.query.limit as string) || 50)); // Максимум 100 за раз
+      const offset = (page - 1) * limit;
+
+      // Параметры фильтрации
+      const statusFilter = req.query.status as string;
+      const searchQuery = req.query.search as string;
+
       if (user.isAdmin) {
-        // Admin gets all orders
-        orders = db.query("SELECT * FROM orders ORDER BY created_at DESC") as Record<string, any>[];
+        // Build WHERE clause for admin
+        let whereClause = "";
+        let params: any[] = [];
+
+        if (statusFilter) {
+          whereClause += " WHERE order_status = ?";
+          params.push(statusFilter);
+        }
+
+        if (searchQuery) {
+          const searchCondition = whereClause ? " AND " : " WHERE ";
+          whereClause += searchCondition + "(CAST(id AS TEXT) LIKE ? OR full_name LIKE ? OR phone LIKE ? OR address LIKE ?)";
+          const searchPattern = `%${searchQuery}%`;
+          params.push(searchPattern, searchPattern, searchPattern, searchPattern);
+        }
+
+        // Get total count for pagination
+        const countQuery = `SELECT COUNT(*) as total FROM orders${whereClause}`;
+        const countResult = db.queryOne(countQuery, params) as { total: number };
+        totalCount = countResult.total;
+
+        // Get paginated orders
+        const ordersQuery = `SELECT * FROM orders${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+        orders = db.query(ordersQuery, [...params, limit, offset]) as Record<string, any>[];
       } else {
-        // Regular users get only their orders
-        orders = db.query("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC", [user.id]) as Record<string, any>[];
+        // For regular users - get their orders only
+        let whereClause = "WHERE user_id = ?";
+        let params: any[] = [user.id];
+
+        if (statusFilter) {
+          whereClause += " AND order_status = ?";
+          params.push(statusFilter);
+        }
+
+        if (searchQuery) {
+          whereClause += " AND (CAST(id AS TEXT) LIKE ? OR full_name LIKE ? OR phone LIKE ? OR address LIKE ?)";
+          const searchPattern = `%${searchQuery}%`;
+          params.push(searchPattern, searchPattern, searchPattern, searchPattern);
+        }
+
+        // Get total count for pagination
+        const countQuery = `SELECT COUNT(*) as total FROM orders ${whereClause}`;
+        const countResult = db.queryOne(countQuery, params) as { total: number };
+        totalCount = countResult.total;
+
+        // Get paginated orders
+        const ordersQuery = `SELECT * FROM orders ${whereClause} ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+        orders = db.query(ordersQuery, [...params, limit, offset]) as Record<string, any>[];
       }
 
       // Enrich orders with product information and format for client
@@ -2701,7 +2920,18 @@ ${updatedDetails.instructions}`,
         }
       }));
 
-      res.json(formattedOrders);
+      // Return orders with pagination info
+      res.json({
+        orders: formattedOrders,
+        pagination: {
+          page,
+          limit,
+          total: totalCount,
+          totalPages: Math.ceil(totalCount / limit),
+          hasNext: page < Math.ceil(totalCount / limit),
+          hasPrev: page > 1
+        }
+      });
     } catch (error) {
       console.error("Ошибка при получении списка заказов:", error);
       res.status(500).json({ message: "Ошибка при получении списка заказов" });
@@ -3313,10 +3543,18 @@ ${updatedDetails.instructions}`,
       console.log(`[ORDERS] Изменение статуса заказа #${orderId}: ${previousStatus} -> ${orderStatus}`);
       
       // Обновляем статус заказа в базе данных
-      db.run(
-        "UPDATE orders SET order_status = ?, updated_at = ? WHERE id = ?",
-        [orderStatus, new Date().toISOString(), orderId]
-      );
+      // Если заказ становится "paid", обновляем также payment_status
+      if (orderStatus === "paid") {
+        db.run(
+          "UPDATE orders SET order_status = ?, payment_status = ?, updated_at = ? WHERE id = ?",
+          [orderStatus, "paid", new Date().toISOString(), orderId]
+        );
+      } else {
+        db.run(
+          "UPDATE orders SET order_status = ?, updated_at = ? WHERE id = ?",
+          [orderStatus, new Date().toISOString(), orderId]
+        );
+      }
       
       // Если заказ переходит в статус "оплачен" или "в обработке", уменьшаем количество товаров
       if ((orderStatus === "paid" || orderStatus === "processing") &&
@@ -3429,7 +3667,7 @@ ${updatedDetails.instructions}`,
 
       // Send user notification via Telegram bot about status change
       try {
-        const { sendOrderStatusUpdateToUser } = await import('./telegram-bot-telegraf');
+        const { sendOrderStatusUpdateToUser } = await import('./telegram-bot-final.cjs');
         
         // Parse items for user notification
         const parsedItems = JSON.parse(currentOrder.items || "[]");
@@ -3448,11 +3686,11 @@ ${updatedDetails.instructions}`,
           totalAmount: currentOrder.total_amount,
           paymentMethod: currentOrder.payment_method,
           items: itemsWithDetails,
-          orderStatus: orderStatus,
+          status: orderStatus,
           paymentStatus: currentOrder.payment_status
         };
         
-        const notificationSent = await sendOrderStatusUpdateToUser(currentOrder.phone, userOrderData);
+        const notificationSent = await sendOrderStatusUpdateToUser(currentOrder.user_id, userOrderData);
         if (notificationSent) {
           console.log(`✅ Уведомление об изменении статуса заказа #${orderId} отправлено пользователю`);
         } else {
@@ -4855,7 +5093,46 @@ ${updatedDetails.instructions}`,
         });
       }
 
-      // Проверяем статус верификации в pending_registrations
+      // СНАЧАЛА проверяем, не создан ли уже пользователь (например, через Telegram бота)
+      console.log(`🔍 DEBUG: Ищу пользователя с phone = "${phone}"`);
+      
+      const existingVerifiedUser = db.queryOne(
+        "SELECT * FROM users WHERE phone = ? AND phone_verified = 1", 
+        [phone]
+      ) as UserRecord | null;
+
+      console.log(`🔍 DEBUG: Результат поиска:`, existingVerifiedUser ? `найден ${existingVerifiedUser.email}` : 'не найден');
+
+      if (existingVerifiedUser) {
+        console.log(`✅ Пользователь уже создан и верифицирован: ${existingVerifiedUser.email}`);
+        
+        // Автоматически логиним
+        const user = userRecordToSessionUser(existingVerifiedUser);
+        req.login(user, (loginErr) => {
+          if (loginErr) {
+            console.error('Ошибка автологина:', loginErr);
+            return res.json({
+              verified: true,
+              message: "Телефон подтвержден, но требуется вход в систему",
+              user
+            });
+          }
+          
+          console.log(`🎉 Автологин успешен: ${existingVerifiedUser.email}`);
+          
+          res.json({
+            verified: true,
+            message: "Добро пожаловать!",
+            user,
+            autoLogin: true
+          });
+        });
+        return;
+      }
+
+      console.log(`⚠️ DEBUG: Пользователь с phone="${phone}" и phone_verified=1 не найден. Ищу в pending_registrations...`);
+
+      // Если пользователь не найден, проверяем статус верификации в pending_registrations
       const isVerified = checkPhoneVerification(phone, verificationToken);
       
       if (isVerified) {
@@ -4899,61 +5176,30 @@ ${updatedDetails.instructions}`,
           return;
         }
 
-        // Создаем нового пользователя
-        const userId = crypto.randomUUID();
-
+        // 🚀 БЫСТРОЕ создание пользователя с оптимизированной сессией
         try {
-          db.run(
-            `INSERT INTO users (
-              id, email, password, username, full_name, phone, address, 
-              phone_verified, balance, is_admin, created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-              userId,
-              userData.email,
-              userData.password, // УЖЕ ХЕШИРОВАННЫЙ пароль!
-              userData.username,
-              userData.firstName + " " + userData.lastName,
-              phone,
-              userData.address,
-              1, // phone_verified = true
-              '0.00',
-              0,
-              new Date().toISOString(),
-              new Date().toISOString()
-            ]
-          );
+          const user = await fastRegisterWithSession(req, {
+            email: userData.email,
+            password: userData.password,
+            username: userData.username,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            phone: phone,
+            address: userData.address
+          });
 
-          console.log(`✅ Пользователь создан: ${userData.email} (ID: ${userId})`);
-
-          // Получаем созданного пользователя
-          const newUser = db.queryOne("SELECT * FROM users WHERE id = ?", [userId]) as UserRecord | null;
-          if (!newUser) {
-            return res.status(500).json({ error: "Ошибка при создании пользователя" });
-          }
-
-          // Автоматически логиним
-          const user = userRecordToSessionUser(newUser);
-          req.login(user, (loginErr) => {
-            if (loginErr) {
-              return res.json({
-                verified: true,
-                message: "Регистрация успешна, но требуется вход в систему",
-                user
-              });
-            }
-            
-            // Удаляем из pending_registrations
+          // Асинхронно удаляем из pending_registrations (не блокируем ответ)
+          setImmediate(() => {
             removePendingRegistration(phone, verificationToken);
+          });
             
-            console.log(`🎉 Регистрация завершена: ${userData.email}`);
+          console.log(`🎉 Быстрая регистрация завершена: ${userData.email}`);
             
             res.json({
               verified: true,
               message: "Регистрация завершена успешно!",
               user,
               autoLogin: true
-            });
           });
 
         } catch (dbError) {
@@ -5087,6 +5333,7 @@ function formatProductForClient(product: any) {
     isBestseller: Boolean(product.is_bestseller),
     isNewArrival: Boolean(product.is_new_arrival),
     isLimitedEdition: Boolean(product.is_limited_edition),
+    isDiscounted: Boolean(product.is_discounted),
     createdAt: product.created_at,
     updatedAt: product.updated_at
   };

@@ -97,17 +97,52 @@ export default function CartPage() {
     }, 0);
   };
   
-  // Calculate total (subtotal + delivery - promo code discount)
+  // Calculate total (subtotal - promo code discount, without delivery)
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    const deliveryCost = calculateDeliveryCost();
     
     // Apply discount only to subtotal
     const discountedSubtotal = subtotal - promoCodeDiscount;
     const finalSubtotal = Math.max(0, discountedSubtotal); // Ensure subtotal doesn't go below zero
 
-    return finalSubtotal + deliveryCost;
+    return finalSubtotal; // Доставка не включается в общую сумму в корзине
   };
+
+  // Check for applied promo code on component mount and when localStorage changes
+  useEffect(() => {
+    const checkPromoCode = () => {
+      const storedPromoCode = localStorage.getItem('appliedPromoCode');
+      if (storedPromoCode) {
+        try {
+          const promoData = JSON.parse(storedPromoCode);
+          setPromoCodeDiscount(promoData.discount || 0);
+        } catch (error) {
+          // If parsing fails, remove invalid data
+          localStorage.removeItem('appliedPromoCode');
+          setPromoCodeDiscount(0);
+        }
+      } else {
+        // No promo code stored, reset discount
+        setPromoCodeDiscount(0);
+      }
+    };
+
+    // Check on mount
+    checkPromoCode();
+
+    // Listen for storage changes (when user returns from other pages)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'appliedPromoCode') {
+        checkPromoCode();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
   
   // Format price
   const formatPrice = (price: number) => {
@@ -141,6 +176,86 @@ export default function CartPage() {
     setWaitlistItems(unavailable);
   }, [products, cartItems]);
   
+  // Функция для пересчета промокода при изменении корзины
+  const revalidatePromoCode = async (updatedCart: CartItem[]) => {
+    const appliedPromoCode = localStorage.getItem('appliedPromoCode');
+    if (!appliedPromoCode) return;
+    
+    try {
+      const promoInfo = JSON.parse(appliedPromoCode);
+      
+      // Вычисляем новую сумму товаров
+      const newSubtotal = updatedCart.reduce((total, item) => {
+        const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+        return total + (price * item.quantity);
+      }, 0);
+      
+      // Если корзина пуста, сбрасываем промокод
+      if (newSubtotal === 0) {
+        localStorage.removeItem('appliedPromoCode');
+        setPromoCodeDiscount(0);
+        toast({
+          title: "Промокод сброшен",
+          description: "Промокод был сброшен так как корзина пуста",
+          variant: "default"
+        });
+        return;
+      }
+      
+      // Проверяем промокод на новую сумму
+      const response = await fetch('/api/promo-codes/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: promoInfo.code,
+          cartTotal: newSubtotal
+        })
+      });
+      
+      if (!response.ok) {
+        // Промокод больше не действителен - сбрасываем
+        localStorage.removeItem('appliedPromoCode');
+        setPromoCodeDiscount(0);
+        toast({
+          title: "Промокод сброшен",
+          description: "Промокод больше не действителен для текущей суммы заказа",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      const data = await response.json();
+      
+      // Обновляем скидку
+      setPromoCodeDiscount(data.discount);
+      
+      // Обновляем информацию о промокоде в localStorage
+      localStorage.setItem('appliedPromoCode', JSON.stringify({
+        code: promoInfo.code,
+        discount: data.discount,
+        discountType: data.discountType,
+        discountValue: data.discountValue
+      }));
+      
+      // Если скидка изменилась, уведомляем пользователя
+      if (data.discount !== promoInfo.discount) {
+        toast({
+          title: "Промокод пересчитан",
+          description: `Скидка изменена на ${data.discount} ₽ в соответствии с новой суммой заказа`,
+          variant: "default"
+        });
+      }
+      
+    } catch (error) {
+      console.error('Ошибка при пересчете промокода:', error);
+      // В случае ошибки сбрасываем промокод
+      localStorage.removeItem('appliedPromoCode');
+      setPromoCodeDiscount(0);
+    }
+  };
+  
   // Update item quantity
   const updateItemQuantity = (id: number, quantity: number) => {
     if (quantity < 1) return removeItem(id);
@@ -155,6 +270,9 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     queryClient.setQueryData(["/api/cart"], updatedCart);
     refetchCart();
+    
+    // Проверяем и пересчитываем промокод после изменения количества
+    revalidatePromoCode(updatedCart);
   };
   
   // Remove item from cart
@@ -168,6 +286,9 @@ export default function CartPage() {
     queryClient.setQueryData(["/api/cart"], updatedCart);
     refetchCart();
     
+    // Проверяем и пересчитываем промокод после удаления товара
+    revalidatePromoCode(updatedCart);
+    
     toast({
       title: "Товар удален",
       description: "Товар удален из корзины",
@@ -179,6 +300,10 @@ export default function CartPage() {
     localStorage.setItem("cart", "[]");
     queryClient.setQueryData(["/api/cart"], []);
     refetchCart();
+    
+    // Сбрасываем промокод при очистке корзины
+    localStorage.removeItem('appliedPromoCode');
+    setPromoCodeDiscount(0);
     
     toast({
       title: "Корзина очищена",
@@ -298,14 +423,6 @@ export default function CartPage() {
                   <span className="text-gray-600">Товары:</span>
                   <span>{formatPrice(calculateSubtotal())} ₽</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Доставка:</span>
-                  <span>{formatPrice(calculateDeliveryCost())} ₽</span>
-                </div>
-                {/* Пояснение по доставке */}
-                {deliveryNote() && (
-                  <div className="text-xs text-gray-500 mt-1 mb-2">{deliveryNote()}</div>
-                )}
                 {promoCodeDiscount > 0 && (
                   <div className="flex justify-between text-success-foreground font-medium mt-2">
                     <span>Скидка по промокоду:</span>

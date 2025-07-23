@@ -69,29 +69,29 @@ function Footer() {
             <h3 className="font-montserrat font-bold text-lg mb-4">Основные категории</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/catalog?category=Алоказии" className="text-gray-300 hover:text-white transition-colors">
+                <a href="/catalog?category=Алоказии" className="text-gray-300 hover:text-white transition-colors">
                   Алоказии
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/catalog?category=Антуриумы" className="text-gray-300 hover:text-white transition-colors">
+                <a href="/catalog?category=Антуриумы" className="text-gray-300 hover:text-white transition-colors">
                   Антуриумы
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/catalog?category=Филодендроны" className="text-gray-300 hover:text-white transition-colors">
+                <a href="/catalog?category=Филодендроны" className="text-gray-300 hover:text-white transition-colors">
                   Филодендроны
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/catalog?category=Разные декоративно-лиственные" className="text-gray-300 hover:text-white transition-colors">
-                  Разные декоративно-лиственные
-                </Link>
+                <a href="/catalog?category=Прочие+декоративно-лиственные" className="text-gray-300 hover:text-white transition-colors">
+                  Прочие декоративно-лиственные
+                </a>
               </li>
               <li>
-                <Link href="/catalog?category=Редкие растения" className="text-gray-300 hover:text-white transition-colors">
+                <a href="/catalog?rare=true" className="text-gray-300 hover:text-white transition-colors">
                   Редкие растения
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

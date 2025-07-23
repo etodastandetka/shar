@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, FileText, Eye, Image, Download, FileDown, Trash, Maximize2 } from "lucide-react";
+import { Search, FileText, Eye, Image, Download, FileDown, Trash, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -50,10 +50,12 @@ const ORDER_STATUSES = [
   { value: "pending", label: "В ожидании", color: "bg-amber-100 text-amber-800" },
   { value: "pending_payment", label: "Ожидает оплаты", color: "bg-blue-100 text-blue-800" },
   { value: "paid", label: "Оплачен", color: "bg-green-100 text-green-800" },
+  { value: "completed", label: "Оплачен", color: "bg-green-100 text-green-800" },
   { value: "processing", label: "В обработке", color: "bg-indigo-100 text-indigo-800" },
   { value: "shipped", label: "Отправлен", color: "bg-purple-100 text-purple-800" },
   { value: "delivered", label: "Доставлен", color: "bg-gray-100 text-gray-800" },
   { value: "cancelled", label: "Отменен", color: "bg-red-100 text-red-800" },
+  { value: "failed", label: "Отклонен", color: "bg-red-100 text-red-800" },
 ];
 
 // Обновляем тип Order с новыми полями
@@ -107,15 +109,70 @@ export default function OrdersList() {
   const [selectedOrder, setSelectedOrder] = useState<OrderWithTypedFields | null>(null);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [adminComment, setAdminComment] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  // Clear cache function for troubleshooting
+  const clearOrdersCache = () => {
+    // Очищаем только кэш заказов, не весь кэш
+    queryClient.invalidateQueries({ 
+      predicate: (query) => query.queryKey[0] === "/api/orders"
+    });
+    queryClient.removeQueries({ 
+      predicate: (query) => query.queryKey[0] === "/api/orders"
+    });
+    
+    // Принудительно обновляем данные
+    refetch();
+    
+    toast({
+      title: "Кэш заказов очищен",
+      description: "Данные заказов обновлены с сервера",
+      variant: "success"
+    });
+  };
   
-  const { data: orders = [], isLoading, refetch } = useQuery<OrderWithTypedFields[]>({
-    queryKey: ["/api/orders"],
+  const { data: ordersResponse, isLoading, refetch } = useQuery<{
+    orders: OrderWithTypedFields[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
+  }>({
+    queryKey: ["/api/orders", currentPage, pageSize, statusFilter, searchQuery],
     queryFn: async () => {
-      const res = await fetch("/api/orders", { credentials: "include" });
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: pageSize.toString(),
+      });
+      
+      if (statusFilter) {
+        params.append('status', statusFilter);
+      }
+      
+      if (searchQuery.trim()) {
+        params.append('search', searchQuery.trim());
+      }
+      
+      const res = await fetch(`/api/orders?${params.toString()}`, { 
+        credentials: "include" 
+      });
       if (!res.ok) throw new Error("Ошибка загрузки заказов");
       return res.json();
-    }
+    },
+    // КРИТИЧНЫЕ НАСТРОЙКИ ДЛЯ СИНХРОНИЗАЦИИ ЗАКАЗОВ:
+    staleTime: 0, // ВСЕГДА считать данные устаревшими
+    refetchInterval: 15000, // Обновлять каждые 15 секунд
+    refetchOnWindowFocus: true, // Обновлять при возврате в окно
+    refetchOnMount: true, // Обновлять при монтировании компонента
   });
+  
+  const orders = ordersResponse?.orders || [];
+  const pagination = ordersResponse?.pagination;
   
   const { data: users = [] } = useQuery<{ id: string; email: string; }[]>({
     queryKey: ["/api/users"],
@@ -148,7 +205,9 @@ export default function OrdersList() {
     },
     onSuccess: (data) => {
       console.log("Статус заказа успешно обновлен:", data);
-      queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === "/api/orders"
+      });
       refetch(); // Явно вызываем обновление данных
       toast({
         title: "Статус обновлен",
@@ -171,7 +230,9 @@ export default function OrdersList() {
       await apiRequest("PUT", `/api/orders/${orderId}`, { adminComment: comment });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === "/api/orders"
+      });
       refetch(); // Явно вызываем обновление данных
       toast({
         title: "Комментарий сохранен",
@@ -198,7 +259,9 @@ export default function OrdersList() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === "/api/orders"
+      });
       refetch(); // Явно вызываем обновление данных
       toast({
         title: "Заказ удален",
@@ -249,6 +312,27 @@ export default function OrdersList() {
       deleteOrderMutation.mutate(orderId);
     }
   };
+
+  // Pagination handlers
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const handlePageSizeChange = (newSize: string) => {
+    setPageSize(parseInt(newSize));
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
+  // Reset pagination when filters change
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value === "all" ? null : value);
+    setCurrentPage(1); // Reset to first page when changing filter
+  };
   
   const getStatusBadge = (status: string) => {
     const statusInfo = ORDER_STATUSES.find(s => s.value === status);
@@ -258,26 +342,9 @@ export default function OrdersList() {
       </Badge>
     );
   };
-  
-  const filteredOrders = orders?.filter(order => {
-    // Фильтр по статусу
-    if (statusFilter && order.orderStatus !== statusFilter) {
-      return false;
-    }
-    
-    // Поиск по ID, имени, телефону или адресу
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return (
-        order.id.toString().includes(query) ||
-        order.fullName.toLowerCase().includes(query) ||
-        order.phone.toLowerCase().includes(query) ||
-        order.address.toLowerCase().includes(query)
-      );
-    }
-    
-    return true;
-  });
+
+  // Remove client-side filtering since it's now done on the server
+  // const filteredOrders = orders; // All filtering is done server-side
   
   // Форматирование суммы
   const formatPrice = (price: number | string | null | undefined): string => {
@@ -289,6 +356,16 @@ export default function OrdersList() {
   // Функция для экспорта заказов в Excel
   const exportToExcel = async () => {
     try {
+      // Check if orders is a valid array with data
+      if (!orders || !Array.isArray(orders) || orders.length === 0) {
+        toast({
+          title: "Нет данных для экспорта",
+          description: "Загрузите заказы перед экспортом",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const data = orders.map(order => ({
         ID: order.id,
         'ФИО': order.fullName,
@@ -307,6 +384,15 @@ export default function OrdersList() {
         'Дата создания': new Date(order.createdAt).toLocaleDateString('ru-RU'),
         'Трек-номер': order.trackingNumber || '-',
       }));
+
+      if (data.length === 0) {
+        toast({
+          title: "Нет данных для экспорта",
+          description: "Отсутствуют заказы для экспорта",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const workbook = new Workbook();
       const worksheet = workbook.addWorksheet('Заказы');
@@ -350,7 +436,16 @@ export default function OrdersList() {
   
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Управление заказами</h2>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold">Управление заказами</h2>
+          {pagination && (
+            <p className="text-gray-600 mt-1">
+              Всего заказов: {pagination.total}
+            </p>
+          )}
+        </div>
+      </div>
       
       <Card className="mb-6">
         <div className="p-4 flex flex-col md:flex-row gap-4">
@@ -359,14 +454,14 @@ export default function OrdersList() {
             <Input
               placeholder="Поиск заказов по ID, имени, телефону или адресу"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10"
             />
           </div>
           
           <Select 
             value={statusFilter === null ? "all" : statusFilter} 
-            onValueChange={(value) => setStatusFilter(value === "all" ? null : value)}
+            onValueChange={handleStatusFilterChange}
           >
             <SelectTrigger className="w-full md:w-[200px]">
               <SelectValue placeholder="Все статусы" />
@@ -380,6 +475,21 @@ export default function OrdersList() {
               ))}
             </SelectContent>
           </Select>
+
+          <Select 
+            value={pageSize.toString()} 
+            onValueChange={handlePageSizeChange}
+          >
+            <SelectTrigger className="w-full md:w-[120px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10 на стр</SelectItem>
+              <SelectItem value="20">20 на стр</SelectItem>
+              <SelectItem value="50">50 на стр</SelectItem>
+              <SelectItem value="100">100 на стр</SelectItem>
+            </SelectContent>
+          </Select>
           
           <Button 
             onClick={exportToExcel} 
@@ -389,6 +499,14 @@ export default function OrdersList() {
             <FileDown className="mr-2 h-4 w-4" />
             Экспорт в Excel
           </Button>
+
+          <Button 
+            onClick={clearOrdersCache} 
+            variant="outline"
+            className="text-blue-600 border-blue-600 hover:bg-blue-50"
+          >
+            🔄 Обновить заказы
+          </Button>
         </div>
       </Card>
       
@@ -396,7 +514,7 @@ export default function OrdersList() {
         <div className="text-center py-10">
           <p className="text-gray-500">Загрузка заказов...</p>
         </div>
-      ) : !filteredOrders || filteredOrders.length === 0 ? (
+      ) : !orders || orders.length === 0 ? (
         <div className="text-center py-10 bg-white rounded-lg shadow">
           <p className="text-gray-500">
             {searchQuery || statusFilter
@@ -420,7 +538,7 @@ export default function OrdersList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredOrders.map((order) => (
+              {orders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell>{order.id}</TableCell>
                   <TableCell>
@@ -486,6 +604,57 @@ export default function OrdersList() {
               ))}
             </TableBody>
           </Table>
+          
+          {/* Pagination Controls */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-4 bg-white border-t">
+              <div className="text-sm text-gray-700">
+                Показано {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} из {pagination.total} заказов
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(pagination.page - 1)}
+                  disabled={!pagination.hasPrev}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Назад
+                </Button>
+                
+                <div className="flex items-center gap-1">
+                  {/* Show page numbers */}
+                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                    const pageNum = Math.max(1, pagination.page - 2) + i;
+                    if (pageNum > pagination.totalPages) return null;
+                    
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={pageNum === pagination.page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handlePageChange(pageNum)}
+                        className="min-w-[40px]"
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  })}
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(pagination.page + 1)}
+                  disabled={!pagination.hasNext}
+                >
+                  Вперед
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
       
@@ -557,16 +726,9 @@ const OrderDetailsDialog = ({
         statusHistory: data.order.statusHistory
       }));
       
-      // Обновляем кэш запросов
-      queryClient.setQueryData(['orders'], (oldData: any) => {
-        if (!oldData) return oldData;
-        return oldData.map((o: OrderWithTypedFields) => 
-          o.id === data.order.id ? { 
-            ...o, 
-            ...data.order,
-            adminComment: data.order.comment
-          } : o
-        );
+      // Обновляем кэш запросов - используем invalidateQueries вместо setQueryData
+      queryClient.invalidateQueries({ 
+        predicate: (query) => query.queryKey[0] === "/api/orders"
       });
 
       toast({

@@ -1,0 +1,1072 @@
+2025-06-30T11:21:24: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925332, allowed_updates: [] }
+  }
+}
+2025-06-30T11:30:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T13:28:45: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925333, allowed_updates: [] }
+  }
+}
+2025-06-30T13:43:02: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:05:33: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:08:03: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:13:10: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:20:29: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T15:05:58: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T19:07:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T20:09:04: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925334, allowed_updates: [] }
+  }
+}
+2025-07-02T20:13:33: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925348, allowed_updates: [] }
+  }
+}
+2025-07-02T20:56:45: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:12:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:21:14: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:22:47: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:27:21: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:36:37: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:40:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:42:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:47:05: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:52:52: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925349, allowed_updates: [] }
+  }
+}
+2025-07-03T22:57:52: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:58:19: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:02:56: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:03:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:06:41: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:09:25: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:11:39: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:13:59: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:15:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:21:15: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:06:17: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925355, allowed_updates: [] }
+  }
+}
+2025-07-04T09:49:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:52:04: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:53:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:54:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:59:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:00:58: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:02:15: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:04:08: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:05:32: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:06:47: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:22:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:26:08: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:29:01: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:30:02: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:31:18: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:32:22: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:33:31: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:34:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:51:30: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:19:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:21:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:22:56: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:25:36: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:43:42: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:45:21: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:47:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:50:49: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:52:38: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T12:04:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:50:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:52:07: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:56:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T15:11:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T15:13:06: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}

@@ -94,9 +94,12 @@ export class OzonPayAPI {
    */
   async createPayment(paymentData: PaymentRequest, items: OrderItem[]): Promise<PaymentResponse> {
     try {
+      // Проверяем доступность API
+      console.log('🔄 Проверка доступности Ozon Pay API...');
+      
       const currencyCode = "643"; // RUB
-      const amountValue = Math.round(paymentData.amount * 100); // Сумма в копейках для OZON Pay
-      const extId = `${paymentData.orderId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const amountValue = Math.round(paymentData.amount); // Сумма в копейках для OZON Pay
+      const extId = `FRESH_ORDER_${Date.now()}_${paymentData.orderId}`; // Уникальный orderId чтобы избежать конфликтов с каталогом
       const fiscalizationType = "FISCAL_TYPE_SINGLE";
       const paymentAlgorithm = "PAY_ALGO_SMS";
       const expiresAt = ""; // Пустая строка согласно примеру в документации
@@ -119,7 +122,7 @@ export class OzonPayAPI {
           currencyCode: currencyCode,
           value: amountValue
         },
-        enableFiscalization: false,
+        enableFiscalization: true,
         extId: extId,
         fiscalizationType: fiscalizationType,
         paymentAlgorithm: paymentAlgorithm,
@@ -127,19 +130,11 @@ export class OzonPayAPI {
         failUrl: this.config.failUrl,
         notificationUrl: this.config.webhookUrl,
         requestSign: requestSign,
-        items: items,
-        ...(paymentData.customerEmail && { receiptEmail: paymentData.customerEmail })
+        items: items
       };
 
       console.log('Ozon Pay createOrder request:', JSON.stringify(requestData, null, 2));
       console.log('Ozon Pay API URL:', `${this.config.apiUrl}/createOrder`);
-      console.log('Ozon Pay Config:', {
-        accessKey: this.config.accessKey,
-        apiUrl: this.config.apiUrl,
-        successUrl: this.config.successUrl,
-        failUrl: this.config.failUrl,
-        webhookUrl: this.config.webhookUrl
-      });
 
       const response = await fetch(`${this.config.apiUrl}/createOrder`, {
         method: 'POST',
@@ -153,7 +148,54 @@ export class OzonPayAPI {
       console.log('Ozon Pay createOrder response status:', response.status);
       console.log('Ozon Pay createOrder response:', JSON.stringify(result, null, 2));
 
+      // ⚠️ ДИАГНОСТИКА: Проверяем на подозрительные проблемы
+      if (result.order && result.order.status === 'STATUS_PAID') {
+        console.error('🚨 ВНИМАНИЕ: Заказ помечен как оплаченный сразу при создании!');
+        console.error('Проверьте настройки Ozon Pay - возможно используется тестовый режим');
+        console.error('Order ID:', result.order.id);
+        console.error('Order Status:', result.order.status);
+        console.error('Requested extId:', extId);
+        console.error('Returned extId:', result.order.extId);
+        
+        // Добавляем детали для диагностики
+        if (result.order.items) {
+          console.error('Returned items details:', result.order.items.map((item: any) => ({
+            extId: item.extId,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+          })));
+        }
+      }
+      
+      if (result.order && result.order.items) {
+        const requestedItems = items.length;
+        const returnedItems = result.order.items.length;
+        if (requestedItems !== returnedItems) {
+          console.error(`🚨 НЕСООТВЕТСТВИЕ ТОВАРОВ: Отправлено ${requestedItems}, получено ${returnedItems}`);
+          console.error('Отправленные товары:', items.map(i => `${i.name} (ID: ${i.extId}, Price: ${i.price.value})`));
+          console.error('Полученные товары:', result.order.items.map((i: any) => `${i.name} (ID: ${i.extId}, Price: ${i.price})`));
+          
+          // Проверяем, есть ли товары с неожиданными именами
+          const suspiciousItems = result.order.items.filter((returnedItem: any) => 
+            !items.some(sentItem => sentItem.extId === returnedItem.extId)
+          );
+          
+          if (suspiciousItems.length > 0) {
+            console.error('🚨 ПОДОЗРИТЕЛЬНЫЕ ТОВАРЫ (не из нашего запроса):');
+            suspiciousItems.forEach((item: any) => {
+              console.error(`- ${item.name} (ID: ${item.extId}, Price: ${item.price})`);
+            });
+          }
+        }
+      }
+
       if (!response.ok) {
+        // Если ошибка связана с API, выбрасываем специальную ошибку
+        if (response.status === 404 || (result.message && result.message.includes('не найдено'))) {
+          console.error('❌ Ozon Pay API недоступен или ключи устарели');
+          throw new Error('OZON_PAY_API_UNAVAILABLE');
+        }
         throw new Error(`Ozon Pay API Error: ${result.message || response.statusText}`);
       }
 
@@ -168,6 +210,12 @@ export class OzonPayAPI {
       };
     } catch (error) {
       console.error('Ozon Pay API Error:', error);
+      
+      // Если это ошибка недоступности API, передаем её дальше для обработки
+      if (error instanceof Error && error.message === 'OZON_PAY_API_UNAVAILABLE') {
+        throw error;
+      }
+      
       throw new Error('Ошибка при создании платежа в Ozon Pay');
     }
   }

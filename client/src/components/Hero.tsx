@@ -1,19 +1,6 @@
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 function Hero() {
-  const [, setLocation] = useLocation();
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      setLocation(`/catalog?search=${encodeURIComponent(searchTerm.trim())}`);
-    }
-  };
 
   return (
     <section className="relative bg-primary text-white py-12 md:py-16 overflow-hidden">
@@ -36,23 +23,11 @@ function Hero() {
             Доставляем редкие и экзотические растения прямо к вашей двери
           </p>
           
-          <form onSubmit={handleSearch} className="relative max-w-xl">
-            <Input
-              type="text"
-              placeholder="Поиск растений..."
-              className="form-input w-full py-3 px-5 pr-12 rounded-lg border-none focus:ring-2 focus:ring-secondary text-neutral-dark"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Button 
-              type="submit"
-              variant="ghost" 
-              size="icon"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          </form>
+          <Link href="/catalog">
+            <button className="bg-secondary hover:bg-yellow-500 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 shadow-lg hover:shadow-xl">
+              Смотреть каталог
+            </button>
+          </Link>
         </div>
       </div>
     </section>

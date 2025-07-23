@@ -1,8 +1,25 @@
 import { useState, useEffect, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Product } from "@shared/schema";
 import ProductCard from "@/components/ProductCard";
+import CategoryFilterSimple from "@/components/CategoryFilterSimple";
+
+// Custom hook для debounce
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 import { Loader2, Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -15,6 +32,13 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function CatalogPage() {
   const [location, setLocation] = useLocation();
@@ -23,23 +47,46 @@ export default function CatalogPage() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
   const [minPriceInput, setMinPriceInput] = useState("0");
   const [maxPriceInput, setMaxPriceInput] = useState("10000");
+  const [sortBy, setSortBy] = useState<string>("default");
   const itemsPerPage = 12;
   
-  // Parse URL parameters - using useMemo to ensure they update when location changes
-  const { searchParams, initialSearch, minPrice, maxPrice } = useMemo(() => {
-    const searchParams = new URLSearchParams(location.includes("?") ? location.split("?")[1] : "");
+  // Debounced поиск с задержкой 500ms
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  
+  // Принудительное обновление при изменении URL
+  const [urlParams, setUrlParams] = useState(() => {
+    const searchParams = new URLSearchParams(window.location.search);
     return {
       searchParams,
       initialSearch: searchParams.get("search") || "",
       minPrice: searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")!) : undefined,
       maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : undefined,
+      initialCategory: searchParams.get("category") || "",
+      initialRare: searchParams.get("rare") === "true",
+      initialPage: searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1
     };
+  });
+  
+  // Обновляем параметры при изменении location
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const newParams = {
+      searchParams,
+      initialSearch: searchParams.get("search") || "",
+      minPrice: searchParams.get("minPrice") ? parseInt(searchParams.get("minPrice")!) : undefined,
+      maxPrice: searchParams.get("maxPrice") ? parseInt(searchParams.get("maxPrice")!) : undefined,
+      initialCategory: searchParams.get("category") || "",
+      initialRare: searchParams.get("rare") === "true",
+      initialPage: searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1
+    };
+    
+    console.log("🔥 CATALOG: Updated URL params:", newParams);
+    setUrlParams(newParams);
   }, [location]);
   
-  // Debug logging
-  console.log("Current location:", location);
+  const { searchParams, initialSearch, minPrice, maxPrice, initialCategory, initialRare, initialPage } = urlParams;
   
-  // Set initial search term
+  // Set initial search term and page
   useEffect(() => {
     if (initialSearch) {
       setSearchTerm(initialSearch);
@@ -52,7 +99,17 @@ export default function CatalogPage() {
       setMaxPriceInput(maxPrice.toString());
       setPriceRange(prev => [prev[0], maxPrice]);
     }
-  }, [initialSearch, minPrice, maxPrice]);
+    if (initialPage !== undefined && initialPage !== page) {
+      setPage(initialPage);
+    }
+  }, [initialSearch, minPrice, maxPrice, initialPage]);
+  
+  // Автоматический поиск при изменении debouncedSearchTerm
+  useEffect(() => {
+    if (debouncedSearchTerm !== (initialSearch || "")) {
+      updateUrlParams({ search: debouncedSearchTerm || undefined });
+    }
+  }, [debouncedSearchTerm]);
   
   // Build API query string
   const buildQueryString = () => {
@@ -64,29 +121,85 @@ export default function CatalogPage() {
     if (priceRange[0] > 0) params.append("minPrice", priceRange[0].toString());
     if (priceRange[1] < 10000) params.append("maxPrice", priceRange[1].toString());
     
-    const queryString = params.toString();
-    console.log("Built query string:", queryString);
+    // Добавляем фильтрацию по категории
+    if (initialCategory) {
+      params.append("category", initialCategory);
+    }
     
-    return queryString;
+    // Добавляем фильтрацию по редким растениям
+    if (initialRare) {
+      params.append("rare", "true");
+    }
+    
+    // Добавляем сортировку
+    if (sortBy !== "default") params.append("sortBy", sortBy);
+    
+    return params.toString();
   };
   
   // Fetch products with filters
   const queryString = buildQueryString();
-  console.log("Final query string for API:", queryString);
   
-  const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: [`/api/products`, queryString],
-    queryFn: async ({ queryKey }) => {
-      const [endpoint, params] = queryKey;
-      const url = params ? `${endpoint}?${params}` : endpoint;
-      console.log("Fetching from URL:", url);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch products");
-      const data = await res.json();
-      console.log("Received products:", data.length);
-      return data;
+  // Простое состояние без React Query
+  const [rawProducts, setRawProducts] = useState<Product[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  // Загружаем данные обычным fetch при изменении queryString
+  useEffect(() => {
+    console.log("🔥 CATALOG: queryString changed:", queryString);
+    console.log("🔥 CATALOG: initialCategory:", initialCategory);
+    
+    const fetchProducts = async () => {
+      setDataLoading(true);
+      try {
+        const url = queryString ? `/api/products?${queryString}` : '/api/products';
+        console.log("🔥 CATALOG: Fetching URL:", url);
+        
+        const res = await fetch(url, { 
+          cache: 'no-store',
+          headers: { 'Cache-Control': 'no-cache' }
+        });
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        
+        console.log("🔥 CATALOG: Received products:", data.length || 0, "items");
+        setRawProducts(data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setRawProducts([]);
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [queryString]);
+  
+  // Обрабатываем случай когда данные еще не загружены
+  const allProducts = rawProducts || [];
+  const isLoading = dataLoading;
+  
+  // Apply sorting to products
+  const products = useMemo(() => {
+    if (!allProducts || allProducts.length === 0) return [];
+    
+    const sorted = [...allProducts];
+    
+    switch (sortBy) {
+      case "price_asc":
+        return sorted.sort((a, b) => parseFloat(a.price.toString()) - parseFloat(b.price.toString()));
+      case "price_desc":
+        return sorted.sort((a, b) => parseFloat(b.price.toString()) - parseFloat(a.price.toString()));
+      case "name_asc":
+        return sorted.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+      case "name_desc":
+        return sorted.sort((a, b) => b.name.localeCompare(a.name, 'ru'));
+      case "newest":
+        return sorted.sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime());
+      default:
+        return sorted;
     }
-  });
+  }, [allProducts, sortBy]);
   
   // Simple pagination calculation
   const totalPages = Math.ceil(products.length / itemsPerPage);
@@ -95,10 +208,7 @@ export default function CatalogPage() {
     page * itemsPerPage
   );
   
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateUrlParams({ search: searchTerm });
-  };
+
   
   const handlePriceChange = (value: number[]) => {
     setPriceRange([value[0], value[1]]);
@@ -126,7 +236,7 @@ export default function CatalogPage() {
     });
   };
   
-  const updateUrlParams = (newParams: Record<string, string | undefined>) => {
+  const updateUrlParams = (newParams: Record<string, string | undefined>, resetPage = true) => {
     console.log("Updating URL params:", newParams);
     const params = new URLSearchParams(location.includes("?") ? location.split("?")[1] : "");
     
@@ -141,8 +251,11 @@ export default function CatalogPage() {
       }
     });
     
-    // Reset to page 1 when filters change
-    setPage(1);
+    // Reset to page 1 when filters change (but not when manually changing page)
+    if (resetPage && !newParams.page) {
+      setPage(1);
+      params.delete('page'); // Remove page param when resetting to 1
+    }
     
     // Construct new URL
     const newUrl = `/catalog${params.toString() ? `?${params.toString()}` : ""}`;
@@ -151,13 +264,12 @@ export default function CatalogPage() {
     setLocation(newUrl);
   };
   
-
-
   const clearAllFilters = () => {
     setSearchTerm("");
     setPriceRange([0, 10000]);
     setMinPriceInput("0");
     setMaxPriceInput("10000");
+    setSortBy("default");
     setLocation("/catalog");
   };
   
@@ -169,28 +281,26 @@ export default function CatalogPage() {
         </div>
       </div>
       
+      <CategoryFilterSimple />
+      
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           {/* Search */}
-          <form onSubmit={handleSearch} className="w-full md:w-auto">
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Поиск растений..."
-                className="form-input pr-10 w-full md:w-64"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Button 
-                type="submit"
-                variant="ghost" 
-                size="icon"
-                className="absolute right-0 top-0 text-gray-500"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-            </div>
-          </form>
+          <div className="relative w-full md:w-auto">
+            <Input
+              type="text"
+              placeholder="Поиск растений..."
+              className="form-input pl-10 pr-4 w-full md:w-80"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            {searchTerm && (
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+                Поиск...
+              </span>
+            )}
+          </div>
           
           {/* Mobile filters button */}
           <div className="md:hidden">
@@ -242,7 +352,23 @@ export default function CatalogPage() {
                       </SheetClose>
                     </div>
 
-
+                    {/* Сортировка для мобильных */}
+                    <div>
+                      <h4 className="font-medium mb-2">Сортировка</h4>
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Выберите сортировку" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">По умолчанию</SelectItem>
+                          <SelectItem value="price_asc">Цена: по возрастанию</SelectItem>
+                          <SelectItem value="price_desc">Цена: по убыванию</SelectItem>
+                          <SelectItem value="name_asc">Название: А-Я</SelectItem>
+                          <SelectItem value="name_desc">Название: Я-А</SelectItem>
+                          <SelectItem value="newest">Сначала новые</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                     
                     {/* Clear filters button for mobile */}
                     {(searchTerm || priceRange[0] > 0 || priceRange[1] < 10000) && (
@@ -279,39 +405,98 @@ export default function CatalogPage() {
           )}
         </div>
         
-        {/* Desktop price filter */}
-        <div className="hidden md:flex items-center space-x-4 mb-6">
-          <span className="text-sm font-medium">Цена:</span>
-          <div className="w-64">
-            <Slider
-              defaultValue={priceRange}
-              min={0}
-              max={10000}
-              step={100}
-              value={priceRange}
-              onValueChange={handlePriceChange}
-            />
+        {/* Desktop price filter and sorting */}
+        <div className="hidden md:flex items-center justify-between mb-6 gap-6">
+          <div className="flex items-center space-x-4">
+            <span className="text-sm font-medium">Цена:</span>
+            
+            {/* Два отдельных ползунка для цены */}
+            <div className="flex items-center space-x-4">
+              <div className="flex flex-col space-y-2">
+                <label className="text-xs text-gray-500">От:</label>
+                <div className="w-32">
+                  <Slider
+                    value={[priceRange[0]]}
+                    min={0}
+                    max={9900}
+                    step={100}
+                    onValueChange={(value) => {
+                      const newMin = value[0];
+                      if (newMin < priceRange[1]) {
+                        setPriceRange([newMin, priceRange[1]]);
+                        setMinPriceInput(newMin.toString());
+                      }
+                    }}
+                    className="mb-2"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="От"
+                    className="form-input w-20 text-xs"
+                    value={minPriceInput}
+                    onChange={(e) => {
+                      setMinPriceInput(e.target.value);
+                      const val = parseInt(e.target.value) || 0;
+                      if (val >= 0 && val < priceRange[1]) setPriceRange([val, priceRange[1]]);
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex flex-col space-y-2">
+                <label className="text-xs text-gray-500">До:</label>
+                <div className="w-32">
+                  <Slider
+                    value={[priceRange[1]]}
+                    min={100}
+                    max={10000}
+                    step={100}
+                    onValueChange={(value) => {
+                      const newMax = value[0];
+                      if (newMax > priceRange[0]) {
+                        setPriceRange([priceRange[0], newMax]);
+                        setMaxPriceInput(newMax.toString());
+                      }
+                    }}
+                    className="mb-2"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="До"
+                    className="form-input w-20 text-xs"
+                    value={maxPriceInput}
+                    onChange={(e) => {
+                      setMaxPriceInput(e.target.value);
+                      const val = parseInt(e.target.value) || 10000;
+                      if (val > priceRange[0] && val <= 10000) setPriceRange([priceRange[0], val]);
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <Button onClick={applyPriceFilter} size="sm">
+                Применить
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Input
-              type="text"
-              placeholder="От"
-              className="form-input w-20"
-              value={minPriceInput}
-              onChange={(e) => handlePriceInputChange(e.target.value, maxPriceInput)}
-            />
-            <span>-</span>
-            <Input
-              type="text"
-              placeholder="До"
-              className="form-input w-20"
-              value={maxPriceInput}
-              onChange={(e) => handlePriceInputChange(minPriceInput, e.target.value)}
-            />
+          
+          {/* Сортировка */}
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Сортировка:</span>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Выберите сортировку" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">По умолчанию</SelectItem>
+                <SelectItem value="price_asc">Цена: по возрастанию</SelectItem>
+                <SelectItem value="price_desc">Цена: по убыванию</SelectItem>
+                <SelectItem value="name_asc">Название: А-Я</SelectItem>
+                <SelectItem value="name_desc">Название: Я-А</SelectItem>
+                <SelectItem value="newest">Сначала новые</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Button onClick={applyPriceFilter} size="sm">
-            Применить
-          </Button>
         </div>
         
         {/* Result count */}
@@ -326,7 +511,7 @@ export default function CatalogPage() {
               ) : (
                 `Найдено ${products.length} растений`
               )}
-            </p>
+          </p>
             {products.length > 0 && totalPages > 1 && (
               <p className="text-sm text-gray-500">
                 Страница {page} из {totalPages}
@@ -363,7 +548,7 @@ export default function CatalogPage() {
                 </p>
               </div>
             )}
-
+            
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="mt-8 flex justify-center">
@@ -371,7 +556,11 @@ export default function CatalogPage() {
                   <PaginationContent className="gap-1">
                     <PaginationItem>
                       <PaginationPrevious 
-                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        onClick={() => {
+                          const newPage = Math.max(1, page - 1);
+                          setPage(newPage);
+                          updateUrlParams({ page: newPage > 1 ? newPage.toString() : undefined }, false);
+                        }}
                         className={`${page === 1 ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer hover:bg-primary/10"} transition-colors`}
                         aria-disabled={page === 1}
                       />
@@ -418,34 +607,42 @@ export default function CatalogPage() {
                       
                       return pages.map((pageItem, index) => {
                         if (pageItem === '...') {
-                          return (
+                      return (
                             <PaginationItem key={`ellipsis-${index}`}>
                               <PaginationEllipsis />
-                            </PaginationItem>
-                          );
+                        </PaginationItem>
+                      );
                         }
-                        
+                    
                         return (
                           <PaginationItem key={pageItem}>
-                            <PaginationLink
-                              onClick={() => setPage(pageItem as number)}
+                        <PaginationLink
+                              onClick={() => {
+                                const newPage = pageItem as number;
+                                setPage(newPage);
+                                updateUrlParams({ page: newPage > 1 ? newPage.toString() : undefined }, false);
+                              }}
                               isActive={page === pageItem}
                               className={`cursor-pointer transition-colors ${
                                 page === pageItem 
                                   ? "bg-primary text-white hover:bg-primary/90" 
                                   : "hover:bg-primary/10"
                               }`}
-                            >
+                        >
                               {pageItem}
-                            </PaginationLink>
-                          </PaginationItem>
+                        </PaginationLink>
+                      </PaginationItem>
                         );
                       });
                     })()}
                     
                     <PaginationItem>
                       <PaginationNext 
-                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        onClick={() => {
+                          const newPage = Math.min(totalPages, page + 1);
+                          setPage(newPage);
+                          updateUrlParams({ page: newPage > 1 ? newPage.toString() : undefined }, false);
+                        }}
                         className={`${page === totalPages ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer hover:bg-primary/10"} transition-colors`}
                         aria-disabled={page === totalPages}
                       />

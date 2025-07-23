@@ -36,6 +36,9 @@ function ProductCard({ product }: ProductCardProps) {
       )
     : 0;
   
+  // Показываем плашку уценки если есть скидка ИЛИ установлен флаг isDiscounted
+  const showDiscountBadge = hasDiscount || Boolean(product.isDiscounted);
+  
   const addToCart = () => {
     // Get current cart from localStorage
     const cartJson = localStorage.getItem("cart") || "[]";
@@ -108,7 +111,17 @@ function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="card bg-white rounded-lg overflow-hidden shadow-md w-full max-w-[280px] transition-transform hover:scale-[1.02] h-full flex flex-col">
       <div className="relative">
-        <Link href={`/product/${id}`}>
+        <Link 
+          href={`/product/${id}`}
+          onClick={() => {
+            // Сохраняем текущий URL для возврата
+            if (window.location.pathname.includes('/catalog')) {
+              localStorage.setItem('catalogReturnUrl', window.location.href);
+            } else if (window.location.pathname === '/') {
+              localStorage.setItem('catalogReturnUrl', '/');
+            }
+          }}
+        >
           <img 
             src={images[0]} 
             alt={name} 
@@ -118,6 +131,19 @@ function ProductCard({ product }: ProductCardProps) {
         
         {/* Флажки товара */}
         <div className="absolute top-2 right-2 flex flex-col gap-1.5 items-end">
+          {/* Новые плашки */}
+          {product.isPreorder && (
+            <span className="bg-amber-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              📦 Предзаказ
+            </span>
+          )}
+          {showDiscountBadge && (
+            <span className="bg-red-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
+              💰 Уценка{hasDiscount ? ` -${discountPercentage}%` : ''}
+            </span>
+          )}
+          
+          {/* Существующие плашки */}
           {product.isHotDeal && (
             <span className="bg-red-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
               🔥 Горячая цена
@@ -136,11 +162,6 @@ function ProductCard({ product }: ProductCardProps) {
           {product.isLimitedEdition && (
             <span className="bg-purple-500 px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
               💎 Лимитированная
-            </span>
-          )}
-          {hasDiscount && (
-            <span className="bg-secondary px-2 py-1 rounded-full text-white text-xs font-medium shadow-md">
-                Скидка {discountPercentage}%
               </span>
             )}
           
@@ -168,7 +189,17 @@ function ProductCard({ product }: ProductCardProps) {
       </div>
       
       <div className="p-3 sm:p-4 flex flex-col flex-grow">
-        <Link href={`/product/${id}`}>
+        <Link 
+          href={`/product/${id}`}
+          onClick={() => {
+            // Сохраняем текущий URL для возврата
+            if (window.location.pathname.includes('/catalog')) {
+              localStorage.setItem('catalogReturnUrl', window.location.href);
+            } else if (window.location.pathname === '/') {
+              localStorage.setItem('catalogReturnUrl', '/');
+            }
+          }}
+        >
           <h3 className="heading font-montserrat font-semibold text-base sm:text-lg line-clamp-2 mb-2 hover:text-primary transition-colors min-h-[3rem]">{name}</h3>
         </Link>
         
@@ -177,7 +208,7 @@ function ProductCard({ product }: ProductCardProps) {
             <span className="text-primary font-bold text-base sm:text-lg">
               {new Intl.NumberFormat('ru-RU').format(parseFloat(price.toString()))} ₽
             </span>
-            {hasDiscount && (
+            {showDiscountBadge && originalPrice && (
               <span className="text-gray-400 line-through text-sm ml-2">
                 {new Intl.NumberFormat('ru-RU').format(parseFloat(originalPrice.toString()))} ₽
               </span>

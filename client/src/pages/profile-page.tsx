@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Order, Review } from "@shared/schema";
+import { User, Review } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -47,7 +47,8 @@ import {
   Wallet,
   Calendar,
   Eye,
-  Trash2
+  Trash2,
+  CreditCard
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -60,6 +61,41 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+// Local Order type for SQLite database
+interface Order {
+  id: number;
+  userId: number;
+  items: any[];
+  itemsTotal?: string;
+  totalAmount: string;
+  deliveryAmount: string;
+  promoCode?: string | null;
+  promoCodeDiscount?: string | null;
+  fullName: string;
+  address: string;
+  phone: string;
+  socialNetwork?: string | null;
+  socialUsername?: string | null;
+  comment?: string;
+  deliveryType: string;
+  deliverySpeed: string;
+  needStorage?: boolean;
+  needInsulation?: boolean;
+  paymentMethod: string;
+  paymentStatus: string;
+  orderStatus: string;
+  paymentProofUrl?: string | null;
+  adminComment?: string | null;
+  trackingNumber?: string | null;
+  estimatedDeliveryDate?: string | null;
+  actualDeliveryDate?: string | null;
+  lastStatusChangeAt?: string | null;
+  statusHistory?: any;
+  productQuantitiesReduced?: boolean;
+  createdAt: string;
+  updatedAt?: string | null;
+}
 
 // Profile update schema
 const profileSchema = z.object({
@@ -193,12 +229,18 @@ export default function ProfilePage() {
   }, [user, setLocation, toast, profileForm]);
   
   // Fetch user orders
-  const { data: orders = [], isLoading: ordersLoading } = useQuery<Order[]>({
+  const { data: orders = [], isLoading: ordersLoading, error: ordersError } = useQuery<Order[]>({
     queryKey: ["/api/user/orders"],
     queryFn: async ({ queryKey }) => {
+      console.log("🔄 Загрузка заказов пользователя...");
       const res = await apiRequest("GET", queryKey[0] as string);
-      if (!res.ok) throw new Error("Не удалось загрузить заказы");
-      return res.json();
+      if (!res.ok) {
+        console.error("❌ Ошибка загрузки заказов:", res.status, res.statusText);
+        throw new Error("Не удалось загрузить заказы");
+      }
+      const data = await res.json();
+      console.log("✅ Заказы загружены:", data);
+      return data;
     },
     enabled: !!user && activeTab === "orders",
   });
@@ -475,6 +517,7 @@ export default function ProfilePage() {
       case "pending_verification":
         return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Проверка оплаты</Badge>;
       case "paid":
+      case "completed":
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Оплачен</Badge>;
       case "processing":
         return <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">В обработке</Badge>;
@@ -483,7 +526,8 @@ export default function ProfilePage() {
       case "delivered":
         return <Badge variant="outline" className="bg-primary bg-opacity-10 text-primary border-primary border-opacity-20">Доставлен</Badge>;
       case "cancelled":
-        return <Badge variant="outline" className="bg-gray-100 text-gray-700 border-gray-200">Отменен</Badge>;
+      case "failed":
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Отменен</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -537,10 +581,12 @@ export default function ProfilePage() {
       "pending": { label: "В ожидании", className: "bg-amber-100 text-amber-800" },
       "pending_payment": { label: "Ожидает оплаты", className: "bg-blue-100 text-blue-800" },
       "paid": { label: "Оплачен", className: "bg-green-100 text-green-800" },
+      "completed": { label: "Оплачен", className: "bg-green-100 text-green-800" },
+      "processing": { label: "В обработке", className: "bg-indigo-100 text-indigo-800" },
       "shipped": { label: "Отправлен", className: "bg-purple-100 text-purple-800" },
       "delivered": { label: "Доставлен", className: "bg-gray-100 text-gray-800" },
-      "processing": { label: "В обработке", className: "bg-indigo-100 text-indigo-800" },
-      "canceled": { label: "Отменен", className: "bg-red-100 text-red-800" },
+      "cancelled": { label: "Отменен", className: "bg-red-100 text-red-800" },
+      "failed": { label: "Отклонен", className: "bg-red-100 text-red-800" },
     };
     
     const statusInfo = statusMap[status] || { label: status, className: "bg-gray-100 text-gray-800" };
@@ -698,21 +744,27 @@ export default function ProfilePage() {
                           <p className="mt-1">{user?.address || "Не указано"}</p>
                         </div>
                       </div>
-                      <Button type="button" onClick={() => setIsEditing(true)}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Редактировать
-                      </Button>
-                      
-                      {/* Delete Account Button */}
-                      <Button 
-                        type="button" 
-                        variant="destructive" 
-                        onClick={() => setShowDeleteDialog(true)}
-                        className="mt-4"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Удалить аккаунт
-                      </Button>
+                      <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                        <Button 
+                          type="button" 
+                          onClick={() => setIsEditing(true)}
+                          className="flex-1 bg-primary hover:bg-primary/90 text-white transition-all duration-200 shadow-md hover:shadow-lg"
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Редактировать профиль
+                        </Button>
+                        
+                        {/* Delete Account Button */}
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => setShowDeleteDialog(true)}
+                          className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Удалить аккаунт
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </CardContent>
@@ -732,6 +784,19 @@ export default function ProfilePage() {
                     <div className="text-center py-4">
                       <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
                       <p className="mt-2 text-sm text-muted-foreground">Загрузка заказов...</p>
+                    </div>
+                  ) : ordersError ? (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+                        <Trash2 className="h-8 w-8 text-red-600" />
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">Ошибка загрузки заказов</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Произошла ошибка при загрузке заказов. Попробуйте обновить страницу.
+                      </p>
+                      <Button onClick={() => window.location.reload()}>
+                        Обновить страницу
+                      </Button>
                     </div>
                   ) : orders && orders.length > 0 ? (
                     <div className="space-y-6">
@@ -771,7 +836,7 @@ export default function ProfilePage() {
                               <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => handleRetryPayment(order.id)}
+                                onClick={() => handleRetryPayment(String(order.id))}
                                 disabled={retryPaymentMutation.isPending}
                               >
                                 {retryPaymentMutation.isPending ? (

@@ -1,0 +1,1646 @@
+2025-06-29T19:25:54: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-29T19:25:54: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-29T19:25:54: 🤖 Запуск Telegram бота...
+2025-06-29T19:25:54: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-29T19:25:54: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-29T19:26:06: 🛒 ВЕРСИЯ 3.0: Запрос заказов от пользователя 6826609528
+2025-06-29T19:26:06: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 6826609528
+2025-06-29T19:26:06: ✅ ВЕРСИЯ 3.0: Пользователь найден: etodastandetka@gmail.com (verified: 1)
+2025-06-29T19:26:06: ✅ ВЕРСИЯ 3.0: Найден пользователь: etodastandetka@gmail.com (ID: 64577693-2c06-4cc5-8b70-70811aa14dc1)
+2025-06-29T21:39:36: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 247871683, токен: f922qgqco68b5kvwpc4rm
+2025-06-29T21:39:36: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-06-29T21:39:36:    🔑 Токен: f922qgqco68b5kvwpc4rm
+2025-06-29T21:39:36:    💬 Chat ID: 247871683
+2025-06-29T21:39:36: 🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:
+2025-06-29T21:39:36:    📞 Телефон: +79528582942
+2025-06-29T21:39:36:    ✅ Верифицирован: Нет
+2025-06-29T21:39:36:    📅 Создан: 2025-06-29 18:39:11
+2025-06-29T21:39:36:    📧 ВЕРСИЯ 3.0 - Email: kazoku.boido@gmail.com
+2025-06-29T21:39:36: 🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...
+2025-06-29T21:39:36: 🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно
+2025-06-29T21:39:36: ⏳ ВЕРСИЯ 3.0: Обработка ожидающей верификации для: kazoku.boido@gmail.com
+2025-06-29T21:39:42: 📱 ВЕРСИЯ 3.0: Получен контакт от пользователя 247871683: 79528582942
+2025-06-29T21:39:42: 🔍 ВЕРСИЯ 3.0: Начинаем обработку контакта от 247871683
+2025-06-29T21:39:42: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 247871683
+2025-06-29T21:39:42: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 247871683
+2025-06-29T21:39:42: ⚠️ ВЕРСИЯ 3.0: Пользователь не найден по chat_id, ищем в pending_registrations...
+2025-06-29T21:39:42: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-06-29T21:39:42:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-06-29T21:39:42:    2. Email: etodastandetka@gmail.com, Chat ID: 6826609528, Verified: 1
+2025-06-29T21:39:42: 📋 ВЕРСИЯ 3.0: Найдена pending_registration для kazoku.boido@gmail.com
+2025-06-29T21:39:42: ✅ ВЕРСИЯ 3.0: Работаем с пользователем: kazoku.boido@gmail.com
+2025-06-29T21:39:42: 📞 ВЕРСИЯ 3.0: Исходный номер: "79528582942"
+2025-06-29T21:39:42: 📞 ВЕРСИЯ 3.0: Нормализованный полученный номер: "+79528582942"
+2025-06-29T21:39:42: 📋 ВЕРСИЯ 3.0: Ожидаемый номер из users: +79528582942
+2025-06-29T21:39:42: 🔍 ВЕРСИЯ 3.0: Сравнение номеров: ожидаемый "+79528582942" vs полученный "+79528582942"
+2025-06-29T21:39:42: ✅ ВЕРСИЯ 3.0: Номера совпадают, подтверждаем верификацию
+2025-06-29T21:39:42: 🆕 ВЕРСИЯ 3.0: Обрабатываем pending_registration...
+2025-06-29T21:39:42: 🆕 ВЕРСИЯ 3.0: Создаем нового пользователя: kazoku.boido@gmail.com
+2025-06-29T21:39:42: ✅ ВЕРСИЯ 3.0: Пользователь создан: kazoku.boido@gmail.com (ID: 5195db7f-4d38-4f24-99a0-964036b4a2b6)
+2025-06-29T21:39:42: 🗑️ ВЕРСИЯ 3.0: Удаление pending_registration: +79528582942, токен: f922qgqco68b5kvwpc4rm
+2025-06-29T21:39:42: ✅ ВЕРСИЯ 3.0: Удалено записей pending_registrations: 1
+2025-06-29T21:40:40: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 247871683, токен: f922qgqco68b5kvwpc4rm
+2025-06-29T21:40:40: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-06-29T21:40:40:    🔑 Токен: f922qgqco68b5kvwpc4rm
+2025-06-29T21:40:40:    💬 Chat ID: 247871683
+2025-06-29T21:40:40: ❌ ВЕРСИЯ 3.0: Пользователь не найден ни по одному критерию
+2025-06-29T21:40:40: ❌ ВЕРСИЯ 3.0: Пользователь не найден для токена: f922qgqco68b5kvwpc4rm
+2025-06-29T22:00:18: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 6826609528, токен: i7dauq0rvzoc4ozgf774wj
+2025-06-29T22:00:18: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-06-29T22:00:18:    🔑 Токен: i7dauq0rvzoc4ozgf774wj
+2025-06-29T22:00:18:    💬 Chat ID: 6826609528
+2025-06-29T22:00:18: 🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:
+2025-06-29T22:00:18:    📞 Телефон: +79920793424
+2025-06-29T22:00:18:    ✅ Верифицирован: Нет
+2025-06-29T22:00:18:    📅 Создан: 2025-06-29 19:00:13
+2025-06-29T22:00:18:    📧 ВЕРСИЯ 3.0 - Email: etodastandetka@gmail.com
+2025-06-29T22:00:18: 🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...
+2025-06-29T22:00:18: 🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно
+2025-06-29T22:00:18: ⏳ ВЕРСИЯ 3.0: Обработка ожидающей верификации для: etodastandetka@gmail.com
+2025-06-29T22:00:22: 📱 ВЕРСИЯ 3.0: Получен контакт от пользователя 6826609528: +79920793424
+2025-06-29T22:00:22: 🔍 ВЕРСИЯ 3.0: Начинаем обработку контакта от 6826609528
+2025-06-29T22:00:22: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 6826609528
+2025-06-29T22:00:22: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 6826609528
+2025-06-29T22:00:22: ⚠️ ВЕРСИЯ 3.0: Пользователь не найден по chat_id, ищем в pending_registrations...
+2025-06-29T22:00:22: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-06-29T22:00:22:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-06-29T22:00:22:    2. Email: kazoku.boido@gmail.com, Chat ID: 247871683, Verified: 1
+2025-06-29T22:00:22: 📋 ВЕРСИЯ 3.0: Найдена pending_registration для etodastandetka@gmail.com
+2025-06-29T22:00:22: ✅ ВЕРСИЯ 3.0: Работаем с пользователем: etodastandetka@gmail.com
+2025-06-29T22:00:22: 📞 ВЕРСИЯ 3.0: Исходный номер: "+79920793424"
+2025-06-29T22:00:22: 📞 ВЕРСИЯ 3.0: Нормализованный полученный номер: "+79920793424"
+2025-06-29T22:00:22: 📋 ВЕРСИЯ 3.0: Ожидаемый номер из users: +79920793424
+2025-06-29T22:00:22: 🔍 ВЕРСИЯ 3.0: Сравнение номеров: ожидаемый "+79920793424" vs полученный "+79920793424"
+2025-06-29T22:00:22: ✅ ВЕРСИЯ 3.0: Номера совпадают, подтверждаем верификацию
+2025-06-29T22:00:22: 🆕 ВЕРСИЯ 3.0: Обрабатываем pending_registration...
+2025-06-29T22:00:22: 🆕 ВЕРСИЯ 3.0: Создаем нового пользователя: etodastandetka@gmail.com
+2025-06-29T22:00:22: ✅ ВЕРСИЯ 3.0: Пользователь создан: etodastandetka@gmail.com (ID: cacbb842-aa85-4d36-8b7c-ed4f06adbfdb)
+2025-06-29T22:00:22: 🗑️ ВЕРСИЯ 3.0: Удаление pending_registration: +79920793424, токен: i7dauq0rvzoc4ozgf774wj
+2025-06-29T22:00:22: ✅ ВЕРСИЯ 3.0: Удалено записей pending_registrations: 1
+2025-06-29T23:03:50: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 247871683, токен: 8agrzso0jjxsm6yfehusb
+2025-06-29T23:03:50: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-06-29T23:03:50:    🔑 Токен: 8agrzso0jjxsm6yfehusb
+2025-06-29T23:03:50:    💬 Chat ID: 247871683
+2025-06-29T23:03:50: 🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:
+2025-06-29T23:03:50:    📞 Телефон: +79528582942
+2025-06-29T23:03:50:    ✅ Верифицирован: Нет
+2025-06-29T23:03:50:    📅 Создан: 2025-06-29 20:03:41
+2025-06-29T23:03:50:    📧 ВЕРСИЯ 3.0 - Email: kazoku.boido@gmail.com
+2025-06-29T23:03:50: 🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...
+2025-06-29T23:03:50: 🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно
+2025-06-29T23:03:50: ⏳ ВЕРСИЯ 3.0: Обработка ожидающей верификации для: kazoku.boido@gmail.com
+2025-06-29T23:03:54: 📱 ВЕРСИЯ 3.0: Получен контакт от пользователя 247871683: 79528582942
+2025-06-29T23:03:54: 🔍 ВЕРСИЯ 3.0: Начинаем обработку контакта от 247871683
+2025-06-29T23:03:54: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 247871683
+2025-06-29T23:03:54: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 247871683
+2025-06-29T23:03:54: ⚠️ ВЕРСИЯ 3.0: Пользователь не найден по chat_id, ищем в pending_registrations...
+2025-06-29T23:03:54: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-06-29T23:03:54:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-06-29T23:03:54:    2. Email: etodastandetka@gmail.com, Chat ID: 6826609528, Verified: 1
+2025-06-29T23:03:54: 📋 ВЕРСИЯ 3.0: Найдена pending_registration для kazoku.boido@gmail.com
+2025-06-29T23:03:54: ✅ ВЕРСИЯ 3.0: Работаем с пользователем: kazoku.boido@gmail.com
+2025-06-29T23:03:54: 📞 ВЕРСИЯ 3.0: Исходный номер: "79528582942"
+2025-06-29T23:03:54: 📞 ВЕРСИЯ 3.0: Нормализованный полученный номер: "+79528582942"
+2025-06-29T23:03:54: 📋 ВЕРСИЯ 3.0: Ожидаемый номер из users: +79528582942
+2025-06-29T23:03:54: 🔍 ВЕРСИЯ 3.0: Сравнение номеров: ожидаемый "+79528582942" vs полученный "+79528582942"
+2025-06-29T23:03:54: ✅ ВЕРСИЯ 3.0: Номера совпадают, подтверждаем верификацию
+2025-06-29T23:03:54: 🆕 ВЕРСИЯ 3.0: Обрабатываем pending_registration...
+2025-06-29T23:03:54: 🆕 ВЕРСИЯ 3.0: Создаем нового пользователя: kazoku.boido@gmail.com
+2025-06-29T23:03:54: ✅ ВЕРСИЯ 3.0: Пользователь создан: kazoku.boido@gmail.com (ID: aecacd27-6408-427b-8fb3-cf2e341a70f9)
+2025-06-29T23:03:54: 🗑️ ВЕРСИЯ 3.0: Удаление pending_registration: +79528582942, токен: 8agrzso0jjxsm6yfehusb
+2025-06-29T23:03:54: ✅ ВЕРСИЯ 3.0: Удалено записей pending_registrations: 1
+2025-06-30T09:07:44: 🛒 ВЕРСИЯ 3.0: Запрос заказов от пользователя 5998116373
+2025-06-30T09:07:44: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 5998116373
+2025-06-30T09:07:44: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 5998116373
+2025-06-30T09:07:44: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id 5998116373
+2025-06-30T09:07:44: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-06-30T09:07:44:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-06-30T09:07:44:    2. Email: etodastandetka@gmail.com, Chat ID: 6826609528, Verified: 1
+2025-06-30T09:07:44:    3. Email: kazoku.boido@gmail.com, Chat ID: 247871683, Verified: 1
+2025-06-30T09:09:30: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 5998116373, токен: mm27vcivl36peppahwfyi
+2025-06-30T09:09:30: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-06-30T09:09:30:    🔑 Токен: mm27vcivl36peppahwfyi
+2025-06-30T09:09:30:    💬 Chat ID: 5998116373
+2025-06-30T09:09:31: 🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:
+2025-06-30T09:09:31:    📞 Телефон: +79615163632
+2025-06-30T09:09:31:    ✅ Верифицирован: Нет
+2025-06-30T09:09:31:    📅 Создан: 2025-06-30 06:09:25
+2025-06-30T09:09:31:    📧 ВЕРСИЯ 3.0 - Email: petyatiktoker@gmail.com
+2025-06-30T09:09:31: 🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...
+2025-06-30T09:09:31: 🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно
+2025-06-30T09:09:31: ⏳ ВЕРСИЯ 3.0: Обработка ожидающей верификации для: petyatiktoker@gmail.com
+2025-06-30T09:09:37: 📱 ВЕРСИЯ 3.0: Получен контакт от пользователя 5998116373: 79615163632
+2025-06-30T09:09:37: 🔍 ВЕРСИЯ 3.0: Начинаем обработку контакта от 5998116373
+2025-06-30T09:09:37: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 5998116373
+2025-06-30T09:09:37: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 5998116373
+2025-06-30T09:09:37: ⚠️ ВЕРСИЯ 3.0: Пользователь не найден по chat_id, ищем в pending_registrations...
+2025-06-30T09:09:37: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-06-30T09:09:37:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-06-30T09:09:37:    2. Email: etodastandetka@gmail.com, Chat ID: 6826609528, Verified: 1
+2025-06-30T09:09:37:    3. Email: kazoku.boido@gmail.com, Chat ID: 247871683, Verified: 1
+2025-06-30T09:09:37: 📋 ВЕРСИЯ 3.0: Найдена pending_registration для petyatiktoker@gmail.com
+2025-06-30T09:09:37: ✅ ВЕРСИЯ 3.0: Работаем с пользователем: petyatiktoker@gmail.com
+2025-06-30T09:09:37: 📞 ВЕРСИЯ 3.0: Исходный номер: "79615163632"
+2025-06-30T09:09:37: 📞 ВЕРСИЯ 3.0: Нормализованный полученный номер: "+79615163632"
+2025-06-30T09:09:37: 📋 ВЕРСИЯ 3.0: Ожидаемый номер из users: +79615163632
+2025-06-30T09:09:37: 🔍 ВЕРСИЯ 3.0: Сравнение номеров: ожидаемый "+79615163632" vs полученный "+79615163632"
+2025-06-30T09:09:37: ✅ ВЕРСИЯ 3.0: Номера совпадают, подтверждаем верификацию
+2025-06-30T09:09:37: 🆕 ВЕРСИЯ 3.0: Обрабатываем pending_registration...
+2025-06-30T09:09:37: 🆕 ВЕРСИЯ 3.0: Создаем нового пользователя: petyatiktoker@gmail.com
+2025-06-30T09:09:37: ✅ ВЕРСИЯ 3.0: Пользователь создан: petyatiktoker@gmail.com (ID: 789bf4d6-cd45-4296-abf1-4cf567d01e7a)
+2025-06-30T09:09:37: 🗑️ ВЕРСИЯ 3.0: Удаление pending_registration: +79615163632, токен: mm27vcivl36peppahwfyi
+2025-06-30T09:09:37: ✅ ВЕРСИЯ 3.0: Удалено записей pending_registrations: 1
+2025-06-30T09:09:42: 🛒 ВЕРСИЯ 3.0: Запрос заказов от пользователя 5998116373
+2025-06-30T09:09:42: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 5998116373
+2025-06-30T09:09:42: ✅ ВЕРСИЯ 3.0: Пользователь найден: petyatiktoker@gmail.com (verified: 1)
+2025-06-30T09:09:42: ✅ ВЕРСИЯ 3.0: Найден пользователь: petyatiktoker@gmail.com (ID: 789bf4d6-cd45-4296-abf1-4cf567d01e7a)
+2025-06-30T11:21:24: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925332, allowed_updates: [] }
+  }
+}
+2025-06-30T11:21:26: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T11:21:26: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T11:21:26: 🤖 Запуск Telegram бота...
+2025-06-30T11:21:26: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T11:21:26: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T11:30:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T11:30:51: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T11:30:51: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T11:30:51: 🤖 Запуск Telegram бота...
+2025-06-30T11:30:51: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T11:30:51: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T13:28:45: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925333, allowed_updates: [] }
+  }
+}
+2025-06-30T13:28:47: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T13:28:47: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T13:28:47: 🤖 Запуск Telegram бота...
+2025-06-30T13:28:47: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T13:28:47: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T13:43:02: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T13:43:03: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T13:43:03: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T13:43:03: 🤖 Запуск Telegram бота...
+2025-06-30T13:43:03: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T13:43:03: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T14:05:33: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:05:35: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T14:05:35: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T14:05:35: 🤖 Запуск Telegram бота...
+2025-06-30T14:05:35: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T14:05:35: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T14:08:03: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:08:05: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T14:08:05: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T14:08:05: 🤖 Запуск Telegram бота...
+2025-06-30T14:08:05: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T14:08:05: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T14:13:10: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:13:11: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T14:13:11: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T14:13:11: 🤖 Запуск Telegram бота...
+2025-06-30T14:13:11: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T14:13:11: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T14:20:29: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T14:20:31: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T14:20:31: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T14:20:31: 🤖 Запуск Telegram бота...
+2025-06-30T14:20:31: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T14:20:31: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T15:05:58: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T15:05:59: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T15:05:59: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T15:05:59: 🤖 Запуск Telegram бота...
+2025-06-30T15:05:59: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T15:05:59: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T19:07:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-06-30T19:07:30: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T19:07:30: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T19:07:30: 🤖 Запуск Telegram бота...
+2025-06-30T19:07:30: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T19:07:30: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-06-30T20:09:04: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925334, allowed_updates: [] }
+  }
+}
+2025-06-30T20:09:05: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-06-30T20:09:05: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-06-30T20:09:05: 🤖 Запуск Telegram бота...
+2025-06-30T20:09:05: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-06-30T20:09:05: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-01T00:22:25: 🛒 ВЕРСИЯ 3.0: Запрос заказов от пользователя 6826609528
+2025-07-01T00:22:25: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 6826609528
+2025-07-01T00:22:25: ✅ ВЕРСИЯ 3.0: Пользователь найден: etodastandetka@gmail.com (verified: 1)
+2025-07-01T00:22:25: ✅ ВЕРСИЯ 3.0: Найден пользователь: etodastandetka@gmail.com (ID: cacbb842-aa85-4d36-8b7c-ed4f06adbfdb)
+2025-07-02T19:58:52: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-02T19:58:57: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T19:58:57: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T19:58:57: 🤖 Запуск Telegram бота...
+2025-07-02T19:58:57: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T19:58:57: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-02T20:13:33: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925348, allowed_updates: [] }
+  }
+}
+2025-07-02T20:13:34: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T20:13:34: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T20:13:34: 🤖 Запуск Telegram бота...
+2025-07-02T20:13:34: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T20:13:34: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-02T20:56:45: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-02T20:56:46: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T20:56:46: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T20:56:46: 🤖 Запуск Telegram бота...
+2025-07-02T20:56:46: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T20:56:46: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-02T22:54:45: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-02T22:54:50: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T22:54:50: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T22:54:51: 🤖 Запуск Telegram бота...
+2025-07-02T22:54:51: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T22:54:51: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-02T23:09:50: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-02T23:09:55: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T23:09:55: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T23:09:55: 🤖 Запуск Telegram бота...
+2025-07-02T23:09:55: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T23:09:55: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-02T23:29:55: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-02T23:30:00: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-02T23:30:00: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-02T23:30:00: 🤖 Запуск Telegram бота...
+2025-07-02T23:30:00: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-02T23:30:00: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:12:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:12:44: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:12:44: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:12:44: 🤖 Запуск Telegram бота...
+2025-07-03T22:12:44: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:12:44: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:21:14: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:21:16: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:21:16: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:21:16: 🤖 Запуск Telegram бота...
+2025-07-03T22:21:16: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:21:16: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:22:47: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:22:48: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:22:48: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:22:48: 🤖 Запуск Telegram бота...
+2025-07-03T22:22:48: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:22:48: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:27:21: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:27:22: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:27:22: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:27:22: 🤖 Запуск Telegram бота...
+2025-07-03T22:27:22: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:27:22: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:36:37: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:36:38: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:36:38: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:36:38: 🤖 Запуск Telegram бота...
+2025-07-03T22:36:38: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:36:38: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:40:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:40:54: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:40:54: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:40:54: 🤖 Запуск Telegram бота...
+2025-07-03T22:40:54: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:40:54: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:42:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:42:51: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:42:51: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:42:51: 🤖 Запуск Telegram бота...
+2025-07-03T22:42:51: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:42:51: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:47:05: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:47:06: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:47:06: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:47:06: 🤖 Запуск Telegram бота...
+2025-07-03T22:47:06: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:47:06: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:52:52: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925349, allowed_updates: [] }
+  }
+}
+2025-07-03T22:52:53: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:52:53: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:52:53: 🤖 Запуск Telegram бота...
+2025-07-03T22:52:53: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:52:53: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:57:52: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:57:54: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:57:54: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:57:54: 🤖 Запуск Telegram бота...
+2025-07-03T22:57:54: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:57:54: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T22:58:19: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T22:58:20: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T22:58:20: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T22:58:20: 🤖 Запуск Telegram бота...
+2025-07-03T22:58:20: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T22:58:20: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:02:56: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:02:57: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:02:57: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:02:57: 🤖 Запуск Telegram бота...
+2025-07-03T23:02:57: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:02:57: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:03:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:03:47: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:03:47: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:03:47: 🤖 Запуск Telegram бота...
+2025-07-03T23:03:47: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:03:47: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:06:41: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:06:42: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:06:42: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:06:42: 🤖 Запуск Telegram бота...
+2025-07-03T23:06:42: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:06:42: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:09:25: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:09:27: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:09:27: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:09:27: 🤖 Запуск Telegram бота...
+2025-07-03T23:09:27: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:09:27: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:11:39: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:11:40: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:11:40: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:11:40: 🤖 Запуск Telegram бота...
+2025-07-03T23:11:40: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:11:40: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:13:59: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:14:01: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:14:01: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:14:01: 🤖 Запуск Telegram бота...
+2025-07-03T23:14:01: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:14:01: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:15:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:15:44: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:15:44: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:15:44: 🤖 Запуск Telegram бота...
+2025-07-03T23:15:44: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:15:44: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-03T23:21:15: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-03T23:21:16: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-03T23:21:16: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-03T23:21:16: 🤖 Запуск Telegram бота...
+2025-07-03T23:21:16: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-03T23:21:16: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:03:21: 📱 ВЕРСИЯ 3.0: Получена команда /start от пользователя 1333967466, токен: b9papm1hois77b54221b7
+2025-07-04T09:03:21: 🆕 НОВАЯ ЛОГИКА 3.0: Поиск пользователя для верификации:
+2025-07-04T09:03:21:    🔑 Токен: b9papm1hois77b54221b7
+2025-07-04T09:03:21:    💬 Chat ID: 1333967466
+2025-07-04T09:03:21: 🎯 ВЕРСИЯ 3.0: Найдена запись в pending_registrations:
+2025-07-04T09:03:21:    📞 Телефон: +79253662869
+2025-07-04T09:03:21:    ✅ Верифицирован: Нет
+2025-07-04T09:03:21:    📅 Создан: 2025-07-04 06:03:17
+2025-07-04T09:03:21:    📧 ВЕРСИЯ 3.0 - Email: nikita.kupavna@mail.ru
+2025-07-04T09:03:21: 🚀 ВЕРСИЯ 3.0: Верифицируем pending_registrations...
+2025-07-04T09:03:21: 🎉 ВЕРСИЯ 3.0: Pending registration верифицирована успешно
+2025-07-04T09:03:21: ⏳ ВЕРСИЯ 3.0: Обработка ожидающей верификации для: nikita.kupavna@mail.ru
+2025-07-04T09:03:25: 📱 ВЕРСИЯ 3.0: Получен контакт от пользователя 1333967466: +79253662869
+2025-07-04T09:03:25: 🔍 ВЕРСИЯ 3.0: Начинаем обработку контакта от 1333967466
+2025-07-04T09:03:25: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 1333967466
+2025-07-04T09:03:25: ❌ ВЕРСИЯ 3.0: Пользователь не найден по chat_id: 1333967466
+2025-07-04T09:03:25: ⚠️ ВЕРСИЯ 3.0: Пользователь не найден по chat_id, ищем в pending_registrations...
+2025-07-04T09:03:25: 📋 ВЕРСИЯ 3.0: Пользователи с telegram_chat_id в базе:
+2025-07-04T09:03:25:    1. Email: helenheinlein@yandex.ru, Chat ID: 2036936021, Verified: 1
+2025-07-04T09:03:25:    2. Email: etodastandetka@gmail.com, Chat ID: 6826609528, Verified: 1
+2025-07-04T09:03:25:    3. Email: kazoku.boido@gmail.com, Chat ID: 247871683, Verified: 1
+2025-07-04T09:03:25:    4. Email: petyatiktoker@gmail.com, Chat ID: 5998116373, Verified: 1
+2025-07-04T09:03:25: 📋 ВЕРСИЯ 3.0: Найдена pending_registration для nikita.kupavna@mail.ru
+2025-07-04T09:03:25: ✅ ВЕРСИЯ 3.0: Работаем с пользователем: nikita.kupavna@mail.ru
+2025-07-04T09:03:25: 📞 ВЕРСИЯ 3.0: Исходный номер: "+79253662869"
+2025-07-04T09:03:25: 📞 ВЕРСИЯ 3.0: Нормализованный полученный номер: "+79253662869"
+2025-07-04T09:03:25: 📋 ВЕРСИЯ 3.0: Ожидаемый номер из users: +79253662869
+2025-07-04T09:03:25: 🔍 ВЕРСИЯ 3.0: Сравнение номеров: ожидаемый "+79253662869" vs полученный "+79253662869"
+2025-07-04T09:03:25: ✅ ВЕРСИЯ 3.0: Номера совпадают, подтверждаем верификацию
+2025-07-04T09:03:25: 🆕 ВЕРСИЯ 3.0: Обрабатываем pending_registration...
+2025-07-04T09:03:25: 🆕 ВЕРСИЯ 3.0: Создаем нового пользователя: nikita.kupavna@mail.ru
+2025-07-04T09:03:25: ✅ ВЕРСИЯ 3.0: Пользователь создан: nikita.kupavna@mail.ru (ID: d8df9d1b-aa0a-4620-9cb6-488f1dfcc4a5)
+2025-07-04T09:03:25: 🗑️ ВЕРСИЯ 3.0: Удаление pending_registration: +79253662869, токен: b9papm1hois77b54221b7
+2025-07-04T09:03:25: ✅ ВЕРСИЯ 3.0: Удалено записей pending_registrations: 1
+2025-07-04T09:03:33: 🛒 ВЕРСИЯ 3.0: Запрос заказов от пользователя 1333967466
+2025-07-04T09:03:33: 🔍 ВЕРСИЯ 3.0: Поиск пользователя по chat_id: 1333967466
+2025-07-04T09:03:33: ✅ ВЕРСИЯ 3.0: Пользователь найден: nikita.kupavna@mail.ru (verified: 1)
+2025-07-04T09:03:33: ✅ ВЕРСИЯ 3.0: Найден пользователь: nikita.kupavna@mail.ru (ID: d8df9d1b-aa0a-4620-9cb6-488f1dfcc4a5)
+2025-07-04T09:06:17: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 975925355, allowed_updates: [] }
+  }
+}
+2025-07-04T09:06:19: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:06:19: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:06:19: 🤖 Запуск Telegram бота...
+2025-07-04T09:06:19: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:06:19: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:49:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:49:55: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:49:55: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:49:55: 🤖 Запуск Telegram бота...
+2025-07-04T09:49:55: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:49:55: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:52:04: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:52:05: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:52:05: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:52:05: 🤖 Запуск Telegram бота...
+2025-07-04T09:52:05: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:52:05: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:53:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:53:47: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:53:47: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:53:47: 🤖 Запуск Telegram бота...
+2025-07-04T09:53:47: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:53:47: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:54:46: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:54:47: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:54:47: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:54:47: 🤖 Запуск Telegram бота...
+2025-07-04T09:54:47: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:54:47: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T09:59:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T09:59:49: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T09:59:49: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T09:59:49: 🤖 Запуск Telegram бота...
+2025-07-04T09:59:49: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T09:59:49: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:00:58: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:00:59: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:00:59: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:00:59: 🤖 Запуск Telegram бота...
+2025-07-04T10:00:59: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:00:59: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:02:15: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:02:16: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:02:16: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:02:16: 🤖 Запуск Telegram бота...
+2025-07-04T10:02:16: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:02:16: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:04:08: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:04:09: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:04:09: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:04:09: 🤖 Запуск Telegram бота...
+2025-07-04T10:04:09: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:04:09: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:05:32: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:05:33: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:05:33: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:05:34: 🤖 Запуск Telegram бота...
+2025-07-04T10:05:34: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:05:34: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:06:47: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:06:48: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:06:48: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:06:48: 🤖 Запуск Telegram бота...
+2025-07-04T10:06:48: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:06:48: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:22:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:22:51: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:22:51: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:22:51: 🤖 Запуск Telegram бота...
+2025-07-04T10:22:51: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:22:51: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:26:08: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:26:09: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:26:09: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:26:09: 🤖 Запуск Telegram бота...
+2025-07-04T10:26:09: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:26:09: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:29:01: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:29:02: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:29:02: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:29:02: 🤖 Запуск Telegram бота...
+2025-07-04T10:29:02: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:29:02: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:30:02: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:30:03: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:30:03: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:30:03: 🤖 Запуск Telegram бота...
+2025-07-04T10:30:03: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:30:03: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:31:18: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:31:19: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:31:20: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:31:20: 🤖 Запуск Telegram бота...
+2025-07-04T10:31:20: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:31:20: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:32:22: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:32:24: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:32:24: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:32:24: 🤖 Запуск Telegram бота...
+2025-07-04T10:32:24: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:32:24: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:33:31: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:33:32: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:33:32: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:33:32: 🤖 Запуск Telegram бота...
+2025-07-04T10:33:32: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:33:32: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:34:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:34:44: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:34:44: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:34:44: 🤖 Запуск Telegram бота...
+2025-07-04T10:34:44: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:34:44: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T10:51:30: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T10:51:31: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T10:51:31: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T10:51:32: 🤖 Запуск Telegram бота...
+2025-07-04T10:51:32: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T10:51:32: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:19:53: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:19:55: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:19:55: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:19:55: 🤖 Запуск Telegram бота...
+2025-07-04T11:19:55: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:19:55: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:21:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:21:29: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:21:29: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:21:29: 🤖 Запуск Telegram бота...
+2025-07-04T11:21:29: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:21:29: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:22:56: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:22:57: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:22:57: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:22:57: 🤖 Запуск Telegram бота...
+2025-07-04T11:22:57: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:22:57: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:25:36: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:25:37: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:25:37: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:25:37: 🤖 Запуск Telegram бота...
+2025-07-04T11:25:37: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:25:37: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:43:42: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:43:44: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:43:44: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:43:44: 🤖 Запуск Telegram бота...
+2025-07-04T11:43:44: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:43:44: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:45:21: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:45:22: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:45:22: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:45:22: 🤖 Запуск Telegram бота...
+2025-07-04T11:45:22: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:45:22: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:47:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:47:49: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:47:49: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:47:50: 🤖 Запуск Telegram бота...
+2025-07-04T11:47:50: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:47:50: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:50:49: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:50:50: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:50:50: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:50:50: 🤖 Запуск Telegram бота...
+2025-07-04T11:50:50: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:50:50: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T11:52:38: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T11:52:39: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T11:52:39: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T11:52:39: 🤖 Запуск Telegram бота...
+2025-07-04T11:52:39: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T11:52:39: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T12:04:48: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T12:04:49: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T12:04:49: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T12:04:49: 🤖 Запуск Telegram бота...
+2025-07-04T12:04:49: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T12:04:49: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T14:50:43: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:50:44: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T14:50:44: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T14:50:44: 🤖 Запуск Telegram бота...
+2025-07-04T14:50:44: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T14:50:44: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T14:52:07: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:52:08: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T14:52:08: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T14:52:08: 🤖 Запуск Telegram бота...
+2025-07-04T14:52:08: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T14:52:08: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T14:56:50: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T14:56:51: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T14:56:51: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T14:56:51: 🤖 Запуск Telegram бота...
+2025-07-04T14:56:51: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T14:56:51: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T15:11:28: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T15:11:29: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T15:11:29: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T15:11:29: 🤖 Запуск Telegram бота...
+2025-07-04T15:11:29: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T15:11:29: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-04T15:13:06: ❌ Ошибка запуска бота: TelegramError: 409: Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+    at Telegram.callApi (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/client.js:315:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async [Symbol.asyncIterator] (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:30:33)
+    at async Polling.loop (/var/www/russkii-portal/node_modules/telegraf/lib/core/network/polling.js:73:30)
+    at async Telegraf.launch (/var/www/russkii-portal/node_modules/telegraf/lib/telegraf.js:194:13) {
+  response: {
+    ok: false,
+    error_code: 409,
+    description: 'Conflict: terminated by other getUpdates request; make sure that only one bot instance is running'
+  },
+  on: {
+    method: 'getUpdates',
+    payload: { timeout: 50, offset: 0, allowed_updates: [] }
+  }
+}
+2025-07-04T15:13:07: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-04T15:13:07: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-04T15:13:07: 🤖 Запуск Telegram бота...
+2025-07-04T15:13:07: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-04T15:13:07: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-06T08:16:59: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-06T08:17:04: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-06T08:17:04: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-06T08:17:04: 🤖 Запуск Telegram бота...
+2025-07-06T08:17:04: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-06T08:17:04: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-06T08:18:38: 🎉 ВЕРСИЯ 3.0: Бот успешно запущен!
+2025-07-06T08:18:43: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-06T08:18:43: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-06T08:18:43: 🤖 Запуск Telegram бота...
+2025-07-06T08:18:43: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-06T08:18:43: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
+2025-07-07T03:12:59: 🚀🚀🚀 ЗАПУСК НОВОГО ИСПРАВЛЕННОГО БОТА 2025-01-28 🚀🚀🚀
+2025-07-07T03:12:59: НОВЫЙ БОТ ВЕРСИЯ 2.0 ЗАПУЩЕН
+2025-07-07T03:12:59: 🤖 Запуск Telegram бота...
+2025-07-07T03:12:59: 📁 Путь к базе данных: /var/www/russkii-portal/db/database.sqlite
+2025-07-07T03:12:59: 🔥 ИСПРАВЛЕННАЯ ВЕРСИЯ БОТА ЗАПУЩЕНА! (новая логика pending_registrations)
